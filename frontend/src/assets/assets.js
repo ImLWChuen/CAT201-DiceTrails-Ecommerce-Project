@@ -1,52 +1,62 @@
 import p1_img_01 from './p1_img_01.png'
-import p1_img_02 from './p1_img_02.jpg'
-import p1_img_03 from './p1_img_03.jpg'
-import p2_img_01 from './p2_img_01.jpg'
-import p2_img_02 from './p2_img_02.jpg'
-import p2_img_03 from './p2_img_03.jpg'
+import p1_img_02 from './p1_img_02.png'
+import p1_img_03 from './p1_img_03.png'
+import p2_img_01 from './p2_img_01.png'
+import p2_img_02 from './p2_img_02.png'
+import p2_img_03 from './p2_img_03.png'
 import p3_img_01 from './p3_img_01.png'
-import p3_img_02 from './p3_img_02.jpg'
-import p3_img_03 from './p3_img_03.jpg'
-import p4_img_01 from './p4_img_01.jpg'
-import p4_img_02 from './p4_img_02.jpg'
-import p4_img_03 from './p4_img_03.jpg'
-import p5_img_01 from './p5_img_01.jpg'
-import p5_img_02 from './p5_img_02.jpg'
-import p5_img_03 from './p5_img_03.jpg'
-import p6_img_01 from './p6_img_01.jpg'
-import p6_img_02 from './p6_img_02.jpg'
-import p6_img_03 from './p6_img_03.jpg'
-import p7_img_01 from './p7_img_01.jpg'
-import p7_img_02 from './p7_img_02.jpg'
-import p7_img_03 from './p7_img_03.jpg'
-import p8_img_01 from './p8_img_01.jpg'
-import p8_img_02 from './p8_img_02.jpg'
-import p8_img_03 from './p8_img_03.jpg'
-import p9_img_01 from './p9_img_01.jpg'
-import p9_img_02 from './p9_img_02.jpg'
-import p9_img_03 from './p9_img_03.jpg'
-import p10_img_01 from './p10_img_01.jpg'
-import p10_img_02 from './p10_img_02.jpg'
-import p10_img_03 from './p10_img_03.jpg'
+import p3_img_02 from './p3_img_02.png'
+import p3_img_03 from './p3_img_03.png'
+import p4_img_01 from './p4_img_01.png'
+import p4_img_02 from './p4_img_02.png'
+import p4_img_03 from './p4_img_03.png'
+import p5_img_01 from './p5_img_01.png'
+import p5_img_02 from './p5_img_02.png'
+import p5_img_03 from './p5_img_03.png'
+import p6_img_01 from './p6_img_01.png'
+import p6_img_02 from './p6_img_02.png'
+import p6_img_03 from './p6_img_03.png'
+import p7_img_01 from './p7_img_01.png'
+import p7_img_02 from './p7_img_02.png'
+import p7_img_03 from './p7_img_03.png'
+import p8_img_01 from './p8_img_01.png'
+import p8_img_02 from './p8_img_02.png'
+import p8_img_03 from './p8_img_03.png'
+import p9_img_01 from './p9_img_01.png'
+import p9_img_02 from './p9_img_02.png'
+import p9_img_03 from './p9_img_03.png'
+import p10_img_01 from './p10_img_01.png'
+import p10_img_02 from './p10_img_02.png'
+import p10_img_03 from './p10_img_03.png'
+import p11_img_01 from './p11_img_01.png'
+import p11_img_02 from './p11_img_02.png'
+import p11_img_03 from './p11_img_03.png'
+import p12_img_01 from './p12_img_01.png'
+import p12_img_02 from './p12_img_02.png'
+import p12_img_03 from './p12_img_03.png'
+import p13_img_01 from './p13_img_01.png'
+import p13_img_02 from './p13_img_02.png'
+import p13_img_03 from './p13_img_03.png'
 
-import logo from './dicetrail_logo.png'
+import logo from './DiceTrails_Logo.png'
 import hero_img from './hero_img.jpg'
 import cart_icon from './shopping_cart_icon.png'
 import bin_icon from './delete_icon.png'
 import profile_icon from './profile_icon.png'
 import dropdown_icon from './arrow_down_icon.png'
-import exchange_icon from './change_icon.png'
-import quality_icon from './award_star.png'
+import exchange_icon from './exchange_icon.png'
+import quality_icon from './quality_icon.png'
 import search_icon from './search_icon.png'
 import close_icon from './close_icon.png'
 import menu_icon from './menu_icon.png'
 import star_icon from './star_empty.png'
 import star_dull_icon from './star_half.png'
-import support_icon from './contact_support.png'
+import support_icon from './support_icon.png'
 import about_icon from './about_icon.png'
 import mastercard_logo from './Mastercard-logo.png'
 import visa_logo from './visa-logo.png'
 import tng_logo from './touch-n-go-logo.png'
+import privacy_icon from './privacy_icon.png'
 
 export const assets = {
     logo,
@@ -67,6 +77,7 @@ export const assets = {
     mastercard_logo,
     visa_logo,
     tng_logo,
+    privacy_icon
 }
 
 export const products = [
@@ -178,6 +189,39 @@ export const products = [
         category: "card games",
         subCategory: "party",
         date: "17166343454009",
+        bestseller: true,
+    },
+    {
+        _id: "aaaak",
+        name: "Scrabble",
+        description: "The classic crossword game where every letter counts. Build words, score points, and challenge your friends and family in this ultimate test of vocabulary.",
+        price: 19.99,
+        image: [p11_img_01, p11_img_02, p11_img_03],
+        category: "board games",
+        subCategory: "word",
+        date: "17166343454110",
+        bestseller: true,
+    },
+    {
+        _id: "aaaal",
+        name: "Cluedo: Scooby-Doo Edition",
+        description: "Jeepers! Help the Mystery Inc. gang solve the mystery in this spooky twist on the classic detective game. Figure out who was abducted, where, and what item was left behind.",
+        price: 24.99,
+        image: [p12_img_01, p12_img_02, p12_img_03],
+        category: "board games",
+        subCategory: "mystery",
+        date: "17166343454111",
+        bestseller: false,
+    },
+    {
+        _id: "aaaam",
+        name: "Codenames",
+        description: "A social word game where two rival spymasters know the secret identities of 25 agents. Teammates try to guess words of their color while avoiding the assassin.",
+        price: 15.99,
+        image: [p13_img_01, p13_img_02, p13_img_03],
+        category: "card games",
+        subCategory: "party",
+        date: "17166343454112",
         bestseller: true,
     }
 ]
