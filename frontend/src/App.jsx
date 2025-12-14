@@ -10,6 +10,7 @@ import Cart from './pages/Cart'
 import Login from './pages/Login'
 import PlaceOrder from './pages/PlaceOrder'
 import Orders from './pages/Orders'
+import Hero from './components/Hero'
 
 const App = () => {
   return (
