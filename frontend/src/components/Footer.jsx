@@ -4,7 +4,7 @@ import { assets } from '../assets/assets'
 const Footer = () => {
   return (
     <div>
-        <hr/>
+        <hr className='mt-20'/>
         <div className='grid grid-cols-1 sm:grid-cols-[3fr_1fr_1fr] gap-14 my-10 mt-7 text-sm '>
             
             <div>
