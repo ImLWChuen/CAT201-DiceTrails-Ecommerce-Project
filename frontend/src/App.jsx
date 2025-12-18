@@ -12,10 +12,12 @@ import PlaceOrder from './pages/PlaceOrder'
 import Orders from './pages/Orders'
 import Hero from './components/Hero'
 import Footer from './components/footer'
+import { ToastContainer, toast } from 'react-toastify';
 
 const App = () => {
   return (
     <div className= 'px-4 sm:px-[5vw] md:px-[7vw] lp:px-[9vw]'>
+      <ToastContainer />
       <Navbar/>
       <Routes>
         <Route path='/' element={<Home/>}/>
