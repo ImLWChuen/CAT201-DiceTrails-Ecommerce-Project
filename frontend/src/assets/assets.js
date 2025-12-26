@@ -51,12 +51,15 @@ import close_icon from './close_icon.png'
 import menu_icon from './menu_icon.png'
 import star_icon from './star_empty.png'
 import star_dull_icon from './star_half.png'
+import star_full from './star_full.png'
 import support_icon from './support_icon.png'
 import about_icon from './about_icon.png'
 import mastercard_logo from './Mastercard-logo.png'
 import visa_logo from './visa-logo.png'
 import tng_logo from './touch-n-go-logo.png'
 import privacy_icon from './privacy_icon.png'
+import thumbs_up_icon from './thumb_up.png'
+import thumbs_up_full_icon from './thumb_up_full.png'
 
 export const assets = {
     logo,
@@ -77,7 +80,12 @@ export const assets = {
     mastercard_logo,
     visa_logo,
     tng_logo,
-    privacy_icon
+    privacy_icon,
+    star_full,
+    star_half: star_dull_icon, // Alias for backward compatibility if needed, or use explicit export
+    star_empty: star_icon, // Alias
+    thumbs_up_icon,
+    thumbs_up_full_icon
 }
 
 export const products = [
