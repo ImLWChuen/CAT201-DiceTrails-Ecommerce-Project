@@ -14,7 +14,7 @@ const ShopContextProvider = (props) => {
     const [showSearch, setShowSearch] = useState(false);
     const [cartItems, setCartItems] = useState({});
     const [user, setUser] = useState(null); // Store user info
-    const backendUrl = "http://localhost:5000"; // Define backend URL
+    const backendUrl = "http://localhost:8080"; // Define backend URL
 
     // Function to load cart from backend
     const loadCartData = async (userId) => {
@@ -51,13 +51,20 @@ const ShopContextProvider = (props) => {
 
         if (user) {
             try {
-                await fetch(backendUrl + '/api/update-cart', {
+                const response = await fetch(backendUrl + '/api/update-cart', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ userId: user.userId, cart: cartData })
                 });
+                const data = await response.json();
+                if (data.success) {
+                    console.log("Cart synced with backend");
+                } else {
+                    toast.error("Failed to save cart to server: " + data.message);
+                }
             } catch (error) {
                 console.error(error);
+                toast.error("Backend connection failed when saving cart");
             }
         }
     }
