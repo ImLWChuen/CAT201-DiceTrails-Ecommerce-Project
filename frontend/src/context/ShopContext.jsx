@@ -156,8 +156,19 @@ const ShopContextProvider = (props) => {
         toast.info("Logged out");
     }
 
+    const checkBackendConnection = async () => {
+        try {
+            const response = await fetch('http://localhost:8080/hello');
+            const data = await response.json();
+            console.log("Backend Connection Status:", data);
+        } catch (error) {
+            console.error("Backend Connection Failed:", error);
+        }
+    }
+
     useEffect(() => {
         console.log(cartItems);
+        checkBackendConnection();
     }, [cartItems])
 
     const value = {
