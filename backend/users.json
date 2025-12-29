@@ -4,8 +4,8 @@
     "email": "user@example.com",
     "password": "hashed_password_here",
     "cart": {
-      "aaaaa": 2,
-      "aaaab": 1
+      "aaaaa": 1,
+      "aaaab": 2
     }
   },
   {
