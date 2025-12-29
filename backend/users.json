@@ -1,0 +1,29 @@
+[
+  {
+    "username": "diceMaster",
+    "email": "user@example.com",
+    "password": "hashed_password_here",
+    "cart": {
+      "aaaaa": 2,
+      "aaaab": 1
+    }
+  },
+  {
+    "username": "trailBlazer",
+    "email": "trailblazer@example.com",
+    "password": "hashed_password_here",
+    "cart": {
+      "aaaah": 1
+    }
+  },
+  {
+    "username": "JJ",
+    "email": "test@email.com",
+    "password": "1234",
+    "cart": {
+      "aaaac": 0,
+      "aaaai": 1
+    },
+    "orders": []
+  }
+]

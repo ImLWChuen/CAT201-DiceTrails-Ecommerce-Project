@@ -13,20 +13,59 @@ const ShopContextProvider = (props) => {
     const [search, setSearch] = useState('');
     const [showSearch, setShowSearch] = useState(false);
     const [cartItems, setCartItems] = useState({});
+    const [user, setUser] = useState(null); // Store user info
+    const backendUrl = "http://localhost:8080"; // Define backend URL
+
+    // Function to load cart from backend
+    const loadCartData = async (userId) => {
+        try {
+            const response = await fetch(backendUrl + '/api/get-cart', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId })
+            });
+            const data = await response.json();
+            if (data.success) {
+                setCartItems(data.cart);
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to load cart");
+        }
+    }
 
     const addToCart = async (itemId) => {
         let cartData = structuredClone(cartItems);
 
-        if (cartData[itemId]){   /* Item Exists, Increase Quantity */
-            cartData[itemId] += 1;  
+        if (cartData[itemId]) {
+            cartData[itemId] += 1;
         }
-        else { /* New Item, Qauntity Set to 1 */ 
+        else {
             cartData[itemId] = 1;
         }
         setCartItems(cartData);
 
         if (toast) {
             toast.success("Item added to cart");
+        }
+
+        if (user) {
+            try {
+                const response = await fetch(backendUrl + '/api/update-cart', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: user.userId, cart: cartData })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    console.log("Cart synced with backend");
+                } else {
+                    toast.error("Failed to save cart to server: " + data.message);
+                }
+            } catch (error) {
+                console.error(error);
+                toast.error("Backend connection failed when saving cart");
+            }
         }
     }
 
@@ -48,6 +87,18 @@ const ShopContextProvider = (props) => {
         let cartData = structuredClone(cartItems);
         cartData[itemId] = quantity;
         setCartItems(cartData);
+
+        if (user) {
+            try {
+                await fetch(backendUrl + '/api/update-cart', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: user.userId, cart: cartData })
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
     }
 
     const getCartAmount = () => {
@@ -61,14 +112,77 @@ const ShopContextProvider = (props) => {
         return totalAmount;
     }
 
-    useEffect(()=>{
+    const login = async (email, password) => {
+        try {
+            const response = await fetch(backendUrl + '/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await response.json();
+            if (data.success) {
+                setUser(data.user);
+                toast.success("Login Successful");
+                loadCartData(data.user.userId);
+                navigate('/');
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("Login failed");
+        }
+    }
+
+    const signup = async (username, email, password) => {
+        try {
+            const response = await fetch(backendUrl + '/api/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, email, password })
+            });
+            const data = await response.json();
+            if (data.success) {
+                setUser(data.user);
+                toast.success("Signup Successful");
+                setCartItems({}); // New user empty cart
+                navigate('/');
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("Signup failed");
+        }
+    }
+
+    const logout = () => {
+        setUser(null);
+        setCartItems({});
+        navigate('/login');
+        toast.info("Logged out");
+    }
+
+    const checkBackendConnection = async () => {
+        try {
+            const response = await fetch('http://localhost:8080/hello');
+            const data = await response.json();
+            console.log("Backend Connection Status:", data);
+        } catch (error) {
+            console.error("Backend Connection Failed:", error);
+        }
+    }
+
+    useEffect(() => {
         console.log(cartItems);
+        checkBackendConnection();
     }, [cartItems])
 
     const value = {
         products, currency, delivery_fee,
         cartItems, addToCart, getCartCount, updateQuantity,
-        getCartAmount, navigate
+        getCartAmount, navigate,
+        user, login, signup, logout
     }
 
     return (
