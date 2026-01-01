@@ -4,6 +4,8 @@ import { ShopContext } from '../context/ShopContext';
 import { assets } from '../assets/assets';
 
 import ReviewSection from '../components/ReviewSection';
+import { formatPrice } from '../utils/formatPrice';
+import Breadcrumbs from '../components/Breadcrumbs';
 
 const Product = () => {
 
@@ -12,14 +14,44 @@ const Product = () => {
   const [productData, setProductData] = useState(false);
   const [image, setImage] = useState('');
   const [activeTab, setActiveTab] = useState('description');
+  const [reviewCount, setReviewCount] = useState(0);
+  const [averageRating, setAverageRating] = useState(0);
 
   // Fetch the product data based on ID
   useEffect(() => {
     const fetchProductData = async () => {
+      // Convert productId from URL (string) to number for comparison
+      const numericProductId = Number(productId);
+
       products.map((item) => {
-        if (item._id === productId) {  // match
+        if (item._id === numericProductId) {  // match numeric IDs
           setProductData(item);
           setImage(item.image[0]);     // set the first photo as the main photo
+
+          // Load review count and calculate average rating
+          const storedReviews = localStorage.getItem(`reviews_${productId}`);
+          if (storedReviews) {
+            try {
+              const parsed = JSON.parse(storedReviews);
+              setReviewCount(parsed.length);
+
+              // Calculate average rating
+              if (parsed.length > 0) {
+                const totalRating = parsed.reduce((sum, review) => sum + review.rating, 0);
+                const avg = totalRating / parsed.length;
+                setAverageRating(avg);
+              } else {
+                setAverageRating(0);
+              }
+            } catch (error) {
+              setReviewCount(0);
+              setAverageRating(0);
+            }
+          } else {
+            setReviewCount(0);
+            setAverageRating(0);
+          }
+
           return null;
         }
       })
@@ -30,6 +62,12 @@ const Product = () => {
   // If productData exists, show. Otherwise, show opacity-0 (invisible)
   return productData ? (
     <div className='border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100'>
+      <Breadcrumbs items={[
+        { label: 'Home', path: '/' },
+        { label: 'Catalogue', path: '/catalogue' },
+        { label: productData.category, path: null },
+        { label: productData.name, path: null }
+      ]} />
 
       {/* ----------- Product Data Visualization ----------- */}
       <div className='flex gap-12 sm:gap-12 flex-col sm:flex-row'>
@@ -53,23 +91,37 @@ const Product = () => {
           <h1 className='font-medium text-2xl mt-2'>{productData.name}</h1>
 
           <div className='flex items-center gap-1 mt-2'>
-            <img src={assets.star_full} alt="" className="w-3 5" />
-            <img src={assets.star_full} alt="" className="w-3 5" />
-            <img src={assets.star_full} alt="" className="w-3 5" />
-            <img src={assets.star_full} alt="" className="w-3 5" />
-            <img src={assets.star_half} alt="" className="w-3 5" />
-            <p className='pl-2'>(122)</p>
+            {[1, 2, 3, 4, 5].map((star) => {
+              if (averageRating >= star) {
+                return <img key={star} src={assets.star_full} alt="" className="w-3 5" />;
+              } else if (averageRating >= star - 0.5) {
+                return <img key={star} src={assets.star_half} alt="" className="w-3 5" />;
+              } else {
+                return <img key={star} src={assets.star_empty} alt="" className="w-3 5" />;
+              }
+            })}
+            <p className='pl-2'>({reviewCount})</p>
           </div>
 
-          <p className='mt-5 text-3xl font-medium text-[#D0A823]'>{currency}{productData.price}</p>
+          <p className='mt-5 text-3xl font-medium text-[#D0A823]'>{formatPrice(productData.price)}</p>
           <p className='mt-5 text-gray-500 md:w-4/5'>{productData.description}</p>
 
           {/* ADD TO CART BUTTON */}
           <button
-            onClick={() => addToCart(productData._id)}
-            className='bg-[#504c41] text-white px-8 py-3 text-sm active:bg-[#D0A823] hover:bg-[#D0A823] transition-colors duration-300 mt-10'
+            onClick={() => {
+              if (productData.quantity === 0) {
+                alert('This product is currently out of stock');
+                return;
+              }
+              addToCart(productData._id);
+            }}
+            disabled={productData.quantity === 0}
+            className={`px-8 py-3 text-sm transition-colors duration-300 mt-10 ${productData.quantity === 0
+              ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
+              : 'bg-[#504c41] text-white active:bg-[#D0A823] hover:bg-[#D0A823]'
+              }`}
           >
-            ADD TO CART
+            {productData.quantity === 0 ? 'OUT OF STOCK' : 'ADD TO CART'}
           </button>
 
           <hr className='mt-8 sm:w-4/5' />
@@ -94,7 +146,7 @@ const Product = () => {
             onClick={() => setActiveTab('reviews')}
             className={`border px-5 py-3 text-sm ${activeTab === 'reviews' ? 'font-bold border-b-0' : 'border-gray-200'}`}
           >
-            Reviews (122)
+            Reviews ({reviewCount})
           </button>
         </div>
 

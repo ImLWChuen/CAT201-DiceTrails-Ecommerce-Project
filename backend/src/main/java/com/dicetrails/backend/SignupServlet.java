@@ -61,9 +61,10 @@ public class SignupServlet extends HttpServlet {
             successResponse.addProperty("message", "User registered successfully");
 
             JsonObject userJson = new JsonObject();
-            userJson.addProperty("userId", newUser.getEmail()); // Using email as userId for frontend
+            userJson.addProperty("userId", newUser.getUserId());
             userJson.addProperty("username", newUser.getUsername());
             userJson.addProperty("email", newUser.getEmail());
+            userJson.addProperty("isAdmin", newUser.isAdmin());
 
             successResponse.add("user", userJson);
 

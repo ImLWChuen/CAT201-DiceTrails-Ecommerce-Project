@@ -7,9 +7,11 @@ import java.util.Map;
 import java.io.Serializable;
 
 public class User implements Serializable {
+    private int userId;
     private String username;
     private String email;
     private String password;
+    private boolean isAdmin;
     private Map<String, Integer> cart;
     private List<Map<String, Object>> orders;
 
@@ -17,11 +19,20 @@ public class User implements Serializable {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.isAdmin = false;
         this.cart = new HashMap<>();
         this.orders = new ArrayList<>();
     }
 
     // Getters and Setters
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -44,6 +55,14 @@ public class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 
     public Map<String, Integer> getCart() {

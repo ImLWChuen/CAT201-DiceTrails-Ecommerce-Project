@@ -19,21 +19,37 @@ const Navbar = () => {
             </Link>
 
             <ul className='hidden sm:flex gap-5 text-sm text-[504C41]'>
-                <NavLink to='/' className='flex flex-col items-center gap-1 cursor-pointer'>
-                    <p>Home</p>
-                    <hr className='w-2/4 border-none h-[1.5px] bg-[#D0A823] hidden' />
+                <NavLink to='/' className={({ isActive }) => `flex flex-col items-center gap-1 cursor-pointer ${isActive ? 'font-bold' : ''}`}>
+                    {({ isActive }) => (
+                        <>
+                            <p>Home</p>
+                            <hr className={`w-2/4 border-none h-[1.5px] bg-[#D0A823] ${isActive ? '' : 'hidden'}`} />
+                        </>
+                    )}
                 </NavLink>
-                <NavLink to='/collection' className='flex flex-col items-center gap-1 cursor-pointer'>
-                    <p>Collection</p>
-                    <hr className='w-2/4 border-none h-[1.5px] bg-[#D0A823] hidden' />
+                <NavLink to='/catalogue' className={({ isActive }) => `flex flex-col items-center gap-1 cursor-pointer ${isActive ? 'font-bold' : ''}`}>
+                    {({ isActive }) => (
+                        <>
+                            <p>Catalogue</p>
+                            <hr className={`w-2/4 border-none h-[1.5px] bg-[#D0A823] ${isActive ? '' : 'hidden'}`} />
+                        </>
+                    )}
                 </NavLink>
-                <NavLink to='/about' className='flex flex-col items-center gap-1 cursor-pointer'>
-                    <p>About</p>
-                    <hr className='w-2/4 border-none h-[1.5px] bg-[#D0A823] hidden' />
+                <NavLink to='/about' className={({ isActive }) => `flex flex-col items-center gap-1 cursor-pointer ${isActive ? 'font-bold' : ''}`}>
+                    {({ isActive }) => (
+                        <>
+                            <p>About</p>
+                            <hr className={`w-2/4 border-none h-[1.5px] bg-[#D0A823] ${isActive ? '' : 'hidden'}`} />
+                        </>
+                    )}
                 </NavLink>
-                <NavLink to='/contact' className='flex flex-col items-center gap-1 cursor-pointer'>
-                    <p>Contact</p>
-                    <hr className='w-2/4 border-none h-[1.5px] bg-[#D0A823] hidden' />
+                <NavLink to='/contact' className={({ isActive }) => `flex flex-col items-center gap-1 cursor-pointer ${isActive ? 'font-bold' : ''}`}>
+                    {({ isActive }) => (
+                        <>
+                            <p>Contact</p>
+                            <hr className={`w-2/4 border-none h-[1.5px] bg-[#D0A823] ${isActive ? '' : 'hidden'}`} />
+                        </>
+                    )}
                 </NavLink>
             </ul>
             <div className='flex items-center gap-6'>
@@ -73,10 +89,10 @@ const Navbar = () => {
                         <img className='h-5 rotate-180' src={assets.close_icon} alt="close" />
                         <p>Back</p>
                     </div>
-                    <NavLink onClick={() => setVisible} className='py-2 pl-6 border border-[#D0A823]' to='/'>Home</NavLink>
-                    <NavLink onClick={() => setVisible} className='py-2 pl-6 border border-[#D0A823]' to='/collection'>Collection</NavLink>
-                    <NavLink onClick={() => setVisible} className='py-2 pl-6 border border-[#D0A823]' to='/about'>About</NavLink>
-                    <NavLink onClick={() => setVisible} className='py-2 pl-6 border border-[#D0A823]' to='/contact'>Contact</NavLink>
+                    <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-[#D0A823]' to='/'>Home</NavLink>
+                    <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-[#D0A823]' to='/catalogue'>Catalogue</NavLink>
+                    <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-[#D0A823]' to='/about'>About</NavLink>
+                    <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-[#D0A823]' to='/contact'>Contact</NavLink>
                 </div>
             </div>
         </div>

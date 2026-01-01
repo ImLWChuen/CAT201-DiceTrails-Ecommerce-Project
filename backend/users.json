@@ -1,40 +1,56 @@
 [
   {
+    "userId": 10000001,
     "username": "diceMaster",
     "email": "user@example.com",
     "password": "hashed_password_here",
-    "cart": {
-      "aaaaa": 1,
-      "aaaab": 2,
-      "aaaad": 1
-    }
+    "isAdmin": false,
+    "cart": {}
   },
   {
+    "userId": 10000002,
     "username": "trailBlazer",
     "email": "trailblazer@example.com",
     "password": "hashed_password_here",
-    "cart": {
-      "aaaah": 1
-    }
+    "isAdmin": false,
+    "cart": {}
   },
   {
+    "userId": 10000003,
     "username": "JJ",
     "email": "test@email.com",
     "password": "1234",
+    "isAdmin": false,
+    "cart": {},
+    "orders": []
+  },
+  {
+    "userId": 10000004,
+    "username": "Yun Han",
+    "email": "pikyunhan@gmail.com",
+    "password": "yunhan18",
+    "isAdmin": false,
+    "cart": {},
+    "orders": []
+  },
+  {
+    "userId": 10000005,
+    "username": "Loh Wei Chuen",
+    "email": "alanlwc837@gmail.com",
+    "password": "12345678",
+    "isAdmin": false,
     "cart": {
-      "aaaac": 0,
-      "aaaai": 1
+      "20000012": 1
     },
     "orders": []
   },
   {
-    "username": "Yun Han",
-    "email": "pikyunhan@gmail.com",
-    "password": "yunhan18",
-    "cart": {
-      "aaaab": 1,
-      "aaaaj": 1
-    },
+    "userId": 10000006,
+    "username": "Admin",
+    "email": "admin@dicetrails.com",
+    "password": "admin123",
+    "isAdmin": true,
+    "cart": {},
     "orders": []
   }
 ]

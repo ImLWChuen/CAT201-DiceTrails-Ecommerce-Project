@@ -13,10 +13,26 @@ const ShopContextProvider = (props) => {
     const [search, setSearch] = useState('');
     const [showSearch, setShowSearch] = useState(false);
     const [cartItems, setCartItems] = useState({});
-    
-    const [user, setUser] = useState(localStorage.getItem('userEmail') ? { email: localStorage.getItem('userEmail') } : null);
-    
-    const backendUrl = "http://localhost:8080"; 
+
+    // Initialize user from localStorage if available
+    const [user, setUser] = useState(() => {
+        const email = localStorage.getItem('userEmail');
+        const username = localStorage.getItem('username');
+        const userId = localStorage.getItem('userId');
+        const isAdmin = localStorage.getItem('isAdmin') === 'true';
+
+        if (email) {
+            return {
+                email,
+                username,
+                userId: userId ? Number(userId) : null,
+                isAdmin
+            };
+        }
+        return null;
+    });
+
+    const backendUrl = "http://localhost:8080";
 
     const loadCartData = async (userId) => {
         try {
@@ -124,14 +140,24 @@ const ShopContextProvider = (props) => {
                 body: JSON.stringify({ email, password })
             });
             const data = await response.json();
-            
+
             if (data.success) {
+                console.log("Login response user data:", data.user); // Debug log
                 setUser(data.user);
                 localStorage.setItem('userEmail', data.user.email);
+                localStorage.setItem('username', data.user.username); // Store username
+                localStorage.setItem('userId', data.user.userId); // Store userId
+                localStorage.setItem('isAdmin', data.user.isAdmin);
 
                 toast.success("Login Successful");
                 loadCartData(data.user.email);
-                navigate('/');
+
+                // Redirect based on user role
+                if (data.user.isAdmin) {
+                    navigate('/admin');
+                } else {
+                    navigate('/');
+                }
             } else {
                 toast.error(data.message);
             }
@@ -149,14 +175,14 @@ const ShopContextProvider = (props) => {
                 body: JSON.stringify({ username, email, password })
             });
             const data = await response.json();
-            
+
             if (data.success) {
                 setUser(data.user);
-                
+
                 localStorage.setItem('userEmail', data.user.email);
 
                 toast.success("Signup Successful");
-                setCartItems({}); 
+                setCartItems({});
                 navigate('/');
             } else {
                 toast.error(data.message);
@@ -170,8 +196,11 @@ const ShopContextProvider = (props) => {
     const logout = () => {
         setUser(null);
         setCartItems({});
-        
+
         localStorage.removeItem('userEmail');
+        localStorage.removeItem('username');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('isAdmin');
         // -------------------------------------
 
         navigate('/login');
@@ -189,17 +218,17 @@ const ShopContextProvider = (props) => {
 
     useEffect(() => {
         const storedEmail = localStorage.getItem('userEmail');
-        if(storedEmail && Object.keys(cartItems).length === 0) {
-             loadCartData(storedEmail);
+        if (storedEmail && Object.keys(cartItems).length === 0) {
+            loadCartData(storedEmail);
         }
-       console.log(cartItems);
+        console.log(cartItems);
         checkBackendConnection();
     }, [cartItems])
 
     const value = {
         products, currency, delivery_fee,
         search, setSearch, showSearch, setShowSearch,
-        cartItems, addToCart, getCartCount, updateQuantity,
+        cartItems, setCartItems, addToCart, getCartCount, updateQuantity,
         getCartAmount, navigate,
         user, login, signup, logout
     }
