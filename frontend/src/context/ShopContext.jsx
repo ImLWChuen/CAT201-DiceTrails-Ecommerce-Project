@@ -13,10 +13,11 @@ const ShopContextProvider = (props) => {
     const [search, setSearch] = useState('');
     const [showSearch, setShowSearch] = useState(false);
     const [cartItems, setCartItems] = useState({});
-    const [user, setUser] = useState(null); // Store user info
-    const backendUrl = "http://localhost:8080"; // Define backend URL
+    
+    const [user, setUser] = useState(localStorage.getItem('userEmail') ? { email: localStorage.getItem('userEmail') } : null);
+    
+    const backendUrl = "http://localhost:8080"; 
 
-    // Function to load cart from backend
     const loadCartData = async (userId) => {
         try {
             const response = await fetch(backendUrl + '/api/get-cart', {
@@ -49,22 +50,23 @@ const ShopContextProvider = (props) => {
             toast.success("Item added to cart");
         }
 
-        if (user) {
+        const activeUserEmail = user?.email || localStorage.getItem('userEmail');
+
+        if (activeUserEmail) {
             try {
                 const response = await fetch(backendUrl + '/api/update-cart', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId: user.userId, cart: cartData })
+                    body: JSON.stringify({ userId: activeUserEmail, cart: cartData })
                 });
                 const data = await response.json();
                 if (data.success) {
                     console.log("Cart synced with backend");
                 } else {
-                    toast.error("Failed to save cart to server: " + data.message);
+                    console.error("Failed to save cart: " + data.message);
                 }
             } catch (error) {
                 console.error(error);
-                toast.error("Backend connection failed when saving cart");
             }
         }
     }
@@ -88,12 +90,14 @@ const ShopContextProvider = (props) => {
         cartData[itemId] = quantity;
         setCartItems(cartData);
 
-        if (user) {
+        const activeUserEmail = user?.email || localStorage.getItem('userEmail');
+
+        if (activeUserEmail) {
             try {
                 await fetch(backendUrl + '/api/update-cart', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId: user.userId, cart: cartData })
+                    body: JSON.stringify({ userId: activeUserEmail, cart: cartData })
                 });
             } catch (error) {
                 console.error(error);
@@ -120,10 +124,13 @@ const ShopContextProvider = (props) => {
                 body: JSON.stringify({ email, password })
             });
             const data = await response.json();
+            
             if (data.success) {
                 setUser(data.user);
+                localStorage.setItem('userEmail', data.user.email);
+
                 toast.success("Login Successful");
-                loadCartData(data.user.userId);
+                loadCartData(data.user.email);
                 navigate('/');
             } else {
                 toast.error(data.message);
@@ -142,10 +149,14 @@ const ShopContextProvider = (props) => {
                 body: JSON.stringify({ username, email, password })
             });
             const data = await response.json();
+            
             if (data.success) {
                 setUser(data.user);
+                
+                localStorage.setItem('userEmail', data.user.email);
+
                 toast.success("Signup Successful");
-                setCartItems({}); // New user empty cart
+                setCartItems({}); 
                 navigate('/');
             } else {
                 toast.error(data.message);
@@ -159,10 +170,13 @@ const ShopContextProvider = (props) => {
     const logout = () => {
         setUser(null);
         setCartItems({});
+        
+        localStorage.removeItem('userEmail');
+        // -------------------------------------
+
         navigate('/login');
         toast.info("Logged out");
     }
-
     const checkBackendConnection = async () => {
         try {
             const response = await fetch('http://localhost:8080/hello');
@@ -174,7 +188,11 @@ const ShopContextProvider = (props) => {
     }
 
     useEffect(() => {
-        console.log(cartItems);
+        const storedEmail = localStorage.getItem('userEmail');
+        if(storedEmail && Object.keys(cartItems).length === 0) {
+             loadCartData(storedEmail);
+        }
+       console.log(cartItems);
         checkBackendConnection();
     }, [cartItems])
 

@@ -1,0 +1,92 @@
+[
+  {
+    "orderId": "97377067-e164-4d5d-ae09-f0800caa592a",
+    "userId": "pikyunhan@gmail.com",
+    "deliveryAddress": {
+      "firstName": "yun han",
+      "lastName": "pik",
+      "email": "pikyunhan@gmail.com",
+      "street": "jalan ",
+      "city": "Georgetown",
+      "state": "Penang",
+      "zipcode": "10000",
+      "country": "Malaysia",
+      "phone": "0189123833"
+    },
+    "paymentMethod": "cod",
+    "totalAmount": 39.989999999999995,
+    "date": 1767259949645,
+    "status": "Ready to ship",
+    "items": [
+      {
+        "_id": "aaaab",
+        "name": "Monopoly",
+        "description": "The classic fast-dealing property trading game where players buy, sell, and dream their way to riches.",
+        "price": 29.99,
+        "image": [
+          "/src/assets/p2_img_01.png",
+          "/src/assets/p2_img_02.png",
+          "/src/assets/p2_img_03.png"
+        ],
+        "category": "board games",
+        "subCategory": "family",
+        "date": "17166343454001",
+        "bestseller": true,
+        "quantity": 1.0
+      }
+    ]
+  },
+  {
+    "orderId": "1bebb823-8fa9-4b32-b9de-ec0160c67a23",
+    "userId": "pikyunhan@gmail.com",
+    "deliveryAddress": {
+      "firstName": "yun han",
+      "lastName": "pik",
+      "email": "pikyunhan@gmail.com",
+      "street": "jalan ",
+      "city": "Georgetown",
+      "state": "Penang",
+      "zipcode": "10000",
+      "country": "Malaysia",
+      "phone": "0189123833"
+    },
+    "paymentMethod": "tng",
+    "totalAmount": 49.98,
+    "date": 1767260950845,
+    "status": "Ready to ship",
+    "items": [
+      {
+        "_id": "aaaab",
+        "name": "Monopoly",
+        "description": "The classic fast-dealing property trading game where players buy, sell, and dream their way to riches.",
+        "price": 29.99,
+        "image": [
+          "/src/assets/p2_img_01.png",
+          "/src/assets/p2_img_02.png",
+          "/src/assets/p2_img_03.png"
+        ],
+        "category": "board games",
+        "subCategory": "family",
+        "date": "17166343454001",
+        "bestseller": true,
+        "quantity": 1.0
+      },
+      {
+        "_id": "aaaaj",
+        "name": "Uno",
+        "description": "The classic card game of matching colors and numbers that is easy to pick up and impossible to put down.",
+        "price": 9.99,
+        "image": [
+          "/src/assets/p10_img_01.png",
+          "/src/assets/p10_img_02.png",
+          "/src/assets/p10_img_03.png"
+        ],
+        "category": "card games",
+        "subCategory": "party",
+        "date": "17166343454009",
+        "bestseller": true,
+        "quantity": 1.0
+      }
+    ]
+  }
+]
