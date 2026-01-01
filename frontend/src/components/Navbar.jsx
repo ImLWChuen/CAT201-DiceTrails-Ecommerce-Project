@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import { assets } from '../assets/assets'
 import { Link, NavLink } from 'react-router-dom'
 import { ShopContext } from '../context/ShopContext';
+import SearchBar from './SearchBar';
 
 const Navbar = () => {
 
@@ -36,7 +37,10 @@ const Navbar = () => {
                 </NavLink>
             </ul>
             <div className='flex items-center gap-6'>
-                <img onClick={() => setShowSearch(true)} src={assets.search_icon} className='w-5 h-5 cursor-pointer' alt="Search" />
+                <div className='relative flex items-center gap-2'>
+                    <SearchBar />
+                    <img onClick={() => setShowSearch(prev => !prev)} src={assets.search_icon} className='w-5 h-5 cursor-pointer' alt="Search" />
+                </div>
 
                 <div className='group relative'>
                     {user
@@ -48,8 +52,8 @@ const Navbar = () => {
                     {user &&
                         <div className='group-hover:block hidden absolute dropdown-menu right-0 pt-4'>
                             <div className='flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 text-gray-500 rounded'>
-                                <p className='cursor-pointer hover:text-black'>My Profile</p>
-                                <p className='cursor-pointer hover:text-black'>Orders</p>
+                                <Link to='/profile'><p className='cursor-pointer hover:text-black'>My Profile</p></Link>
+                                <Link to='/orders'><p className='cursor-pointer hover:text-black'>Orders</p></Link>
                                 <p onClick={logout} className='cursor-pointer hover:text-black'>Logout</p>
                             </div>
                         </div>
