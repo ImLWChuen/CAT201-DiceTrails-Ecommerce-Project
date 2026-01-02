@@ -160,6 +160,7 @@ const ShopContextProvider = (props) => {
             });
             const data = await response.json();
 
+
             if (data.success) {
                 console.log("Login response user data:", data.user); // Debug log
                 setUser(data.user);
@@ -188,6 +189,22 @@ const ShopContextProvider = (props) => {
         }
     }
 
+    const clearCart = async () => {
+        setCartItems({});
+        const activeUserEmail = user?.email || localStorage.getItem('userEmail');
+        if (activeUserEmail) {
+            try {
+                await fetch(backendUrl + '/api/update-cart', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: activeUserEmail, cart: {} })
+                });
+            } catch (error) {
+                console.error("Failed to clear cart on backend:", error);
+            }
+        }
+    }
+
     const signup = async (username, email, password) => {
         try {
             const response = await fetch(backendUrl + '/api/signup', {
@@ -197,12 +214,15 @@ const ShopContextProvider = (props) => {
             });
             const data = await response.json();
 
+
             if (data.success) {
                 setUser(data.user);
+
 
                 localStorage.setItem('userEmail', data.user.email);
 
                 toast.success("Signup Successful");
+                setCartItems({});
                 setCartItems({});
                 navigate('/');
             } else {
@@ -217,6 +237,7 @@ const ShopContextProvider = (props) => {
     const logout = () => {
         setUser(null);
         setCartItems({});
+
 
         localStorage.removeItem('userEmail');
         localStorage.removeItem('username');
@@ -278,7 +299,7 @@ const ShopContextProvider = (props) => {
         }
         console.log(cartItems);
         checkBackendConnection();
-    }, [cartItems])
+    }, [user])
 
     const value = {
         products, currency, delivery_fee,

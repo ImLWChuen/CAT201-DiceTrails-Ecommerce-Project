@@ -11,6 +11,7 @@ const Orders = () => {
     const [orderData, setOrderData] = useState([]);
     const [filter, setFilter] = useState('All');
 
+
     const userId = localStorage.getItem('userEmail');
     const filterOptions = ['All', 'Ready to ship', 'Shipped', 'Completed', 'Cancelled'];
 
@@ -22,9 +23,11 @@ const Orders = () => {
         loadOrderData();
     }, [userId, products])
 
+
     const loadOrderData = async () => {
         try {
             const response = await fetch(`http://localhost:8080/api/user-orders?userId=${userId}`);
+
 
             if (!response.ok) {
                 console.error("Server returned:", response.status);
@@ -64,6 +67,7 @@ const Orders = () => {
 
                 setOrderData(processedOrders.reverse());
             }
+
 
         } catch (error) {
             console.error("Error loading orders:", error);
@@ -151,7 +155,9 @@ const Orders = () => {
             <div className='flex flex-col gap-6 mt-8'>
                 {getFilteredOrders().length === 0 ? (
                     <div className="text-gray-500 mt-4 text-center w-full">
-                        <p>No orders found for <span className="font-semibold">{userId}</span>.</p>
+                        <div className="text-gray-500 mt-4 text-center w-full">
+                            <p>No orders found for <span className="font-semibold">{userId}</span>.</p>
+                        </div>
                     </div>
                 ) : (
                     getFilteredOrders().map((order, index) => (

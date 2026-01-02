@@ -1,6 +1,7 @@
 package com.dicetrails.backend.util;
 
 import com.dicetrails.backend.model.ContactMessage;
+import com.dicetrails.backend.model.Review;
 
 // ... (existing imports, but since I can't modify top of file easily with multi-chunk in this tool, I'll assum imports are managed or I use full names if possible, but actually replace_file_content replaces contiguous blocks. I need to be careful with imports.
 
@@ -21,6 +22,7 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -39,6 +41,9 @@ public class DataManager {
     private List<ContactMessage> contacts;
     private final String CONTACT_FILE = "contacts.json";
 
+    private List<Review> reviews;
+    private final String REVIEW_FILE = "reviews.json";
+
     private final Gson gson;
 
     private DataManager() {
@@ -50,6 +55,8 @@ public class DataManager {
         products = loadData(PRODUCT_FILE, new TypeToken<ArrayList<Product>>() {
         }.getType());
         contacts = loadData(CONTACT_FILE, new TypeToken<ArrayList<ContactMessage>>() {
+        }.getType());
+        reviews = loadData(REVIEW_FILE, new TypeToken<ArrayList<Review>>() {
         }.getType());
     }
 
@@ -253,5 +260,42 @@ public class DataManager {
             saveData(CONTACT_FILE, contacts);
         }
         return removed;
+    }
+
+    // Review management methods
+    public List<Review> getReviews(String productId) {
+        return reviews.stream()
+                .filter(review -> review.getProductId().equals(productId))
+                .collect(Collectors.toList());
+    }
+
+    public synchronized void addReview(Review review) {
+        reviews.add(review);
+        saveData(REVIEW_FILE, reviews);
+    }
+
+    public synchronized void markOrderItemAsReviewed(String orderId, String productId) {
+        for (Order order : orders) {
+            if (order.getOrderId().equals(orderId)) {
+                List<Map<String, Object>> items = order.getItems();
+                boolean updated = false;
+                for (Map<String, Object> item : items) {
+                    // Items are stored as maps, usually with "id" or "productId" key
+                    // Based on typical structure, let's assume "id" holds the product ID
+                    // We need to cast carefully
+                    Object idObj = item.get("id");
+                    String itemId = idObj != null ? String.valueOf(idObj) : "";
+
+                    if (itemId.equals(productId)) {
+                        item.put("isReviewed", true);
+                        updated = true;
+                    }
+                }
+                if (updated) {
+                    saveData(ORDER_FILE, orders);
+                }
+                break;
+            }
+        }
     }
 }

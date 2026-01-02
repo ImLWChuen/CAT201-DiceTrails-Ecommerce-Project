@@ -419,27 +419,31 @@ const ReviewSection = ({ productId }) => {
                     </div>
                 </div>
 
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-4 items-center">
                     {/* Filter Buttons */}
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-3">
                         <button
                             onClick={() => { setFilter('all'); setCurrentPage(1); }}
-                            className={`px-4 py-2 text-sm rounded-full transition-colors ${filter === 'all' ? 'bg-[#D0A823] text-white' : 'bg-white border text-gray-600 hover:bg-gray-100'}`}
+                            className={`px-6 py-2 text-sm font-medium rounded-full transition-all duration-200 ${filter === 'all' ? 'bg-[#D0A823] text-white shadow-md' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}
                         >
                             All
                         </button>
                         <button
                             onClick={() => { setFilter('media'); setCurrentPage(1); }}
-                            className={`px-4 py-2 text-sm rounded-full transition-colors ${filter === 'media' ? 'bg-[#D0A823] text-white' : 'bg-white border text-gray-600 hover:bg-gray-100'}`}
+                            className={`px-6 py-2 text-sm font-medium rounded-full transition-all duration-200 ${filter === 'media' ? 'bg-[#D0A823] text-white shadow-md' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}
                         >
                             With Images/Videos
                         </button>
                         <select
                             onChange={(e) => { setFilter(e.target.value); setCurrentPage(1); }}
-                            className={`px-4 py-2 text-sm rounded-full border bg-white text-gray-600 outline-none focus:border-[#D0A823] ${['5star', '4star', '3star', '2star', '1star'].includes(filter) ? 'border-[#D0A823] text-[#D0A823]' : ''}`}
+                            className={`px-4 py-2 text-sm rounded-full border bg-white text-gray-600 outline-none transition-all duration-200 focus:border-[#D0A823] cursor-pointer ${['5star', '4star', '3star', '2star', '1star'].includes(filter) ? 'border-[#D0A823] text-[#D0A823] bg-[#fdfcf5]' : 'border-gray-200 hover:bg-gray-50'}`}
                             value={['5star', '4star', '3star', '2star', '1star'].includes(filter) ? filter : 'stars'}
                         >
                             <option value="stars" disabled>Filter by Stars</option>
+                            <option value="5star">5 Stars Only</option>
+                            <option value="4star">4 Stars Only</option>
+                            <option value="3star">3 Stars Only</option>
+                            <option value="2star">2 Stars Only</option>
                             <option value="5star">5 Stars Only</option>
                             <option value="4star">4 Stars Only</option>
                             <option value="3star">3 Stars Only</option>
@@ -453,7 +457,7 @@ const ReviewSection = ({ productId }) => {
                         <select
                             value={sortBy}
                             onChange={(e) => setSortBy(e.target.value)}
-                            className="px-4 py-2 text-sm rounded-full border bg-white text-gray-600 outline-none focus:border-[#D0A823] cursor-pointer"
+                            className="px-4 py-2 text-sm rounded-full border border-gray-200 bg-white text-gray-600 outline-none transition-all duration-200 hover:bg-gray-50 focus:border-[#D0A823] cursor-pointer"
                         >
                             <option value="default">Sort by: Default</option>
                             <option value="recent">Sort by: Recent</option>

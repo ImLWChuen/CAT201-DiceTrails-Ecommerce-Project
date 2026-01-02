@@ -22,7 +22,7 @@ const App = () => {
       <Routes>
         {/* Admin Dashboard (no navbar/footer) */}
         <Route path='/admin' element={<AdminDashboard />} />
-        
+
         {/* Main App with navbar and footer */}
         <Route path='*' element={
           <div className='px-4 sm:px-[5vw] md:px-[7vw] lp:px-[9vw]'>

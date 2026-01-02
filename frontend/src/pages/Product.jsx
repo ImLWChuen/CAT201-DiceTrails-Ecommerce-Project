@@ -17,7 +17,7 @@ const Product = () => {
   const [reviewCount, setReviewCount] = useState(0);
   const [averageRating, setAverageRating] = useState(0);
 
-  // Fetch the product data based on ID
+  // Fetch product data and reviews
   useEffect(() => {
     const fetchProductData = async () => {
       // Convert productId from URL (string) to number for comparison
@@ -53,7 +53,28 @@ const Product = () => {
         }
       })
     }
+
+    const fetchReviews = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/reviews?productId=${productId}`);
+        const data = await response.json();
+        if (Array.isArray(data)) {
+          setReviews(data);
+          setTotalReviews(data.length);
+          if (data.length > 0) {
+            const total = data.reduce((acc, review) => acc + review.rating, 0);
+            setAverageRating(total / data.length);
+          } else {
+            setAverageRating(0);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch reviews:", error);
+      }
+    }
+
     fetchProductData();
+    fetchReviews();
   }, [productId, products])
 
   // Set initial image only when productData changes
@@ -199,7 +220,7 @@ const Product = () => {
               <p>An engaging board game for the whole family, perfect for game nights and gatherings.</p>
             </div>
           ) : (
-            <ReviewSection productId={productId} />
+            <ReviewSection reviews={reviews} />
           )}
         </div>
       </div>
