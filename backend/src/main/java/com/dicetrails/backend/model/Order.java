@@ -20,6 +20,10 @@ public class Order {
 
     private String trackingNumber; // New field for tracking number
 
+    private double shippingFee; // Shipping fee for the order
+    private boolean newsletterDiscountApplied; // Whether newsletter discount was applied
+    private String region; // Delivery region (west, east, international)
+
     private List<Map<String, Object>> items;
 
     public Order() {
@@ -106,5 +110,29 @@ public class Order {
 
     public void setItems(List<Map<String, Object>> items) {
         this.items = items;
+    }
+
+    public double getShippingFee() {
+        return shippingFee;
+    }
+
+    public void setShippingFee(double shippingFee) {
+        this.shippingFee = shippingFee;
+    }
+
+    public boolean isNewsletterDiscountApplied() {
+        return newsletterDiscountApplied;
+    }
+
+    public void setNewsletterDiscountApplied(boolean newsletterDiscountApplied) {
+        this.newsletterDiscountApplied = newsletterDiscountApplied;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
     }
 }

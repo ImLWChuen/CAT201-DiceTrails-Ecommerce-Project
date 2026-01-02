@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
+import { toast } from 'react-toastify'
 
-const ProductManagement = ({ products, setProducts }) => {
+const ProductManagement = ({ products, setProducts, searchQuery = '' }) => {
   const [showAddForm, setShowAddForm] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [formData, setFormData] = useState({
@@ -12,6 +13,18 @@ const ProductManagement = ({ products, setProducts }) => {
     category: 'board games',
     subCategory: 'strategy',
     quantity: 10
+  })
+
+  // Filter products based on search query
+  const filteredProducts = products.filter(product => {
+    if (!searchQuery) return true
+    const query = searchQuery.toLowerCase()
+    return (
+      product.name.toLowerCase().includes(query) ||
+      product.category.toLowerCase().includes(query) ||
+      product.subCategory.toLowerCase().includes(query) ||
+      product._id.toString().includes(query)
+    )
   })
 
   const handleInputChange = (e) => {
@@ -56,7 +69,7 @@ const ProductManagement = ({ products, setProducts }) => {
     return true;
   }
 
-  const handleAddProduct = (e) => {
+  const handleAddProduct = async (e) => {
     e.preventDefault()
 
     // Validate before proceeding
@@ -66,18 +79,60 @@ const ProductManagement = ({ products, setProducts }) => {
 
     if (editingId) {
       // Update existing product
-      setProducts(products.map(p =>
-        p._id === editingId ? { ...p, ...formData } : p
-      ))
-      setEditingId(null)
+      const updatedProduct = { ...formData }
+
+      try {
+        const response = await fetch('http://localhost:8080/api/update-product', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updatedProduct)
+        })
+        const result = await response.json()
+
+        if (result.success) {
+          setProducts(products.map(p =>
+            p._id === editingId ? updatedProduct : p
+          ))
+          toast.success('Product updated successfully')
+          setEditingId(null)
+        } else {
+          toast.error(result.message || 'Failed to update product')
+          return
+        }
+      } catch (error) {
+        console.error('Error updating product:', error)
+        toast.error('Error connecting to server')
+        return
+      }
     } else {
       // Add new product
       const newProduct = {
         ...formData,
-        _id: Date.now().toString(),
         image: formData.image || ['https://via.placeholder.com/300']
       }
-      setProducts([...products, newProduct])
+
+      try {
+        const response = await fetch('http://localhost:8080/api/add-product', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newProduct)
+        })
+        const result = await response.json()
+
+        if (result.success) {
+          // Use the ID returned by the backend
+          const productWithId = { ...newProduct, _id: result.productId }
+          setProducts([...products, productWithId])
+          toast.success('Product added successfully')
+        } else {
+          toast.error(result.message || 'Failed to add product')
+          return
+        }
+      } catch (error) {
+        console.error('Error adding product:', error)
+        toast.error('Error connecting to server')
+        return
+      }
     }
     setFormData({
       _id: '',
@@ -98,34 +153,142 @@ const ProductManagement = ({ products, setProducts }) => {
     setShowAddForm(true)
   }
 
-  const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this product?')) {
-      setProducts(products.filter(p => p._id !== id))
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this product?')) {
+      return
+    }
+
+    try {
+      const response = await fetch('http://localhost:8080/api/delete-product', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId: id })
+      })
+      const result = await response.json()
+
+      if (result.success) {
+        setProducts(products.filter(p => p._id !== id))
+        toast.success('Product deleted successfully')
+      } else {
+        toast.error(result.message || 'Failed to delete product')
+      }
+    } catch (error) {
+      console.error('Error deleting product:', error)
+      toast.error('Error connecting to server')
     }
   }
 
-  const handleToggleVisibility = (id) => {
-    setProducts(products.map(p =>
-      p._id === id ? { ...p, isVisible: !p.isVisible } : p
-    ))
+  const handleToggleVisibility = async (id) => {
+    const product = products.find(p => p._id === id)
+    if (!product) return
+
+    const updatedProduct = { ...product, isVisible: !product.isVisible }
+
+    try {
+      const response = await fetch('http://localhost:8080/api/update-product', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedProduct)
+      })
+      const result = await response.json()
+
+      if (result.success) {
+        setProducts(products.map(p =>
+          p._id === id ? updatedProduct : p
+        ))
+        toast.success(`Product ${updatedProduct.isVisible ? 'shown' : 'hidden'} successfully`)
+      } else {
+        toast.error(result.message || 'Failed to update visibility')
+      }
+    } catch (error) {
+      console.error('Error updating visibility:', error)
+      toast.error('Error connecting to server')
+    }
   }
 
-  const handleApplyDiscount = (id, percentage) => {
-    setProducts(products.map(p =>
-      p._id === id ? { ...p, discount: percentage } : p
-    ))
+  const handleApplyDiscount = async (id, percentage) => {
+    const product = products.find(p => p._id === id)
+    if (!product) return
+
+    const updatedProduct = { ...product, discount: percentage }
+
+    try {
+      const response = await fetch('http://localhost:8080/api/update-product', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedProduct)
+      })
+      const result = await response.json()
+
+      if (result.success) {
+        setProducts(products.map(p =>
+          p._id === id ? updatedProduct : p
+        ))
+        toast.success(`Discount ${percentage}% applied successfully`)
+      } else {
+        toast.error(result.message || 'Failed to apply discount')
+      }
+    } catch (error) {
+      console.error('Error applying discount:', error)
+      toast.error('Error connecting to server')
+    }
   }
 
-  const handleTagAsNew = (id) => {
-    setProducts(products.map(p =>
-      p._id === id ? { ...p, isNew: !p.isNew } : p
-    ))
+  const handleTagAsNew = async (id) => {
+    const product = products.find(p => p._id === id)
+    if (!product) return
+
+    const updatedProduct = { ...product, isNew: !product.isNew }
+
+    try {
+      const response = await fetch('http://localhost:8080/api/update-product', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedProduct)
+      })
+      const result = await response.json()
+
+      if (result.success) {
+        setProducts(products.map(p =>
+          p._id === id ? updatedProduct : p
+        ))
+        toast.success(`Product ${updatedProduct.isNew ? 'tagged as new' : 'removed new tag'} successfully`)
+      } else {
+        toast.error(result.message || 'Failed to update tag')
+      }
+    } catch (error) {
+      console.error('Error updating tag:', error)
+      toast.error('Error connecting to server')
+    }
   }
 
-  const handleStockChange = (id, change) => {
-    setProducts(products.map(p =>
-      p._id === id ? { ...p, quantity: Math.max(0, (p.quantity || 0) + change) } : p
-    ))
+  const handleStockChange = async (id, change) => {
+    const product = products.find(p => p._id === id)
+    if (!product) return
+
+    const newQuantity = Math.max(0, (product.quantity || 0) + change)
+    const updatedProduct = { ...product, quantity: newQuantity }
+
+    try {
+      const response = await fetch('http://localhost:8080/api/update-product', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedProduct)
+      })
+      const result = await response.json()
+
+      if (result.success) {
+        setProducts(products.map(p =>
+          p._id === id ? updatedProduct : p
+        ))
+        toast.success(`Stock updated to ${newQuantity}`)
+      } else {
+        toast.error(result.message || 'Failed to update stock')
+      }
+    } catch (error) {
+      console.error('Error updating stock:', error)
+      toast.error('Error connecting to server')
+    }
   }
 
   const calculateDiscountedPrice = (price, discount) => {
@@ -373,7 +536,7 @@ const ProductManagement = ({ products, setProducts }) => {
               </tr>
             </thead>
             <tbody>
-              {products.map((product) => (
+              {filteredProducts.map((product) => (
                 <tr key={product._id} className='border-t hover:bg-gray-50'>
                   <td className='px-6 py-4'>
                     <div className='font-semibold text-gray-800'>{product.name}</div>
@@ -490,9 +653,13 @@ const ProductManagement = ({ products, setProducts }) => {
           </table>
         </div>
 
-        {products.length === 0 && (
+        {filteredProducts.length === 0 && (
           <div className='text-center py-8 text-gray-500'>
-            <p className='text-lg'>No products yet. Create your first product!</p>
+            {searchQuery ? (
+              <p className='text-lg'>No products found matching "{searchQuery}"</p>
+            ) : (
+              <p className='text-lg'>No products yet. Create your first product!</p>
+            )}
           </div>
         )}
       </div>

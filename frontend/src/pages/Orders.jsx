@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { ShopContext } from '../context/ShopContext'
 import { formatPrice } from '../utils/formatPrice'
+import { calculateDiscountedPrice } from '../utils/discountUtils'
 import Breadcrumbs from '../components/Breadcrumbs'
 import { toast } from 'react-toastify'
 
@@ -43,6 +44,7 @@ const Orders = () => {
                                 ...item,
                                 image: productFromAssets.image[0],
                                 name: productFromAssets.name
+                                // Do NOT add current discount - use only the discount saved with the order
                             };
                         } else {
                             let image = Array.isArray(item.image) ? item.image[0] : item.image;
@@ -74,10 +76,10 @@ const Orders = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:8080/api/update-order-status', {
+            const response = await fetch('http://localhost:8080/api/cancel-order', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ orderId, status: 'Cancelled' })
+                body: JSON.stringify({ orderId, userId })
             });
 
             const result = await response.json();
@@ -183,37 +185,96 @@ const Orders = () => {
                                 </div>
                             ) : (
                                 <div className='space-y-3 mb-4'>
-                                    {order.items.map((item, itemIdx) => (
-                                        <div key={itemIdx} className='flex items-center gap-4 py-2'>
-                                            {item.image ? (
-                                                <img className='w-16 h-16 object-cover border border-gray-200 rounded' src={item.image} alt={item.name} />
-                                            ) : (
-                                                <div className='w-16 h-16 bg-gray-200 flex items-center justify-center border border-gray-300 rounded'>
-                                                    <span className='text-xs text-gray-500'>No Image</span>
+                                    {order.items.map((item, itemIdx) => {
+                                        const discountedPrice = calculateDiscountedPrice(item);
+                                        const hasDiscount = item.discount && item.discount > 0;
+
+                                        return (
+                                            <div key={itemIdx} className='flex items-center gap-4 py-2'>
+                                                {item.image ? (
+                                                    <img className='w-16 h-16 object-cover border border-gray-200 rounded' src={item.image} alt={item.name} />
+                                                ) : (
+                                                    <div className='w-16 h-16 bg-gray-200 flex items-center justify-center border border-gray-300 rounded'>
+                                                        <span className='text-xs text-gray-500'>No Image</span>
+                                                    </div>
+                                                )}
+                                                <div className='flex-1'>
+                                                    <p className='font-medium text-[#504c41]'>{item.name}</p>
+                                                    <div className='flex items-center gap-3 mt-1 text-sm text-gray-600'>
+                                                        {hasDiscount ? (
+                                                            <>
+                                                                <span className='text-[#D0A823] font-medium'>{formatPrice(discountedPrice)}</span>
+                                                                <span className='text-gray-400 line-through text-xs'>{formatPrice(item.price)}</span>
+                                                                <span className='bg-red-100 text-red-600 text-xs px-1.5 py-0.5 rounded font-semibold'>
+                                                                    -{item.discount}%
+                                                                </span>
+                                                            </>
+                                                        ) : (
+                                                            <span className='text-[#D0A823] font-medium'>{formatPrice(item.price)}</span>
+                                                        )}
+                                                        <span>×</span>
+                                                        <span>Qty: {item.quantity}</span>
+                                                    </div>
                                                 </div>
-                                            )}
-                                            <div className='flex-1'>
-                                                <p className='font-medium text-[#504c41]'>{item.name}</p>
-                                                <div className='flex items-center gap-3 mt-1 text-sm text-gray-600'>
-                                                    <span className='text-[#D0A823] font-medium'>{formatPrice(item.price)}</span>
-                                                    <span>×</span>
-                                                    <span>Qty: {item.quantity}</span>
+                                                <div className='text-right'>
+                                                    <p className='font-semibold text-[#504c41]'>{formatPrice(discountedPrice * item.quantity)}</p>
                                                 </div>
                                             </div>
-                                            <div className='text-right'>
-                                                <p className='font-semibold text-[#504c41]'>{formatPrice(item.price * item.quantity)}</p>
-                                            </div>
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             )}
 
                             {/* Order Total and Actions */}
-                            <div className='flex justify-between items-center pt-4 border-t'>
-                                <div className='text-lg font-bold text-[#504C41]'>
-                                    Total: {formatPrice(order.totalAmount)}
+                            <div className='flex flex-col gap-3 pt-4 border-t'>
+                                {/* Price Breakdown */}
+                                <div className='space-y-2 text-sm'>
+                                    {/* Calculate subtotal from items */}
+                                    {(() => {
+                                        const subtotal = order.items?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || 0;
+                                        const discountAmount = order.newsletterDiscountApplied ? subtotal * 0.2 : 0;
+
+                                        // Check if order has breakdown fields (new orders after update)
+                                        const hasBreakdown = order.hasOwnProperty('shippingFee') || order.hasOwnProperty('newsletterDiscountApplied');
+
+                                        // For old orders, just show total
+                                        if (!hasBreakdown) {
+                                            return (
+                                                <div className='flex justify-between text-lg font-bold text-[#504C41]'>
+                                                    <span>Total:</span>
+                                                    <span>{formatPrice(order.totalAmount)}</span>
+                                                </div>
+                                            );
+                                        }
+
+                                        // For new orders, show full breakdown
+                                        return (
+                                            <>
+                                                <div className='flex justify-between text-gray-600'>
+                                                    <span>Subtotal:</span>
+                                                    <span>{formatPrice(subtotal)}</span>
+                                                </div>
+                                                {order.newsletterDiscountApplied && (
+                                                    <div className='flex justify-between text-green-600 font-medium'>
+                                                        <span>Newsletter Discount (20%):</span>
+                                                        <span>-{formatPrice(discountAmount)}</span>
+                                                    </div>
+                                                )}
+                                                <div className='flex justify-between text-gray-600'>
+                                                    <span>Shipping Fee{order.region ? ` (${order.region})` : ''}:</span>
+                                                    <span>{order.shippingFee > 0 ? formatPrice(order.shippingFee) : 'FREE'}</span>
+                                                </div>
+                                                <div className='flex justify-between text-lg font-bold text-[#504C41] pt-2 border-t'>
+                                                    <span>Total:</span>
+                                                    <span>{formatPrice(order.totalAmount)}</span>
+                                                </div>
+                                            </>
+                                        );
+                                    })()}
                                 </div>
-                                <div className='flex gap-2'>
+
+                                {/* Action Buttons */}
+                                <div className='flex gap-2 justify-end'>
                                     {order.status === 'Ready to ship' && !order.isEmpty && (
                                         <button
                                             onClick={() => handleCancelOrder(order.orderId)}

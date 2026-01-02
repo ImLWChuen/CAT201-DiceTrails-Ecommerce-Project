@@ -1,5 +1,15 @@
 package com.dicetrails.backend.util;
 
+import com.dicetrails.backend.model.ContactMessage;
+
+// ... (existing imports, but since I can't modify top of file easily with multi-chunk in this tool, I'll assum imports are managed or I use full names if possible, but actually replace_file_content replaces contiguous blocks. I need to be careful with imports.
+
+// I will use multi_replace_file_content instead because I need to edit imports AND the class body.
+// Wait, I am restricted to replace_file_content for single block.
+// I will use multi_replace_file_content.
+// Actually, I'll just use multi_replace_file_content in the next step.
+// For now, I'll switch to multi_replace_file_content tool.
+
 import com.dicetrails.backend.model.Order;
 import com.dicetrails.backend.model.User;
 import com.dicetrails.backend.model.Product;
@@ -26,6 +36,9 @@ public class DataManager {
     private List<Product> products;
     private final String PRODUCT_FILE = "products.json";
 
+    private List<ContactMessage> contacts;
+    private final String CONTACT_FILE = "contacts.json";
+
     private final Gson gson;
 
     private DataManager() {
@@ -35,6 +48,8 @@ public class DataManager {
         orders = loadData(ORDER_FILE, new TypeToken<ArrayList<Order>>() {
         }.getType());
         products = loadData(PRODUCT_FILE, new TypeToken<ArrayList<Product>>() {
+        }.getType());
+        contacts = loadData(CONTACT_FILE, new TypeToken<ArrayList<ContactMessage>>() {
         }.getType());
     }
 
@@ -148,7 +163,29 @@ public class DataManager {
         return "TR" + randomNumber;
     }
 
+    public synchronized boolean deleteOrder(String orderId) {
+        boolean removed = orders.removeIf(order -> order.getOrderId().equals(orderId));
+        if (removed) {
+            saveData(ORDER_FILE, orders);
+        }
+        return removed;
+    }
+
     // Product management methods
+    public synchronized int getNextProductId() {
+        return products.stream()
+                .mapToInt(Product::get_id)
+                .max()
+                .orElse(20000000) + 1;
+    }
+
+    public synchronized void addProduct(Product product) {
+        int nextId = getNextProductId();
+        product.set_id(nextId);
+        products.add(product);
+        saveData(PRODUCT_FILE, products);
+    }
+
     public List<Product> getAllProducts() {
         return new ArrayList<>(products);
     }
@@ -168,6 +205,11 @@ public class DataManager {
             }
         }
         return false;
+    }
+
+    public synchronized void saveProducts(List<Product> productList) {
+        this.products = new ArrayList<>(productList);
+        saveData(PRODUCT_FILE, products);
     }
 
     public synchronized boolean reduceStock(int productId, int quantity) {
@@ -193,5 +235,23 @@ public class DataManager {
             return updateProduct(product);
         }
         return false;
+    }
+
+    // Contact management methods
+    public synchronized void addContact(ContactMessage message) {
+        contacts.add(message);
+        saveData(CONTACT_FILE, contacts);
+    }
+
+    public List<ContactMessage> getContacts() {
+        return new ArrayList<>(contacts);
+    }
+
+    public synchronized boolean deleteContact(String id) {
+        boolean removed = contacts.removeIf(msg -> msg.getId().equals(id));
+        if (removed) {
+            saveData(CONTACT_FILE, contacts);
+        }
+        return removed;
     }
 }

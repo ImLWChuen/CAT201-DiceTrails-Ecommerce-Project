@@ -31,9 +31,12 @@ const Catalogue = () => {
     }
   }
 
-  const applyFilter = () => {
+  const applyFilterAndSort = () => {
     if (!products) return;
     let productsCopy = products.slice();
+
+    // Filter out hidden products (only show visible products to customers)
+    productsCopy = productsCopy.filter(item => item.isVisible !== false);
 
     if (showSearch && search) {
       productsCopy = productsCopy.filter(item =>
@@ -51,34 +54,30 @@ const Catalogue = () => {
     if (SubCategory.length > 0) {
       productsCopy = productsCopy.filter(item => SubCategory.includes(item.subCategory));
     }
-    setFilterProducts(productsCopy)
-  }
 
-  const sortProduct = () => {
-    let fpCopy = filterProducts.slice();
-
+    // Apply Sorting
     switch (sortType) {
       case 'low-high':
-        setFilterProducts(fpCopy.sort((a, b) => (a.price - b.price)));
+        productsCopy.sort((a, b) => (a.price - b.price));
         break;
 
       case 'high-low':
-        setFilterProducts(fpCopy.sort((a, b) => (b.price - a.price)));
+        productsCopy.sort((a, b) => (b.price - a.price));
         break;
 
       default:
-        applyFilter();
+        // Default: Sort by newest (ID descending)
+        productsCopy.sort((a, b) => b._id - a._id);
         break;
     }
+
+    setFilterProducts(productsCopy)
   }
 
+  // Effect to run filter and sort whenever any dependency changes
   useEffect(() => {
-    applyFilter();
-  }, [category, SubCategory, search, showSearch, products])
-
-  useEffect(() => {
-    sortProduct();
-  }, [sortType])
+    applyFilterAndSort();
+  }, [category, SubCategory, search, showSearch, products, sortType])
 
   return (
     <div className='flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t'>
@@ -155,7 +154,7 @@ const Catalogue = () => {
             </div>
           ) : (
             filterProducts.map((item, index) => (
-              <ProductItem key={index} name={item.name} id={item._id} price={item.price} image={item.image} quantity={item.quantity} />
+              <ProductItem key={index} name={item.name} id={item._id} price={item.price} image={item.image} quantity={item.quantity} discount={item.discount} isNew={item.isNew} />
             ))
           )}
 

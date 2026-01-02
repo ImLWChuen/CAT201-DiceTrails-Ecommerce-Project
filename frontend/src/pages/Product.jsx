@@ -23,10 +23,9 @@ const Product = () => {
       // Convert productId from URL (string) to number for comparison
       const numericProductId = Number(productId);
 
-      products.map((item) => {
+      products.forEach((item) => {
         if (item._id === numericProductId) {  // match numeric IDs
           setProductData(item);
-          setImage(item.image[0]);     // set the first photo as the main photo
 
           // Load review count and calculate average rating
           const storedReviews = localStorage.getItem(`reviews_${productId}`);
@@ -51,13 +50,18 @@ const Product = () => {
             setReviewCount(0);
             setAverageRating(0);
           }
-
-          return null;
         }
       })
     }
     fetchProductData();
   }, [productId, products])
+
+  // Set initial image only when productData changes
+  useEffect(() => {
+    if (productData && productData.image && productData.image.length > 0) {
+      setImage(productData.image[0]);
+    }
+  }, [productData?._id])
 
   // If productData exists, show. Otherwise, show opacity-0 (invisible)
   return productData ? (
@@ -77,12 +81,23 @@ const Product = () => {
           <div className='flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full'>
             {
               productData.image.map((item, index) => (
-                <img onClick={() => setImage(item)} src={item} key={index} className='w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer' alt="" />
+                <img
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setImage(item);
+                  }}
+                  src={item}
+                  key={index}
+                  className={`w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer border-2 ${image === item ? 'border-[#D0A823]' : 'border-gray-300'} hover:border-[#D0A823] transition-all`}
+                  alt={`Product view ${index + 1}`}
+                  role="button"
+                  tabIndex={0}
+                />
               ))
             }
           </div>
           <div className='w-full sm:w-[80%]'>
-            <img className='w-full h-auto' src={image} alt="" />
+            <img className='w-full h-auto' src={image} alt={productData.name} />
           </div>
         </div>
 
@@ -103,7 +118,22 @@ const Product = () => {
             <p className='pl-2'>({reviewCount})</p>
           </div>
 
-          <p className='mt-5 text-3xl font-medium text-[#D0A823]'>{formatPrice(productData.price)}</p>
+          {/* Price Section with Discount */}
+          {productData.discount > 0 ? (
+            <div className='mt-5'>
+              <div className='flex items-center gap-3'>
+                <p className='text-2xl font-medium text-gray-400 line-through'>{formatPrice(productData.price)}</p>
+                <span className='bg-red-600 text-white px-3 py-1 text-sm font-bold rounded'>
+                  -{productData.discount}% OFF
+                </span>
+              </div>
+              <p className='mt-2 text-3xl font-bold text-red-600'>
+                {formatPrice(productData.price * (1 - productData.discount / 100))}
+              </p>
+            </div>
+          ) : (
+            <p className='mt-5 text-3xl font-medium text-[#D0A823]'>{formatPrice(productData.price)}</p>
+          )}
           <p className='mt-5 text-gray-500 md:w-4/5'>{productData.description}</p>
 
           {/* Stock Quantity Display */}

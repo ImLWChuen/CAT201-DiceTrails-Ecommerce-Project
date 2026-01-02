@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { calculateDiscountedPrice } from '../utils/discountUtils';
 
 export const ShopContext = createContext();
 
@@ -140,9 +141,11 @@ const ShopContextProvider = (props) => {
     const getCartAmount = () => {
         let totalAmount = 0;
         for (const items in cartItems) {
-            let itemInfo = products.find((product) => product._id === Number(items)); // Convert string to number
-            if (cartItems[items] > 0 && itemInfo) {
-                totalAmount += itemInfo.price * cartItems[items];
+            let itemInfo = products.find((product) => product._id === Number(items));
+            if (itemInfo) {
+                // Use discounted price if discount exists
+                const finalPrice = calculateDiscountedPrice(itemInfo);
+                totalAmount += finalPrice * cartItems[items];
             }
         }
         return totalAmount;
@@ -282,7 +285,7 @@ const ShopContextProvider = (props) => {
         search, setSearch, showSearch, setShowSearch,
         cartItems, setCartItems, addToCart, getCartCount, updateQuantity,
         getCartAmount, navigate,
-        user, login, signup, logout, subscribeNewsletter
+        user, setUser, login, signup, logout, subscribeNewsletter
     }
 
     return (

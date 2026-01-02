@@ -5,12 +5,16 @@ import ProductItem from './ProductItem'
 
 const LatestCatalogue = () => {
 
-    const { products } = useContext(ShopContext)
-    const [latestProducts, setLatestProducts] = useState([])
+    const { products } = useContext(ShopContext);
+    const [latestProducts, setLatestProducts] = useState([]);
 
     useEffect(() => {
-        setLatestProducts(products.slice(0, 13));
-    }, [])
+        if (products && products.length > 0) {
+            // Sort products by ID (newest first)
+            const sorted = [...products].sort((a, b) => b._id - a._id);
+            setLatestProducts(sorted.slice(0, 10));
+        }
+    }, [products]);
 
     return (
         <div className='my-10'>
@@ -20,15 +24,19 @@ const LatestCatalogue = () => {
                     Discover our newest board game arrivals! From strategic masterpieces to party favorites, explore fresh additions to our collection. Be the first to experience the latest releases and bring home your next gaming adventure today.
                 </p>
             </div>
-            {/* Render products here using latestProducts state */}
+
+            {/* Rendering Products */}
             <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-6'>
                 {
-                    latestProducts.map((item, index) => (
-                        <ProductItem key={index} id={item._id} image={item.image} name={item.name} price={item.price} quantity={item.quantity} />
-                    ))
+                    latestProducts.length > 0 ? (
+                        latestProducts.map((item, index) => (
+                            <ProductItem key={index} id={item._id} image={item.image} name={item.name} price={item.price} discount={item.discount} isNew={item.isNew} quantity={item.quantity} />
+                        ))
+                    ) : (
+                        <p className="col-span-full text-center text-gray-500">Loading products...</p>
+                    )
                 }
             </div>
-
         </div>
     )
 }

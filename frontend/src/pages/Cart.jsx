@@ -3,6 +3,7 @@ import { ShopContext } from '../context/ShopContext'
 import { assets } from '../assets/assets';
 import CartTotal from '../components/CartTotal';
 import { formatPrice } from '../utils/formatPrice';
+import { calculateDiscountedPrice } from '../utils/discountUtils';
 import Breadcrumbs from '../components/Breadcrumbs';
 
 const Cart = () => {
@@ -57,6 +58,8 @@ const Cart = () => {
         ) : (
           cartData.map((item, index) => {
             const productData = products.find((product) => product._id === item._id);
+            const discountedPrice = calculateDiscountedPrice(productData);
+            const hasDiscount = productData.discount && productData.discount > 0;
 
             return (
               <div key={index} className='py-4 border-t border-b text-[#504c41] grid grid-cols-[4fr_0.5fr_0.5fr] sm:grid-cols-[4fr_2fr_0.5fr] items-center gap-4'>
@@ -66,7 +69,19 @@ const Cart = () => {
                   <img className='w-16 sm:w-20' src={productData.image[0]} alt="" />
                   <div>
                     <p className='text-xs sm:text-lg font-medium'>{productData.name}</p>
-                    <p className='mt-2 text-[#D0A823] font-medium'>{formatPrice(productData.price)}</p>
+                    <div className='mt-2 flex items-center gap-2'>
+                      {hasDiscount ? (
+                        <>
+                          <p className='text-[#D0A823] font-medium'>{formatPrice(discountedPrice)}</p>
+                          <p className='text-gray-400 line-through text-sm'>{formatPrice(productData.price)}</p>
+                          <span className='bg-red-100 text-red-600 text-xs px-2 py-0.5 rounded font-semibold'>
+                            -{productData.discount}%
+                          </span>
+                        </>
+                      ) : (
+                        <p className='text-[#D0A823] font-medium'>{formatPrice(productData.price)}</p>
+                      )}
+                    </div>
                   </div>
                 </div>
 

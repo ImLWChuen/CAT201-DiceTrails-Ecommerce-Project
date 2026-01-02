@@ -11,6 +11,9 @@ public class Product {
     private String date;
     private boolean bestseller;
     private int quantity;
+    private int discount; // Discount percentage (0-100)
+    private boolean isNew; // Tag as new product
+    private boolean isVisible = true; // Product visibility in catalogue
 
     public Product() {
     }
@@ -94,5 +97,29 @@ public class Product {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public int getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(int discount) {
+        this.discount = discount;
+    }
+
+    public boolean isNew() {
+        return isNew;
+    }
+
+    public void setNew(boolean isNew) {
+        this.isNew = isNew;
+    }
+
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        isVisible = visible;
     }
 }

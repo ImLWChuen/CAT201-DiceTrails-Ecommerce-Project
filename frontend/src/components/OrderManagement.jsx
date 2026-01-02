@@ -2,12 +2,19 @@ import React, { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { formatPrice } from '../utils/formatPrice'
 
-const OrderManagement = () => {
+const OrderManagement = ({ searchQuery = '' }) => {
     const [orders, setOrders] = useState([])
     const [filter, setFilter] = useState('All')
+    const [sortBy, setSortBy] = useState('newest')
     const [isLoading, setIsLoading] = useState(false)
 
     const filterOptions = ['All', 'Ready to ship', 'Shipped', 'Completed', 'Cancelled']
+    const sortOptions = [
+        { value: 'newest', label: 'Newest First' },
+        { value: 'oldest', label: 'Oldest First' },
+        { value: 'highest', label: 'Highest Value' },
+        { value: 'lowest', label: 'Lowest Value' }
+    ]
 
     useEffect(() => {
         loadAllOrders()
@@ -54,9 +61,59 @@ const OrderManagement = () => {
         }
     }
 
+    const handleDeleteOrder = async (orderId) => {
+        if (!window.confirm('Are you sure you want to delete this order? This action cannot be undone.')) return
+
+        try {
+            const response = await fetch('http://localhost:8080/api/delete-order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderId })
+            })
+            const result = await response.json()
+            if (result.success) {
+                toast.success('Order deleted')
+                setOrders(orders.filter(o => o.orderId !== orderId))
+            } else {
+                toast.error(result.message)
+            }
+        } catch (error) {
+            console.error('Error deleting order:', error)
+            toast.error('Error connecting to server')
+        }
+    }
+
     const getFilteredOrders = () => {
-        if (filter === 'All') return orders
-        return orders.filter(order => order.status === filter)
+        let filtered = filter === 'All' ? orders : orders.filter(order => order.status === filter)
+
+        // Apply search query
+        if (searchQuery) {
+            const query = searchQuery.toLowerCase()
+            filtered = filtered.filter(order =>
+                order.orderId.toString().toLowerCase().includes(query) ||
+                order.userId.toLowerCase().includes(query) ||
+                order.status.toLowerCase().includes(query) ||
+                order.trackingNumber?.toLowerCase().includes(query)
+            )
+        }
+
+        // Apply sorting
+        const sorted = [...filtered].sort((a, b) => {
+            switch (sortBy) {
+                case 'newest':
+                    return b.date - a.date
+                case 'oldest':
+                    return a.date - b.date
+                case 'highest':
+                    return b.totalAmount - a.totalAmount
+                case 'lowest':
+                    return a.totalAmount - b.totalAmount
+                default:
+                    return 0
+            }
+        })
+
+        return sorted
     }
 
     const getStatusColor = (status) => {
@@ -72,19 +129,37 @@ const OrderManagement = () => {
     return (
         <div>
             {/* Filter Tabs */}
-            <div className='flex flex-wrap gap-2 mb-6'>
-                {filterOptions.map((opt) => (
-                    <button
-                        key={opt}
-                        onClick={() => setFilter(opt)}
-                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${filter === opt
-                            ? 'bg-[#D0A823] text-white'
-                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                            }`}
+            <div className='flex flex-wrap gap-2 mb-6 justify-between items-center'>
+                <div className='flex flex-wrap gap-2'>
+                    {filterOptions.map(option => (
+                        <button
+                            key={option}
+                            onClick={() => setFilter(option)}
+                            className={`px-4 py-2 rounded font-semibold transition-colors ${filter === option
+                                ? 'bg-[#D0A823] text-[#504C41]'
+                                : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                                }`}
+                        >
+                            {option}
+                        </button>
+                    ))}
+                </div>
+
+                {/* Sort Dropdown */}
+                <div className='flex items-center gap-2'>
+                    <label className='text-gray-700 font-semibold text-sm'>Sort by:</label>
+                    <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        className='px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-[#D0A823] bg-white'
                     >
-                        {opt} ({orders.filter(o => opt === 'All' || o.status === opt).length})
-                    </button>
-                ))}
+                        {sortOptions.map(option => (
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </select>
+                </div>
             </div>
 
             {/* Orders List */}
@@ -175,6 +250,12 @@ const OrderManagement = () => {
                                         Cancel Order
                                     </button>
                                 )}
+                                <button
+                                    onClick={() => handleDeleteOrder(order.orderId)}
+                                    className='bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm font-medium transition-colors'
+                                >
+                                    Delete
+                                </button>
                                 <button
                                     onClick={loadAllOrders}
                                     className='border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded text-sm font-medium transition-colors ml-auto'

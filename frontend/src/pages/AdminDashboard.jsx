@@ -3,6 +3,7 @@ import { ShopContext } from '../context/ShopContext'
 import ProductManagement from '../components/ProductManagement'
 import ReviewManagement from '../components/ReviewManagement'
 import OrderManagement from '../components/OrderManagement'
+import ContactManagement from '../components/ContactManagement'
 import { useNavigate } from 'react-router-dom'
 
 const AdminDashboard = () => {
@@ -10,6 +11,7 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('products')
   const [products, setProducts] = useState([])
   const [reviews, setReviews] = useState([])
+  const [searchQuery, setSearchQuery] = useState('')
   const { products: contextProducts, user, logout } = useContext(ShopContext)
 
   useEffect(() => {
@@ -48,12 +50,51 @@ const AdminDashboard = () => {
             <p className='text-[#504c41] text-3xl font-medium uppercase'>Admin Dashboard</p>
             <p className='w-12 h-[2px] bg-[#D0A823]'></p>
           </div>
-          <button
-            onClick={handleLogout}
-            className='border border-red-500 text-red-500 px-6 py-2 rounded hover:bg-red-50 transition-all font-medium text-sm uppercase'
-          >
-            Logout
-          </button>
+          <div className='flex gap-3'>
+            <button
+              onClick={() => navigate('/')}
+              className='border border-[#D0A823] text-[#D0A823] px-6 py-2 rounded hover:bg-[#FEED9F] transition-all font-medium text-sm uppercase'
+            >
+              Return to Store
+            </button>
+            <button
+              onClick={handleLogout}
+              className='border border-red-500 text-red-500 px-6 py-2 rounded hover:bg-red-50 transition-all font-medium text-sm uppercase'
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+
+        {/* Search Bar */}
+        <div className='mb-6'>
+          <div className='relative max-w-md'>
+            <input
+              type='text'
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={`Search ${activeTab === 'products' ? 'products...' : activeTab === 'orders' ? 'orders...' : 'reviews...'}`}
+              className='w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:border-[#D0A823] focus:ring-1 focus:ring-[#D0A823]'
+            />
+            <svg
+              className='absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400'
+              fill='none'
+              stroke='currentColor'
+              viewBox='0 0 24 24'
+            >
+              <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' />
+            </svg>
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600'
+              >
+                <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                  <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M6 18L18 6M6 6l12 12' />
+                </svg>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Navigation Tabs */}
@@ -85,18 +126,30 @@ const AdminDashboard = () => {
           >
             Reviews Management
           </button>
+          <button
+            onClick={() => setActiveTab('messages')}
+            className={`pb-3 px-1 border-b-2 transition-all font-medium ${activeTab === 'messages'
+              ? 'border-[#D0A823] text-[#504c41]'
+              : 'border-transparent hover:text-gray-700'
+              }`}
+          >
+            Messages
+          </button>
         </div>
 
         {/* Content Area */}
         <div className='mb-16'>
           {activeTab === 'products' && (
-            <ProductManagement products={products} setProducts={setProducts} />
+            <ProductManagement products={products} setProducts={setProducts} searchQuery={searchQuery} />
           )}
           {activeTab === 'orders' && (
-            <OrderManagement />
+            <OrderManagement searchQuery={searchQuery} />
           )}
           {activeTab === 'reviews' && (
-            <ReviewManagement reviews={reviews} setReviews={setReviews} />
+            <ReviewManagement reviews={reviews} setReviews={setReviews} searchQuery={searchQuery} products={products} />
+          )}
+          {activeTab === 'messages' && (
+            <ContactManagement searchQuery={searchQuery} />
           )}
         </div>
       </div>

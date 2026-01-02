@@ -6,7 +6,7 @@ import { toast } from 'react-toastify'
 
 const PlaceOrder = () => {
 
-    const { navigate, cartItems, products, getCartAmount, setCartItems, user } = useContext(ShopContext);
+    const { navigate, cartItems, products, getCartAmount, setCartItems, user, setUser } = useContext(ShopContext);
     const [method, setMethod] = useState('card');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [region, setRegion] = useState('west'); // Default to West Malaysia
@@ -139,6 +139,11 @@ const PlaceOrder = () => {
                 // If newsletter discount was used, mark it as used
                 if (newsletterDiscount > 0) {
                     localStorage.setItem('hasUsedNewsletterDiscount', 'true');
+                    // Update user state in ShopContext to reflect the used discount
+                    if (user) {
+                        const updatedUser = { ...user, hasUsedNewsletterDiscount: true };
+                        setUser(updatedUser);
+                    }
                 }
 
                 // Clear cart in all locations

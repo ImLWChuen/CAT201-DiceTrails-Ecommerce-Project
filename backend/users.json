@@ -49,9 +49,7 @@
     "email": "alanlwc837@gmail.com",
     "password": "12345678",
     "isAdmin": false,
-    "cart": {
-      "20000012": 1
-    },
+    "cart": {},
     "orders": [],
     "isNewsletterSubscribed": false,
     "hasUsedNewsletterDiscount": false
@@ -75,14 +73,25 @@
     "isAdmin": false,
     "cart": {},
     "orders": [],
-    "isNewsletterSubscribed": false,
-    "hasUsedNewsletterDiscount": false
+    "isNewsletterSubscribed": true,
+    "hasUsedNewsletterDiscount": true
   },
   {
     "userId": 0,
     "username": "Test User Validation",
     "email": "testvalidation@example.com",
     "password": "Password123",
+    "isAdmin": false,
+    "cart": {},
+    "orders": [],
+    "isNewsletterSubscribed": false,
+    "hasUsedNewsletterDiscount": false
+  },
+  {
+    "userId": 0,
+    "username": "TestUser123",
+    "email": "testuser@example.com",
+    "password": "Test1234",
     "isAdmin": false,
     "cart": {},
     "orders": [],
