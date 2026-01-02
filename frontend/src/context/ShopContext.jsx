@@ -13,10 +13,10 @@ const ShopContextProvider = (props) => {
     const [search, setSearch] = useState('');
     const [showSearch, setShowSearch] = useState(false);
     const [cartItems, setCartItems] = useState({});
-    
+
     const [user, setUser] = useState(localStorage.getItem('userEmail') ? { email: localStorage.getItem('userEmail') } : null);
-    
-    const backendUrl = "http://localhost:8080"; 
+
+    const backendUrl = "http://localhost:8080";
 
     const loadCartData = async (userId) => {
         try {
@@ -124,7 +124,7 @@ const ShopContextProvider = (props) => {
                 body: JSON.stringify({ email, password })
             });
             const data = await response.json();
-            
+
             if (data.success) {
                 setUser(data.user);
                 localStorage.setItem('userEmail', data.user.email);
@@ -141,6 +141,22 @@ const ShopContextProvider = (props) => {
         }
     }
 
+    const clearCart = async () => {
+        setCartItems({});
+        const activeUserEmail = user?.email || localStorage.getItem('userEmail');
+        if (activeUserEmail) {
+            try {
+                await fetch(backendUrl + '/api/update-cart', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: activeUserEmail, cart: {} })
+                });
+            } catch (error) {
+                console.error("Failed to clear cart on backend:", error);
+            }
+        }
+    }
+
     const signup = async (username, email, password) => {
         try {
             const response = await fetch(backendUrl + '/api/signup', {
@@ -149,14 +165,14 @@ const ShopContextProvider = (props) => {
                 body: JSON.stringify({ username, email, password })
             });
             const data = await response.json();
-            
+
             if (data.success) {
                 setUser(data.user);
-                
+
                 localStorage.setItem('userEmail', data.user.email);
 
                 toast.success("Signup Successful");
-                setCartItems({}); 
+                setCartItems({});
                 navigate('/');
             } else {
                 toast.error(data.message);
@@ -170,7 +186,7 @@ const ShopContextProvider = (props) => {
     const logout = () => {
         setUser(null);
         setCartItems({});
-        
+
         localStorage.removeItem('userEmail');
         // -------------------------------------
 
@@ -189,19 +205,18 @@ const ShopContextProvider = (props) => {
 
     useEffect(() => {
         const storedEmail = localStorage.getItem('userEmail');
-        if(storedEmail && Object.keys(cartItems).length === 0) {
-             loadCartData(storedEmail);
+        if (storedEmail) {
+            loadCartData(storedEmail);
         }
-       console.log(cartItems);
         checkBackendConnection();
-    }, [cartItems])
+    }, [user])
 
     const value = {
         products, currency, delivery_fee,
         search, setSearch, showSearch, setShowSearch,
         cartItems, addToCart, getCartCount, updateQuantity,
         getCartAmount, navigate,
-        user, login, signup, logout
+        user, login, signup, logout, clearCart
     }
 
     return (

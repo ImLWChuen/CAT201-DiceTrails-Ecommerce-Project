@@ -1,6 +1,7 @@
 package com.dicetrails.backend.util;
 
-import com.dicetrails.backend.model.Order; 
+import com.dicetrails.backend.model.Order;
+import com.dicetrails.backend.model.Review;
 import com.dicetrails.backend.model.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -10,25 +11,33 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class DataManager {
     private static DataManager instance;
-    
+
     private List<User> users;
     private final String USER_FILE = "users.json";
 
     private List<Order> orders;
     private final String ORDER_FILE = "orders.json";
-    
+
+    private List<Review> reviews;
+    private final String REVIEW_FILE = "reviews.json";
+
     private final Gson gson;
 
     private DataManager() {
         gson = new GsonBuilder().setPrettyPrinting().create();
-        users = loadData(USER_FILE, new TypeToken<ArrayList<User>>(){}.getType());
-        orders = loadData(ORDER_FILE, new TypeToken<ArrayList<Order>>(){}.getType());
+        users = loadData(USER_FILE, new TypeToken<ArrayList<User>>() {
+        }.getType());
+        orders = loadData(ORDER_FILE, new TypeToken<ArrayList<Order>>() {
+        }.getType());
+        reviews = loadData(REVIEW_FILE, new TypeToken<ArrayList<Review>>() {
+        }.getType());
     }
 
     public static synchronized DataManager getInstance() {
@@ -40,6 +49,7 @@ public class DataManager {
 
     private <T> List<T> loadData(String filename, Type type) {
         File file = new File(filename);
+        System.out.println("Loading data from: " + file.getAbsolutePath() + ", Exists: " + file.exists());
         if (!file.exists()) {
             return new ArrayList<>();
         }
@@ -85,7 +95,7 @@ public class DataManager {
         if (order.getOrderId() == null || order.getOrderId().isEmpty()) {
             order.setOrderId(UUID.randomUUID().toString());
         }
-        
+
         orders.add(order);
         saveData(ORDER_FILE, orders);
         System.out.println("Order saved: " + order.getOrderId());
@@ -99,5 +109,33 @@ public class DataManager {
 
     public List<Order> getAllOrders() {
         return new ArrayList<>(orders);
+    }
+
+    public List<Review> getReviews(String productId) {
+        if (productId == null || productId.isEmpty()) {
+            return new ArrayList<>(reviews);
+        }
+        return reviews.stream()
+                .filter(r -> r.getProductId().equals(productId))
+                .collect(Collectors.toList());
+    }
+
+    public synchronized void addReview(Review review) {
+        reviews.add(review);
+        saveData(REVIEW_FILE, reviews);
+    }
+
+    public synchronized void markOrderItemAsReviewed(String orderId, String productId) {
+        for (Order order : orders) {
+            if (order.getOrderId().equals(orderId)) {
+                for (Map<String, Object> item : order.getItems()) {
+                    if (item.get("_id").equals(productId)) {
+                        item.put("reviewed", true);
+                        saveData(ORDER_FILE, orders);
+                        return;
+                    }
+                }
+            }
+        }
     }
 }
