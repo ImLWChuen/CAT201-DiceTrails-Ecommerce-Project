@@ -16,7 +16,7 @@
     "paymentMethod": "cod",
     "totalAmount": 39.989999999999995,
     "date": 1767259949645,
-    "status": "Ready to ship",
+    "status": "Completed",
     "items": [
       {
         "_id": "aaaab",
@@ -53,8 +53,78 @@
     "paymentMethod": "tng",
     "totalAmount": 49.98,
     "date": 1767260950845,
+    "status": "Completed",
+    "items": [
+      {
+        "_id": "aaaab",
+        "name": "Monopoly",
+        "description": "The classic fast-dealing property trading game where players buy, sell, and dream their way to riches.",
+        "price": 29.99,
+        "image": [
+          "/src/assets/p2_img_01.png",
+          "/src/assets/p2_img_02.png",
+          "/src/assets/p2_img_03.png"
+        ],
+        "category": "board games",
+        "subCategory": "family",
+        "date": "17166343454001",
+        "bestseller": true,
+        "quantity": 1.0,
+        "reviewed": true
+      },
+      {
+        "_id": "aaaaj",
+        "name": "Uno",
+        "description": "The classic card game of matching colors and numbers that is easy to pick up and impossible to put down.",
+        "price": 9.99,
+        "image": [
+          "/src/assets/p10_img_01.png",
+          "/src/assets/p10_img_02.png",
+          "/src/assets/p10_img_03.png"
+        ],
+        "category": "card games",
+        "subCategory": "party",
+        "date": "17166343454009",
+        "bestseller": true,
+        "quantity": 1.0
+      }
+    ]
+  },
+  {
+    "orderId": "f8fd1c28-aa14-494d-8742-1eebc7fff160",
+    "userId": "kathylum0921@gmail.com",
+    "deliveryAddress": {
+      "firstName": "",
+      "lastName": "",
+      "email": "",
+      "street": "",
+      "city": "",
+      "state": "",
+      "zipcode": "",
+      "country": "",
+      "phone": ""
+    },
+    "paymentMethod": "cod",
+    "totalAmount": 79.97,
+    "date": 1767325459280,
     "status": "Ready to ship",
     "items": [
+      {
+        "_id": "aaaaa",
+        "name": "Catan: The Game",
+        "description": "A fun and engaging board game for all ages.",
+        "price": 29.99,
+        "image": [
+          "/src/assets/p1_img_01.png",
+          "/src/assets/p1_img_02.png",
+          "/src/assets/p1_img_03.png"
+        ],
+        "category": "board games",
+        "subCategory": "strategy",
+        "date": "17166343453448",
+        "bestseller": true,
+        "quantity": 1.0
+      },
       {
         "_id": "aaaab",
         "name": "Monopoly",
@@ -85,6 +155,43 @@
         "subCategory": "party",
         "date": "17166343454009",
         "bestseller": true,
+        "quantity": 1.0
+      }
+    ]
+  },
+  {
+    "orderId": "a9a9ff37-e3ac-4580-92d8-64ab31f949d5",
+    "userId": "kathylum0921@gmail.com",
+    "deliveryAddress": {
+      "firstName": "Kathy",
+      "lastName": "Lum",
+      "email": "kathylum0921@gmail.com",
+      "street": "jalan",
+      "city": "Bayan Lepas",
+      "state": "PULAU PINANG",
+      "zipcode": "11900",
+      "country": "Malaysia",
+      "phone": "01120099551"
+    },
+    "paymentMethod": "cod",
+    "totalAmount": 25.990000000000002,
+    "date": 1767334991957,
+    "status": "Ready to ship",
+    "items": [
+      {
+        "_id": "aaaag",
+        "name": "Chinese Chess (Xiangqi)",
+        "description": "A traditional strategy board game for two players, simulating a battle between two armies.",
+        "price": 15.99,
+        "image": [
+          "/src/assets/p7_img_01.png",
+          "/src/assets/p7_img_02.png",
+          "/src/assets/p7_img_03.png"
+        ],
+        "category": "board games",
+        "subCategory": "abstract",
+        "date": "17166343454006",
+        "bestseller": false,
         "quantity": 1.0
       }
     ]

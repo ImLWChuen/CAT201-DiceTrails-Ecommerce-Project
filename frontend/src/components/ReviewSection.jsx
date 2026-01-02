@@ -1,45 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { assets } from '../assets/assets';
 
-// Mock Data Generator
-const generateReviews = (count) => {
-    const users = ['Alice M.', 'Bob D.', 'Charlie K.', 'Dana S.', 'Evan Wright', 'Fiona G.', 'George T.', 'Hannah P.'];
-    const comments = [
-        "Absolutely love this game! Great for family nights.",
-        "Good quality components, but the rules were a bit confusing at first.",
-        "Fast shipping, item arrived in perfect condition.",
-        "One of the best strategy games I've played in years.",
-        "It's okay, but I prefer the original version.",
-        "Highly recommended! excessive fun.",
-        "Dissappointed with the packaging, box was slightly dented.",
-        "Perfect gift for my nephew, he loves it!"
-    ];
-
-    return Array.from({ length: count }, (_, i) => ({
-        id: i,
-        user: users[i % users.length],
-        rating: Math.floor(Math.random() * 5) + 1, // Rating between 1 and 5
-        date: new Date(Date.now() - Math.floor(Math.random() * 10000000000)).toISOString(),
-        content: comments[i % comments.length],
-        helpful: Math.floor(Math.random() * 50),
-        hasMedia: Math.random() > 0.7 // 30% chance of having media
-    }));
-};
-
-const MOCK_REVIEWS = generateReviews(45); // Generate 45 mock reviews
-
-const ReviewSection = ({ productId }) => {
-    const [reviews, setReviews] = useState([]);
+const ReviewSection = ({ reviews }) => {
     const [filter, setFilter] = useState('all'); // 'all', 'media', '5star', '4star', etc.
     const [sortBy, setSortBy] = useState('default'); // 'default', 'recent', 'high', 'low'
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
     const reviewSectionRef = useRef(null);
-
-    useEffect(() => {
-        // "Fetch" reviews
-        setReviews(MOCK_REVIEWS);
-    }, [productId]);
 
     // Derived State: Filtered & Sorted Reviews
     const getProcessedReviews = () => {
@@ -110,40 +77,46 @@ const ReviewSection = ({ productId }) => {
         <div ref={reviewSectionRef} className="flex flex-col gap-8">
 
             {/* Header: Rating & Controls */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-4 bg-gray-50 rounded-lg">
-                <div className="flex items-center gap-4">
-                    <div className="flex flex-col items-center">
-                        <span className="text-4xl font-bold text-gray-800">{averageRating}<span className="text-lg text-gray-400">/5</span></span>
-                        {renderStars(Math.round(averageRating))}
-                        <span className="text-sm text-gray-500 mt-1">{reviews.length} Ratings</span>
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 p-6 bg-white border border-gray-100 rounded-xl shadow-sm">
+                <div className="flex items-center gap-6">
+                    <div className="flex flex-col items-center border-r pr-6 border-gray-100">
+                        <span className="text-5xl font-extrabold text-[#504c41]">{averageRating}<span className="text-xl text-gray-400 font-normal">/5</span></span>
+                        <div className="mt-2 scale-110">
+                            {renderStars(Number(averageRating))}
+                        </div>
+                        <span className="text-sm font-medium text-gray-400 mt-2">{reviews.length} total reviews</span>
+                    </div>
+                    <div className="hidden sm:flex flex-col gap-1">
+                        <p className="text-sm font-semibold text-gray-700 uppercase tracking-wider">Customer Satisfaction</p>
+                        <p className="text-xs text-gray-500">Based on verified purchases</p>
                     </div>
                 </div>
 
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-4 items-center">
                     {/* Filter Buttons */}
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-3">
                         <button
                             onClick={() => { setFilter('all'); setCurrentPage(1); }}
-                            className={`px-4 py-2 text-sm rounded-full transition-colors ${filter === 'all' ? 'bg-[#D0A823] text-white' : 'bg-white border text-gray-600 hover:bg-gray-100'}`}
+                            className={`px-6 py-2 text-sm font-medium rounded-full transition-all duration-200 ${filter === 'all' ? 'bg-[#D0A823] text-white shadow-md' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}
                         >
                             All
                         </button>
                         <button
                             onClick={() => { setFilter('media'); setCurrentPage(1); }}
-                            className={`px-4 py-2 text-sm rounded-full transition-colors ${filter === 'media' ? 'bg-[#D0A823] text-white' : 'bg-white border text-gray-600 hover:bg-gray-100'}`}
+                            className={`px-6 py-2 text-sm font-medium rounded-full transition-all duration-200 ${filter === 'media' ? 'bg-[#D0A823] text-white shadow-md' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}
                         >
                             With Images/Videos
                         </button>
                         <select
                             onChange={(e) => { setFilter(e.target.value); setCurrentPage(1); }}
-                            className={`px-4 py-2 text-sm rounded-full border bg-white text-gray-600 outline-none focus:border-[#D0A823] ${['5star', '4star', '3star', '2star', '1star'].includes(filter) ? 'border-[#D0A823] text-[#D0A823]' : ''}`}
+                            className={`px-4 py-2 text-sm rounded-full border bg-white text-gray-600 outline-none transition-all duration-200 focus:border-[#D0A823] cursor-pointer ${['5star', '4star', '3star', '2star', '1star'].includes(filter) ? 'border-[#D0A823] text-[#D0A823] bg-[#fdfcf5]' : 'border-gray-200 hover:bg-gray-50'}`}
                             value={['5star', '4star', '3star', '2star', '1star'].includes(filter) ? filter : 'stars'}
                         >
                             <option value="stars" disabled>Filter by Stars</option>
-                            <option value="5star">5 StarsOnly</option>
-                            <option value="4star">4 StarsOnly</option>
-                            <option value="3star">3 StarsOnly</option>
-                            <option value="2star">2 StarsOnly</option>
+                            <option value="5star">5 Stars Only</option>
+                            <option value="4star">4 Stars Only</option>
+                            <option value="3star">3 Stars Only</option>
+                            <option value="2star">2 Stars Only</option>
                             <option value="1star">1 Star Only</option>
                         </select>
                     </div>
@@ -153,7 +126,7 @@ const ReviewSection = ({ productId }) => {
                         <select
                             value={sortBy}
                             onChange={(e) => setSortBy(e.target.value)}
-                            className="px-4 py-2 text-sm rounded-full border bg-white text-gray-600 outline-none focus:border-[#D0A823] cursor-pointer"
+                            className="px-4 py-2 text-sm rounded-full border border-gray-200 bg-white text-gray-600 outline-none transition-all duration-200 hover:bg-gray-50 focus:border-[#D0A823] cursor-pointer"
                         >
                             <option value="default">Sort by: Default</option>
                             <option value="recent">Sort by: Recent</option>
@@ -187,11 +160,17 @@ const ReviewSection = ({ productId }) => {
                                 {review.content}
                             </p>
 
-                            {review.hasMedia && (
-                                <div className="flex gap-2 mt-2">
-                                    {/* Placeholder for user uploaded images */}
-                                    <div className="w-16 h-16 bg-gray-100 rounded-md border flex items-center justify-center text-xs text-gray-400">Image</div>
-                                    <div className="w-16 h-16 bg-gray-100 rounded-md border flex items-center justify-center text-xs text-gray-400">Video</div>
+                            {review.media && review.media.length > 0 && (
+                                <div className="flex flex-wrap gap-3 mt-4">
+                                    {review.media.map((item, idx) => (
+                                        <div key={idx} className="group relative w-20 h-20 rounded-lg overflow-hidden border border-gray-200 cursor-zoom-in">
+                                            <img
+                                                src={item}
+                                                alt={`Review media ${idx}`}
+                                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                                            />
+                                        </div>
+                                    ))}
                                 </div>
                             )}
 

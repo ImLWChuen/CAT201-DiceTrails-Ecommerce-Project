@@ -36,5 +36,14 @@
       "aaaaj": 1
     },
     "orders": []
+  },
+  {
+    "username": "Kathy",
+    "email": "kathylum0921@gmail.com",
+    "password": "kathy0116",
+    "cart": {
+      "aaaaa": 0
+    },
+    "orders": []
   }
 ]
