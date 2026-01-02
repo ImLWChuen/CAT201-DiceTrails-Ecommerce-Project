@@ -2,6 +2,7 @@ package com.dicetrails.backend;
 
 import com.dicetrails.backend.model.User;
 import com.dicetrails.backend.util.DataManager;
+import com.dicetrails.backend.util.ValidationUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -47,6 +48,26 @@ public class SignupServlet extends HttpServlet {
             String email = jsonRequest.get("email").getAsString();
             String password = jsonRequest.get("password").getAsString();
 
+            // Validate username
+            if (!ValidationUtil.isValidUsername(username)) {
+                out.println("{\"success\": false, \"message\": \"Username must be between 2 and 50 characters\"}");
+                return;
+            }
+
+            // Validate email format
+            if (!ValidationUtil.isValidEmail(email)) {
+                out.println("{\"success\": false, \"message\": \"Invalid email format\"}");
+                return;
+            }
+
+            // Validate password strength
+            if (!ValidationUtil.isValidPassword(password)) {
+                out.println(
+                        "{\"success\": false, \"message\": \"Password must be at least 8 characters with letters and numbers\"}");
+                return;
+            }
+
+            // Check for duplicate email
             if (DataManager.getInstance().getUserByEmail(email).isPresent()) {
                 out.println(String.format("{\"success\": false, \"message\": \"Email %s already exists\"}", email));
                 return;

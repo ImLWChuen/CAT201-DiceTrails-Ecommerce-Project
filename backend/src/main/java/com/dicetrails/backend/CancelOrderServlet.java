@@ -34,32 +34,55 @@ public class CancelOrderServlet extends HttpServlet {
             List<Order> allOrders = DataManager.getInstance().getAllOrders();
 
             // Find and update the specific order
-            boolean found = false;
+            Order orderToCancel = null;
             for (Order order : allOrders) {
                 if (order.getOrderId().equals(orderId) && order.getUserId().equals(userId)) {
-                    // Only allow cancellation if order is "Ready to ship"
-                    if ("Ready to ship".equals(order.getStatus())) {
-                        order.setStatus("Cancelled");
-                        found = true;
-                        break;
-                    } else {
-                        out.println("{\"success\": false, \"message\": \"Order cannot be cancelled\"}");
+                    orderToCancel = order;
+
+                    // Only allow cancellation if order is not shipped or completed
+                    if ("Shipped".equals(order.getStatus()) || "Completed".equals(order.getStatus())) {
+                        out.println("{\"success\": false, \"message\": \"Cannot cancel shipped or completed orders\"}");
                         return;
                     }
+
+                    // Restore stock for each item in the order
+                    if (order.getItems() != null) {
+                        for (java.util.Map<String, Object> item : order.getItems()) {
+                            try {
+                                int productId = ((Number) item.get("_id")).intValue();
+                                int quantity = ((Number) item.get("quantity")).intValue();
+                                boolean stockRestored = DataManager.getInstance().increaseStock(productId, quantity);
+                                if (stockRestored) {
+                                    System.out.println("Restored stock for product " + productId + " by " + quantity);
+                                } else {
+                                    System.err.println("Failed to restore stock for product ID: " + productId);
+                                }
+                            } catch (Exception e) {
+                                System.err.println("Error restoring stock for item: " + e.getMessage());
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    // Update order status to Cancelled
+                    order.setStatus("Cancelled");
+                    break;
                 }
             }
 
-            if (found) {
-                // Save updated orders back to file
-                DataManager.getInstance().saveOrders(allOrders);
-                out.println("{\"success\": true, \"message\": \"Order cancelled successfully\"}");
-            } else {
+            if (orderToCancel == null) {
                 out.println("{\"success\": false, \"message\": \"Order not found\"}");
+                return;
             }
+
+            // Save updated orders
+            DataManager.getInstance().saveOrders(allOrders);
+
+            out.println("{\"success\": true, \"message\": \"Order cancelled successfully\"}");
 
         } catch (Exception e) {
             e.printStackTrace();
-            out.println("{\"success\": false, \"message\": \"Server Error: " + e.getMessage() + "\"}");
+            out.println("{\"success\": false, \"message\": \"Server error: " + e.getMessage() + "\"}");
         }
     }
 }

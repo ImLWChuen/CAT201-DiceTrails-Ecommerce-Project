@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import loginBg from '../assets/Login_SignUp Page BG.jpg'
 import { ShopContext } from '../context/ShopContext';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const Login = () => {
 
@@ -44,9 +45,18 @@ const Login = () => {
           <p className='prata-regular text-3xl'>{currentState}</p>
           {/*<hr className='border-none h-[1.5px] w-8 bg-gray-800'/>*/}
         </div>
-        {currentState === 'Login' ? '' : <input onChange={(e) => setUsername(e.target.value)} value={username} type="text" className='w-full px-3 py-2 border border-gray-800' placeholder='Name' required />}
+        {currentState === 'Login' ? '' : <input onChange={(e) => setUsername(e.target.value)} value={username} type="text" className='w-full px-3 py-2 border border-gray-800' placeholder='Name' required minLength="2" maxLength="50" />}
         <input onChange={(e) => setEmail(e.target.value)} value={email} type="email" className='w-full px-3 py-2 border border-gray-800' placeholder='Email' required />
-        <input onChange={(e) => setPassword(e.target.value)} value={password} type="password" className='w-full px-3 py-2 border border-gray-800' placeholder='Password' required />
+        <input
+          onChange={(e) => setPassword(e.target.value)}
+          value={password}
+          type="password"
+          className='w-full px-3 py-2 border border-gray-800'
+          placeholder='Password'
+          required
+          minLength="8"
+          title="Password must be at least 8 characters with letters and numbers"
+        />
 
         {currentState === 'Sign Up' && (
           <div className='w-full flex items-start gap-2 text-sm mt-2'>

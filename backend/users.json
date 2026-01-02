@@ -77,5 +77,16 @@
     "orders": [],
     "isNewsletterSubscribed": false,
     "hasUsedNewsletterDiscount": false
+  },
+  {
+    "userId": 0,
+    "username": "Test User Validation",
+    "email": "testvalidation@example.com",
+    "password": "Password123",
+    "isAdmin": false,
+    "cart": {},
+    "orders": [],
+    "isNewsletterSubscribed": false,
+    "hasUsedNewsletterDiscount": false
   }
 ]

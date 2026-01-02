@@ -186,20 +186,20 @@ const PlaceOrder = () => {
                 </div>
 
                 <div className='flex gap-3'>
-                    <input name='firstName' onChange={onChangeHandler} value={formData.firstName} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="text" placeholder='First name' />
-                    <input name='lastName' onChange={onChangeHandler} value={formData.lastName} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="text" placeholder='Last name' />
+                    <input name='firstName' onChange={onChangeHandler} value={formData.firstName} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="text" placeholder='First name' required minLength="2" maxLength="50" />
+                    <input name='lastName' onChange={onChangeHandler} value={formData.lastName} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="text" placeholder='Last name' required minLength="2" maxLength="50" />
                 </div>
-                <input name='email' onChange={onChangeHandler} value={formData.email} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="email" placeholder='Email address' />
-                <input name='street' onChange={onChangeHandler} value={formData.street} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="text" placeholder='Street' />
+                <input name='email' onChange={onChangeHandler} value={formData.email} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="email" placeholder='Email address' required />
+                <input name='street' onChange={onChangeHandler} value={formData.street} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="text" placeholder='Street' required minLength="5" maxLength="200" />
                 <div className='flex gap-3'>
-                    <input name='city' onChange={onChangeHandler} value={formData.city} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="text" placeholder='City' />
-                    <input name='state' onChange={onChangeHandler} value={formData.state} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="text" placeholder='State' />
+                    <input name='city' onChange={onChangeHandler} value={formData.city} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="text" placeholder='City' required minLength="2" maxLength="50" />
+                    <input name='state' onChange={onChangeHandler} value={formData.state} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="text" placeholder='State' required minLength="2" maxLength="50" />
                 </div>
                 <div className='flex gap-3'>
-                    <input name='zipcode' onChange={onChangeHandler} value={formData.zipcode} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="number" placeholder='Zipcode' />
-                    <input name='country' onChange={onChangeHandler} value={formData.country} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="text" placeholder='Country' />
+                    <input name='zipcode' onChange={onChangeHandler} value={formData.zipcode} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="text" placeholder='Zipcode' required pattern="[0-9]{4,10}" title="Enter valid postal code (4-10 digits)" />
+                    <input name='country' onChange={onChangeHandler} value={formData.country} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="text" placeholder='Country' required minLength="2" maxLength="50" />
                 </div>
-                <input name='phone' onChange={onChangeHandler} value={formData.phone} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="number" placeholder='Phone' />
+                <input name='phone' onChange={onChangeHandler} value={formData.phone} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="tel" placeholder='Phone' required pattern="[0-9]{10,15}" title="Enter valid phone number (10-15 digits)" />
 
                 {/* Region Selection */}
                 <div className='mt-4'>

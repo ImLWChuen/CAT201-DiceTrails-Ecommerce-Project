@@ -181,4 +181,17 @@ public class DataManager {
         }
         return false;
     }
+
+    /**
+     * Increase stock for a product (used when orders are cancelled)
+     */
+    public synchronized boolean increaseStock(int productId, int quantity) {
+        Optional<Product> productOpt = getProductById(productId);
+        if (productOpt.isPresent()) {
+            Product product = productOpt.get();
+            product.setQuantity(product.getQuantity() + quantity);
+            return updateProduct(product);
+        }
+        return false;
+    }
 }
