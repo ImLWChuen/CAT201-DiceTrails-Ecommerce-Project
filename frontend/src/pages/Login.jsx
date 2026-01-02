@@ -22,7 +22,7 @@ const Login = () => {
         await login(email, password);
       } else {
         if (!agreeToTerms) {
-          alert('Please agree to the terms and conditions and privacy policy');
+          toast.error('Please agree to the terms and conditions and privacy policy to continue');
           return;
         }
         await signup(username, email, password);

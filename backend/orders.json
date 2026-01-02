@@ -16,10 +16,10 @@
     "paymentMethod": "cod",
     "totalAmount": 39.989999999999995,
     "date": 1767259949645,
-    "status": "Ready to ship",
+    "status": "Shipped",
     "items": [
       {
-        "_id": 20000002,
+        "_id": 2.0000002E7,
         "name": "Monopoly",
         "description": "The classic fast-dealing property trading game where players buy, sell, and dream their way to riches.",
         "price": 29.99,
@@ -56,7 +56,7 @@
     "status": "Ready to ship",
     "items": [
       {
-        "_id": 20000002,
+        "_id": 2.0000002E7,
         "name": "Monopoly",
         "description": "The classic fast-dealing property trading game where players buy, sell, and dream their way to riches.",
         "price": 29.99,
@@ -72,7 +72,7 @@
         "quantity": 1.0
       },
       {
-        "_id": 20000010,
+        "_id": 2.000001E7,
         "name": "Uno",
         "description": "The classic card game of matching colors and numbers that is easy to pick up and impossible to put down.",
         "price": 9.99,
@@ -86,6 +86,405 @@
         "date": "17166343454009",
         "bestseller": true,
         "quantity": 1.0
+      }
+    ]
+  },
+  {
+    "orderId": "30000004",
+    "userId": "zuhazana@gmail.com",
+    "deliveryAddress": {
+      "firstName": "Kazuha",
+      "lastName": "Nakamura",
+      "email": "zuhazana@gmail.com",
+      "street": "86, TINGKAT KIKIK 2, TAMAN INDERAWASIH",
+      "city": "PERAI",
+      "state": "Pulau Pinang",
+      "zipcode": "13600",
+      "country": "Malaysia",
+      "phone": "600175192880"
+    },
+    "paymentMethod": "applepay",
+    "totalAmount": 129.97,
+    "date": 1767340377363,
+    "status": "Completed",
+    "items": [
+      {
+        "_id": 2.0000003E7,
+        "name": "7 Wonders Architects",
+        "description": "A fast-paced strategy game where players race to build an architectural wonder of the ancient world.",
+        "price": 49.99,
+        "image": [
+          "/src/assets/p3_img_01.png",
+          "/src/assets/p3_img_02.png",
+          "/src/assets/p3_img_03.png"
+        ],
+        "category": "board games",
+        "subCategory": "strategy",
+        "date": "17166343454002",
+        "bestseller": false,
+        "quantity": 1.0
+      },
+      {
+        "_id": 2.0000005E7,
+        "name": "Sushi Go!",
+        "description": "A pick-and-pass card game where you grab the best combination of sushi dishes as they whiz by.",
+        "price": 12.99,
+        "image": [
+          "/src/assets/p5_img_01.png",
+          "/src/assets/p5_img_02.png",
+          "/src/assets/p5_img_03.png"
+        ],
+        "category": "card games",
+        "subCategory": "family",
+        "date": "17166343454004",
+        "bestseller": true,
+        "quantity": 2.0
+      },
+      {
+        "_id": 2.0000008E7,
+        "name": "Nasi Lemak The Game",
+        "description": "A Malaysian card game where players race to assemble the perfect plate of Nasi Lemak.",
+        "price": 18.0,
+        "image": [
+          "/src/assets/p8_img_01.png",
+          "/src/assets/p8_img_02.png",
+          "/src/assets/p8_img_03.png"
+        ],
+        "category": "card games",
+        "subCategory": "family",
+        "date": "17166343454007",
+        "bestseller": true,
+        "quantity": 3.0
+      }
+    ]
+  },
+  {
+    "orderId": "30000005",
+    "userId": "zuhazana@gmail.com",
+    "deliveryAddress": {
+      "firstName": "Kazuha",
+      "lastName": "Nakamura",
+      "email": "zuhazana@gmail.com",
+      "street": "86, TINGKAT KIKIK 2, TAMAN INDERAWASIH",
+      "city": "PERAI",
+      "state": "Pulau Pinang",
+      "zipcode": "13600",
+      "country": "Malaysia",
+      "phone": "600175192880"
+    },
+    "paymentMethod": "card",
+    "totalAmount": 29.99,
+    "date": 1767340558151,
+    "status": "Cancelled",
+    "items": [
+      {
+        "_id": 2.0000006E7,
+        "name": "Chess",
+        "description": "The timeless game of strategy and tactics played on a checkered board.",
+        "price": 19.99,
+        "image": [
+          "/src/assets/p6_img_01.png",
+          "/src/assets/p6_img_02.png",
+          "/src/assets/p6_img_03.png"
+        ],
+        "category": "board games",
+        "subCategory": "abstract",
+        "date": "17166343454005",
+        "bestseller": false,
+        "quantity": 1.0
+      }
+    ]
+  },
+  {
+    "orderId": "30000006",
+    "userId": "zuhazana@gmail.com",
+    "deliveryAddress": {
+      "firstName": "Kazuha",
+      "lastName": "Nakamura",
+      "email": "zuhazana@gmail.com",
+      "street": "86, TINGKAT KIKIK 2, TAMAN INDERAWASIH",
+      "city": "PERAI",
+      "state": "Pulau Pinang",
+      "zipcode": "13600",
+      "country": "Malaysia",
+      "phone": "600175192880"
+    },
+    "paymentMethod": "card",
+    "totalAmount": 29.99,
+    "date": 1767340813460,
+    "status": "Cancelled",
+    "items": [
+      {
+        "_id": 2.0000006E7,
+        "name": "Chess",
+        "description": "The timeless game of strategy and tactics played on a checkered board.",
+        "price": 19.99,
+        "image": [
+          "/src/assets/p6_img_01.png",
+          "/src/assets/p6_img_02.png",
+          "/src/assets/p6_img_03.png"
+        ],
+        "category": "board games",
+        "subCategory": "abstract",
+        "date": "17166343454005",
+        "bestseller": false,
+        "quantity": 1.0
+      }
+    ]
+  },
+  {
+    "orderId": "30000007",
+    "userId": "zuhazana@gmail.com",
+    "deliveryAddress": {
+      "firstName": "Kazuha",
+      "lastName": "Nakamura",
+      "email": "zuhazana@gmail.com",
+      "street": "86, TINGKAT KIKIK 2, TAMAN INDERAWASIH",
+      "city": "PERAI",
+      "state": "Pulau Pinang",
+      "zipcode": "13600",
+      "country": "Malaysia",
+      "phone": "600175192880"
+    },
+    "paymentMethod": "card",
+    "totalAmount": 29.99,
+    "date": 1767341087928,
+    "status": "Completed",
+    "trackingNumber": "TR45829174",
+    "items": [
+      {
+        "_id": 2.0000006E7,
+        "name": "Chess",
+        "description": "The timeless game of strategy and tactics played on a checkered board.",
+        "price": 19.99,
+        "image": [
+          "/src/assets/p6_img_01.png",
+          "/src/assets/p6_img_02.png",
+          "/src/assets/p6_img_03.png"
+        ],
+        "category": "board games",
+        "subCategory": "abstract",
+        "date": "17166343454005",
+        "bestseller": false,
+        "quantity": 1.0
+      }
+    ]
+  },
+  {
+    "orderId": "30000008",
+    "userId": "zuhazana@gmail.com",
+    "deliveryAddress": {
+      "firstName": "Kazuha",
+      "lastName": "Nakamura",
+      "email": "zuhazana@gmail.com",
+      "street": "86, TINGKAT KIKIK 2, TAMAN INDERAWASIH",
+      "city": "PERAI",
+      "state": "Pulau Pinang",
+      "zipcode": "13600",
+      "country": "Malaysia",
+      "phone": "600175192880"
+    },
+    "paymentMethod": "googlepay",
+    "totalAmount": 136.95,
+    "date": 1767342325936,
+    "status": "Shipped",
+    "trackingNumber": "TR83804950",
+    "items": [
+      {
+        "_id": 2.0000005E7,
+        "name": "Sushi Go!",
+        "description": "A pick-and-pass card game where you grab the best combination of sushi dishes as they whiz by.",
+        "price": 12.99,
+        "image": [
+          "/src/assets/p5_img_01.png",
+          "/src/assets/p5_img_02.png",
+          "/src/assets/p5_img_03.png"
+        ],
+        "category": "card games",
+        "subCategory": "family",
+        "date": "17166343454004",
+        "bestseller": true,
+        "quantity": 2.0
+      },
+      {
+        "_id": 2.0000008E7,
+        "name": "Nasi Lemak The Game",
+        "description": "A Malaysian card game where players race to assemble the perfect plate of Nasi Lemak.",
+        "price": 18.0,
+        "image": [
+          "/src/assets/p8_img_01.png",
+          "/src/assets/p8_img_02.png",
+          "/src/assets/p8_img_03.png"
+        ],
+        "category": "card games",
+        "subCategory": "family",
+        "date": "17166343454007",
+        "bestseller": true,
+        "quantity": 2.0
+      },
+      {
+        "_id": 2.0000009E7,
+        "name": "The Game of Life",
+        "description": "A family classic where players navigate life\u0027s milestones, from college to retirement.",
+        "price": 24.99,
+        "image": [
+          "/src/assets/p9_img_01.png",
+          "/src/assets/p9_img_02.png",
+          "/src/assets/p9_img_03.png"
+        ],
+        "category": "board games",
+        "subCategory": "family",
+        "date": "17166343454008",
+        "bestseller": false,
+        "quantity": 3.0
+      }
+    ]
+  },
+  {
+    "orderId": "30000009",
+    "userId": "zuhazana@gmail.com",
+    "deliveryAddress": {
+      "firstName": "Kazuha",
+      "lastName": "Nakamura",
+      "email": "zuhazana@gmail.com",
+      "street": "86, TINGKAT KIKIK 2, TAMAN INDERAWASIH",
+      "city": "PERAI",
+      "state": "Pulau Pinang",
+      "zipcode": "13600",
+      "country": "Malaysia",
+      "phone": "600175192880"
+    },
+    "paymentMethod": "card",
+    "totalAmount": 149.94,
+    "date": 1767343589519,
+    "status": "Cancelled",
+    "items": [
+      {
+        "_id": 2.0000012E7,
+        "name": "Cluedo: Scooby-Doo Edition",
+        "description": "Jeepers! Help the Mystery Inc. gang solve the mystery in this spooky twist on the classic detective game. Figure out who was abducted, where, and what item was left behind.",
+        "price": 24.99,
+        "image": [
+          "/src/assets/p12_img_01.png",
+          "/src/assets/p12_img_02.png",
+          "/src/assets/p12_img_03.png"
+        ],
+        "category": "board games",
+        "subCategory": "mystery",
+        "date": "17166343454111",
+        "bestseller": false,
+        "quantity": 6.0
+      }
+    ]
+  },
+  {
+    "orderId": "30000010",
+    "userId": "zuhazana@gmail.com",
+    "deliveryAddress": {
+      "firstName": "Kazuha",
+      "lastName": "Nakamura",
+      "email": "zuhazana@gmail.com",
+      "street": "86, TINGKAT KIKIK 2, TAMAN INDERAWASIH",
+      "city": "PERAI",
+      "state": "Pulau Pinang",
+      "zipcode": "13600",
+      "country": "Malaysia",
+      "phone": "600175192880"
+    },
+    "paymentMethod": "card",
+    "totalAmount": 149.94,
+    "date": 1767344333009,
+    "status": "Cancelled",
+    "items": [
+      {
+        "_id": 2.0000012E7,
+        "name": "Cluedo: Scooby-Doo Edition",
+        "description": "Jeepers! Help the Mystery Inc. gang solve the mystery in this spooky twist on the classic detective game. Figure out who was abducted, where, and what item was left behind.",
+        "price": 24.99,
+        "image": [
+          "/src/assets/p12_img_01.png",
+          "/src/assets/p12_img_02.png",
+          "/src/assets/p12_img_03.png"
+        ],
+        "category": "board games",
+        "subCategory": "mystery",
+        "date": "17166343454111",
+        "bestseller": false,
+        "quantity": 6.0
+      }
+    ]
+  },
+  {
+    "orderId": "30000011",
+    "userId": "zuhazana@gmail.com",
+    "deliveryAddress": {
+      "firstName": "Kazuha",
+      "lastName": "Nakamura",
+      "email": "zuhazana@gmail.com",
+      "street": "86, TINGKAT KIKIK 2, TAMAN INDERAWASIH",
+      "city": "PERAI",
+      "state": "Pulau Pinang",
+      "zipcode": "13600",
+      "country": "Malaysia",
+      "phone": "600175192880"
+    },
+    "paymentMethod": "card",
+    "totalAmount": 34.989999999999995,
+    "date": 1767344351822,
+    "status": "Cancelled",
+    "items": [
+      {
+        "_id": 2.0000012E7,
+        "name": "Cluedo: Scooby-Doo Edition",
+        "description": "Jeepers! Help the Mystery Inc. gang solve the mystery in this spooky twist on the classic detective game. Figure out who was abducted, where, and what item was left behind.",
+        "price": 24.99,
+        "image": [
+          "/src/assets/p12_img_01.png",
+          "/src/assets/p12_img_02.png",
+          "/src/assets/p12_img_03.png"
+        ],
+        "category": "board games",
+        "subCategory": "mystery",
+        "date": "17166343454111",
+        "bestseller": false,
+        "quantity": 1.0
+      }
+    ]
+  },
+  {
+    "orderId": "30000012",
+    "userId": "zuhazana@gmail.com",
+    "deliveryAddress": {
+      "firstName": "Kazuha",
+      "lastName": "Nakamura",
+      "email": "zuhazana@gmail.com",
+      "street": "86, TINGKAT KIKIK 2, TAMAN INDERAWASIH",
+      "city": "PERAI",
+      "state": "Pulau Pinang",
+      "zipcode": "13600",
+      "country": "Malaysia",
+      "phone": "600175192880"
+    },
+    "paymentMethod": "card",
+    "totalAmount": 149.94,
+    "date": 1767344650938,
+    "status": "Ready to ship",
+    "items": [
+      {
+        "_id": 2.0000012E7,
+        "name": "Cluedo: Scooby-Doo Edition",
+        "description": "Jeepers! Help the Mystery Inc. gang solve the mystery in this spooky twist on the classic detective game. Figure out who was abducted, where, and what item was left behind.",
+        "price": 24.99,
+        "image": [
+          "/src/assets/p12_img_01.png",
+          "/src/assets/p12_img_02.png",
+          "/src/assets/p12_img_03.png"
+        ],
+        "category": "board games",
+        "subCategory": "mystery",
+        "date": "17166343454111",
+        "bestseller": false,
+        "quantity": 6.0
       }
     ]
   }

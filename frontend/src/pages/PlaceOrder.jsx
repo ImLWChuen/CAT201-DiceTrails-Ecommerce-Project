@@ -2,12 +2,14 @@ import React, { useContext, useState } from 'react'
 import { ShopContext } from '../context/ShopContext'
 import CartTotal from '../components/CartTotal'
 import { assets } from '../assets/assets'
+import { toast } from 'react-toastify'
 
 const PlaceOrder = () => {
 
-    const { navigate, cartItems, products, getCartAmount, setCartItems } = useContext(ShopContext);
-    const [method, setMethod] = useState('cod');
+    const { navigate, cartItems, products, getCartAmount, setCartItems, user } = useContext(ShopContext);
+    const [method, setMethod] = useState('card');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [region, setRegion] = useState('west'); // Default to West Malaysia
 
     const [formData, setFormData] = useState({
         firstName: '', lastName: '', email: '', street: '',
@@ -20,12 +22,40 @@ const PlaceOrder = () => {
         setFormData(data => ({ ...data, [name]: value }));
     }
 
+    // Calculate shipping fee based on region and cart total
+    const calculateShippingFee = () => {
+        const subtotal = getCartAmount();
+        const discountAmount = (user?.isNewsletterSubscribed && !user?.hasUsedNewsletterDiscount)
+            ? subtotal * 0.2
+            : 0;
+        const subtotalAfterDiscount = subtotal - discountAmount;
+
+        if (region === 'west') {
+            return subtotalAfterDiscount >= 100 ? 0 : 10;
+        } else if (region === 'east') {
+            return subtotalAfterDiscount >= 150 ? 0 : 15;
+        } else { // International
+            return subtotalAfterDiscount >= 200 ? 0 : 25;
+        }
+    };
+
+    // Check if user is eligible for newsletter discount
+    const getNewsletterDiscount = () => {
+        if (user?.isNewsletterSubscribed && !user?.hasUsedNewsletterDiscount) {
+            return 0.2; // 20% discount
+        }
+        return 0;
+    };
+
+    const shippingFee = calculateShippingFee();
+    const newsletterDiscount = getNewsletterDiscount();
+
     const validateForm = () => {
         // Check if cart is empty
         const cartEmpty = Object.keys(cartItems).length === 0 ||
             Object.values(cartItems).every(qty => qty === 0);
         if (cartEmpty) {
-            alert("Your cart is empty. Please add items before checkout.");
+            toast.error("Your cart is empty. Please add items before checkout.");
             return false;
         }
 
@@ -33,21 +63,21 @@ const PlaceOrder = () => {
         if (!formData.firstName.trim() || !formData.lastName.trim() || !formData.email.trim() ||
             !formData.street.trim() || !formData.city.trim() || !formData.state.trim() ||
             !formData.zipcode.trim() || !formData.country.trim() || !formData.phone.trim()) {
-            alert("Please fill in all delivery information fields");
+            toast.error("Please fill in all delivery information fields");
             return false;
         }
 
         // Validate email format
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(formData.email)) {
-            alert("Please enter a valid email address");
+            toast.error("Please enter a valid email address");
             return false;
         }
 
         // Validate phone (digits only, reasonable length)
         const phoneDigits = formData.phone.replace(/\D/g, '');
         if (phoneDigits.length < 10 || phoneDigits.length > 15) {
-            alert("Phone number should be 10-15 digits");
+            toast.error("Phone number should be 10-15 digits");
             return false;
         }
 
@@ -66,7 +96,7 @@ const PlaceOrder = () => {
         let orderItems = [];
         for (const itemId in cartItems) {
             if (cartItems[itemId] > 0) {
-                const itemInfo = products.find(product => product._id === itemId);
+                const itemInfo = products.find(product => product._id === Number(itemId)); // Convert string to number
                 if (itemInfo) {
                     let itemEntry = { ...itemInfo, quantity: cartItems[itemId] };
                     orderItems.push(itemEntry);
@@ -76,16 +106,24 @@ const PlaceOrder = () => {
         const storedEmail = localStorage.getItem('userEmail');
 
         if (!storedEmail) {
-            alert("Please log in to place an order.");
+            toast.error("Please log in to place an order.");
+            setIsSubmitting(false);
             return;
         }
+
+        const subtotal = getCartAmount();
+        const discountAmount = newsletterDiscount > 0 ? subtotal * newsletterDiscount : 0;
+        const finalTotal = (subtotal - discountAmount) + shippingFee;
 
         let orderData = {
             userId: storedEmail,
             deliveryAddress: formData,
             paymentMethod: method,
             items: orderItems,
-            totalAmount: getCartAmount() + 10
+            region: region,
+            shippingFee: shippingFee,
+            newsletterDiscountApplied: newsletterDiscount > 0,
+            totalAmount: finalTotal
         }
 
         try {
@@ -98,15 +136,37 @@ const PlaceOrder = () => {
             const result = await response.json();
 
             if (result.success) {
-                setCartItems({}); // Clear cart
-                alert("Order placed successfully!");
+                // If newsletter discount was used, mark it as used
+                if (newsletterDiscount > 0) {
+                    localStorage.setItem('hasUsedNewsletterDiscount', 'true');
+                }
+
+                // Clear cart in all locations
+                setCartItems({}); // Clear React state
+                localStorage.setItem('cartItems', JSON.stringify({})); // Clear localStorage
+
+                // Clear cart on backend
+                try {
+                    await fetch('http://localhost:8080/api/update-cart', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            userId: storedEmail,
+                            cart: {}
+                        })
+                    });
+                } catch (error) {
+                    console.error('Failed to clear backend cart:', error);
+                }
+
+                toast.success("Order placed successfully!");
                 navigate('/orders');
             } else {
-                alert("Order failed: " + result.message);
+                toast.error("Order failed: " + result.message);
             }
         } catch (error) {
             console.error(error);
-            alert("Error connecting to server. Please try again.");
+            toast.error("Error connecting to server. Please try again.");
         } finally {
             setIsSubmitting(false);
         }
@@ -141,13 +201,45 @@ const PlaceOrder = () => {
                 </div>
                 <input name='phone' onChange={onChangeHandler} value={formData.phone} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="number" placeholder='Phone' />
 
+                {/* Region Selection */}
+                <div className='mt-4'>
+                    <label className='block text-[#504c41] font-medium mb-2'>Select Region</label>
+                    <select
+                        value={region}
+                        onChange={(e) => {
+                            setRegion(e.target.value);
+                            // Reset payment method for International if COD/TNG was selected
+                            if (e.target.value === 'international' && (method === 'cod' || method === 'tng')) {
+                                setMethod('card');
+                            }
+                        }}
+                        className='border border-gray-300 rounded py-2 px-3.5 w-full outline-[#D0A823] bg-white'
+                    >
+                        <option value='west'>West Malaysia (Free shipping ≥ RM 100)</option>
+                        <option value='east'>East Malaysia (Free shipping ≥ RM 150)</option>
+                        <option value='international'>International (Free shipping ≥ RM 200)</option>
+                    </select>
+                </div>
+
+                {/* Newsletter Discount Indicator */}
+                {newsletterDiscount > 0 && (
+                    <div className='bg-green-50 border border-green-300 rounded p-3 mt-2'>
+                        <p className='text-green-700 text-sm font-semibold'>✓ Newsletter Discount Active!</p>
+                        <p className='text-green-600 text-xs mt-1'>You're getting 20% off this order!</p>
+                    </div>
+                )}
+
             </div>
 
             {/* ------------- RIGHT SIDE: Totals & Payment ------------- */}
             <div className='mt-8'>
 
                 <div className='mt-8 min-w-80'>
-                    <CartTotal />
+                    <CartTotal
+                        shippingFee={shippingFee}
+                        newsletterDiscount={newsletterDiscount}
+                        region={region === 'west' ? 'West Malaysia' : region === 'east' ? 'East Malaysia' : 'International'}
+                    />
                 </div>
 
                 <div className='mt-12'>
@@ -159,9 +251,9 @@ const PlaceOrder = () => {
                     </div>
 
                     {/* Payment Selection Boxes */}
-                    <div className='flex gap-3 flex-col lg:flex-row'>
+                    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3'>
 
-                        {/* 1. Credit/Debit Card */}
+                        {/* 1. Credit/Debit Card - Available for all regions */}
                         <div onClick={() => setMethod('card')} className='flex items-center gap-3 border p-2 px-3 cursor-pointer hover:border-[#D0A823]'>
                             <p className={`min-w-3.5 h-3.5 border rounded-full ${method === 'card' ? 'bg-[#D0A823]' : ''}`}></p>
                             <div className='flex gap-2 mx-4'>
@@ -170,17 +262,25 @@ const PlaceOrder = () => {
                             </div>
                         </div>
 
-                        {/* 2. Touch 'n Go E-Wallet */}
-                        <div onClick={() => setMethod('tng')} className='flex items-center gap-3 border p-2 px-3 cursor-pointer hover:border-[#D0A823]'>
-                            <p className={`min-w-3.5 h-3.5 border rounded-full ${method === 'tng' ? 'bg-[#D0A823]' : ''}`}></p>
-                            <img className='h-5 mx-4' src={assets.tng_logo} alt="Touch 'n Go" />
+                        {/* 2. Apple Pay - Available for all regions */}
+                        <div onClick={() => setMethod('applepay')} className='flex items-center gap-3 border p-2 px-3 cursor-pointer hover:border-[#D0A823]'>
+                            <p className={`min-w-3.5 h-3.5 border rounded-full ${method === 'applepay' ? 'bg-[#D0A823]' : ''}`}></p>
+                            <img className='h-5 mx-4' src={assets.apple_pay_logo} alt="Apple Pay" />
                         </div>
 
-                        {/* 3. Cash on Delivery (COD) */}
-                        <div onClick={() => setMethod('cod')} className='flex items-center gap-3 border p-2 px-3 cursor-pointer hover:border-[#D0A823]'>
-                            <p className={`min-w-3.5 h-3.5 border rounded-full ${method === 'cod' ? 'bg-[#D0A823]' : ''}`}></p>
-                            <p className='text-[#504c41] text-sm font-medium mx-4'>CASH ON DELIVERY</p>
+                        {/* 3. Google Pay - Available for all regions */}
+                        <div onClick={() => setMethod('googlepay')} className='flex items-center gap-3 border p-2 px-3 cursor-pointer hover:border-[#D0A823]'>
+                            <p className={`min-w-3.5 h-3.5 border rounded-full ${method === 'googlepay' ? 'bg-[#D0A823]' : ''}`}></p>
+                            <img className='h-5 mx-4' src={assets.google_pay_logo} alt="Google Pay" />
                         </div>
+
+                        {/* 4. Touch 'n Go E-Wallet - Only for Malaysia */}
+                        {(region === 'west' || region === 'east') && (
+                            <div onClick={() => setMethod('tng')} className='flex items-center gap-3 border p-2 px-3 cursor-pointer hover:border-[#D0A823]'>
+                                <p className={`min-w-3.5 h-3.5 border rounded-full ${method === 'tng' ? 'bg-[#D0A823]' : ''}`}></p>
+                                <img className='h-5 mx-4' src={assets.tng_logo} alt="Touch 'n Go" />
+                            </div>
+                        )}
 
                     </div>
 

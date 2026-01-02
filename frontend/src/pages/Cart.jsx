@@ -17,7 +17,7 @@ const Cart = () => {
       for (const items in cartItems) {
         if (cartItems[items] > 0) {
           tempData.push({
-            _id: items,
+            _id: Number(items), // Convert string ID to number
             quantity: cartItems[items]
           })
         }
@@ -113,7 +113,16 @@ const Cart = () => {
 
             <div className='w-full text-end'>
               <button
-                onClick={() => navigate('/place-order')}
+                onClick={() => {
+                  // Check if user is logged in
+                  const userEmail = localStorage.getItem('userEmail');
+                  if (!userEmail) {
+                    alert('Please log in to place an order');
+                    navigate('/login');
+                    return;
+                  }
+                  navigate('/place-order');
+                }}
                 className='bg-[#504c41] text-white text-sm my-8 px-8 py-3 active:bg-[#D0A823] hover:bg-[#D0A823] transition-colors'
               >
                 PROCEED TO CHECKOUT

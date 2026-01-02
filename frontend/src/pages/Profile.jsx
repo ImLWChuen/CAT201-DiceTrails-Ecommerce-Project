@@ -67,7 +67,7 @@ const Profile = () => {
                                 <span className='text-[#504C41]'>{user.email}</span>
                             </div>
                             <div className='flex flex-col gap-1'>
-                                <span className='text-xs text-gray-400 font-bold uppercase'>Username</span>
+                                <span className='text-xs text-gray-400 font-bold uppercase'>Name</span>
                                 <span className='text-[#504C41]'>{user.username}</span>
                             </div>
                         </div>

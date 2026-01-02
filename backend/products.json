@@ -1,0 +1,210 @@
+[
+  {
+    "_id": 20000001,
+    "name": "Ticket to Ride",
+    "description": "Embark on an adventure to connect cities with your train network in this exciting route-building game.",
+    "price": 29.99,
+    "image": [
+      "/src/assets/p1_img_01.png",
+      "/src/assets/p1_img_02.png",
+      "/src/assets/p1_img_03.png"
+    ],
+    "category": "board games",
+    "subCategory": "strategy",
+    "date": "17166343453448",
+    "bestseller": true,
+    "quantity": 15
+  },
+  {
+    "_id": 20000002,
+    "name": "Monopoly",
+    "description": "The classic fast-dealing property trading game where players buy, sell, and dream their way to riches.",
+    "price": 29.99,
+    "image": [
+      "/src/assets/p2_img_01.png",
+      "/src/assets/p2_img_02.png",
+      "/src/assets/p2_img_03.png"
+    ],
+    "category": "board games",
+    "subCategory": "family",
+    "date": "17166343454001",
+    "bestseller": true,
+    "quantity": 20
+  },
+  {
+    "_id": 20000003,
+    "name": "7 Wonders Architects",
+    "description": "A fast-paced strategy game where players race to build an architectural wonder of the ancient world.",
+    "price": 49.99,
+    "image": [
+      "/src/assets/p3_img_01.png",
+      "/src/assets/p3_img_02.png",
+      "/src/assets/p3_img_03.png"
+    ],
+    "category": "board games",
+    "subCategory": "strategy",
+    "date": "17166343454002",
+    "bestseller": false,
+    "quantity": 8
+  },
+  {
+    "_id": 20000004,
+    "name": "Coup",
+    "description": "A game of bluffing and deception where you manipulate, bribe, and bluff your way to power.",
+    "price": 14.99,
+    "image": [
+      "/src/assets/p4_img_01.png",
+      "/src/assets/p4_img_02.png",
+      "/src/assets/p4_img_03.png"
+    ],
+    "category": "card games",
+    "subCategory": "party",
+    "date": "17166343454003",
+    "bestseller": true,
+    "quantity": 25
+  },
+  {
+    "_id": 20000005,
+    "name": "Sushi Go!",
+    "description": "A pick-and-pass card game where you grab the best combination of sushi dishes as they whiz by.",
+    "price": 12.99,
+    "image": [
+      "/src/assets/p5_img_01.png",
+      "/src/assets/p5_img_02.png",
+      "/src/assets/p5_img_03.png"
+    ],
+    "category": "card games",
+    "subCategory": "family",
+    "date": "17166343454004",
+    "bestseller": true,
+    "quantity": 18
+  },
+  {
+    "_id": 20000006,
+    "name": "Chess",
+    "description": "The timeless game of strategy and tactics played on a checkered board.",
+    "price": 19.99,
+    "image": [
+      "/src/assets/p6_img_01.png",
+      "/src/assets/p6_img_02.png",
+      "/src/assets/p6_img_03.png"
+    ],
+    "category": "board games",
+    "subCategory": "abstract",
+    "date": "17166343454005",
+    "bestseller": false,
+    "quantity": 12
+  },
+  {
+    "_id": 20000007,
+    "name": "Chinese Chess (Xiangqi)",
+    "description": "A traditional strategy board game for two players, simulating a battle between two armies.",
+    "price": 15.99,
+    "image": [
+      "/src/assets/p7_img_01.png",
+      "/src/assets/p7_img_02.png",
+      "/src/assets/p7_img_03.png"
+    ],
+    "category": "board games",
+    "subCategory": "abstract",
+    "date": "17166343454006",
+    "bestseller": false,
+    "quantity": 10
+  },
+  {
+    "_id": 20000008,
+    "name": "Nasi Lemak The Game",
+    "description": "A Malaysian card game where players race to assemble the perfect plate of Nasi Lemak.",
+    "price": 18.0,
+    "image": [
+      "/src/assets/p8_img_01.png",
+      "/src/assets/p8_img_02.png",
+      "/src/assets/p8_img_03.png"
+    ],
+    "category": "card games",
+    "subCategory": "family",
+    "date": "17166343454007",
+    "bestseller": true,
+    "quantity": 14
+  },
+  {
+    "_id": 20000009,
+    "name": "The Game of Life",
+    "description": "A family classic where players navigate life\u0027s milestones, from college to retirement.",
+    "price": 24.99,
+    "image": [
+      "/src/assets/p9_img_01.png",
+      "/src/assets/p9_img_02.png",
+      "/src/assets/p9_img_03.png"
+    ],
+    "category": "board games",
+    "subCategory": "family",
+    "date": "17166343454008",
+    "bestseller": false,
+    "quantity": 16
+  },
+  {
+    "_id": 20000010,
+    "name": "Uno",
+    "description": "The classic card game of matching colors and numbers that is easy to pick up and impossible to put down.",
+    "price": 9.99,
+    "image": [
+      "/src/assets/p10_img_01.png",
+      "/src/assets/p10_img_02.png",
+      "/src/assets/p10_img_03.png"
+    ],
+    "category": "card games",
+    "subCategory": "party",
+    "date": "17166343454009",
+    "bestseller": true,
+    "quantity": 30
+  },
+  {
+    "_id": 20000011,
+    "name": "Scrabble",
+    "description": "The classic crossword game where every letter counts. Build words, score points, and challenge your friends and family in this ultimate test of vocabulary.",
+    "price": 19.99,
+    "image": [
+      "/src/assets/p11_img_01.png",
+      "/src/assets/p11_img_02.png",
+      "/src/assets/p11_img_03.png"
+    ],
+    "category": "board games",
+    "subCategory": "word",
+    "date": "17166343454110",
+    "bestseller": true,
+    "quantity": 22
+  },
+  {
+    "_id": 20000012,
+    "name": "Cluedo: Scooby-Doo Edition",
+    "description": "Jeepers! Help the Mystery Inc. gang solve the mystery in this spooky twist on the classic detective game. Figure out who was abducted, where, and what item was left behind.",
+    "price": 24.99,
+    "image": [
+      "/src/assets/p12_img_01.png",
+      "/src/assets/p12_img_02.png",
+      "/src/assets/p12_img_03.png"
+    ],
+    "category": "board games",
+    "subCategory": "mystery",
+    "date": "17166343454111",
+    "bestseller": false,
+    "quantity": 0
+  },
+  {
+    "_id": 20000013,
+    "name": "Codenames",
+    "description": "A social word game where two rival spymasters know the secret identities of 25 agents. Teammates try to guess words of their color while avoiding the assassin.",
+    "price": 15.99,
+    "image": [
+      "/src/assets/p13_img_01.png",
+      "/src/assets/p13_img_02.png",
+      "/src/assets/p13_img_03.png"
+    ],
+    "category": "card games",
+    "subCategory": "party",
+    "date": "17166343454112",
+    "bestseller": true,
+    "quantity": 19
+  }
+]

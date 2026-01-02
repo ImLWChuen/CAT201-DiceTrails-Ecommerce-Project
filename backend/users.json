@@ -5,7 +5,10 @@
     "email": "user@example.com",
     "password": "hashed_password_here",
     "isAdmin": false,
-    "cart": {}
+    "cart": {},
+    "orders": [],
+    "isNewsletterSubscribed": false,
+    "hasUsedNewsletterDiscount": false
   },
   {
     "userId": 10000002,
@@ -13,7 +16,10 @@
     "email": "trailblazer@example.com",
     "password": "hashed_password_here",
     "isAdmin": false,
-    "cart": {}
+    "cart": {},
+    "orders": [],
+    "isNewsletterSubscribed": false,
+    "hasUsedNewsletterDiscount": false
   },
   {
     "userId": 10000003,
@@ -22,7 +28,9 @@
     "password": "1234",
     "isAdmin": false,
     "cart": {},
-    "orders": []
+    "orders": [],
+    "isNewsletterSubscribed": false,
+    "hasUsedNewsletterDiscount": false
   },
   {
     "userId": 10000004,
@@ -31,7 +39,9 @@
     "password": "yunhan18",
     "isAdmin": false,
     "cart": {},
-    "orders": []
+    "orders": [],
+    "isNewsletterSubscribed": false,
+    "hasUsedNewsletterDiscount": false
   },
   {
     "userId": 10000005,
@@ -42,7 +52,9 @@
     "cart": {
       "20000012": 1
     },
-    "orders": []
+    "orders": [],
+    "isNewsletterSubscribed": false,
+    "hasUsedNewsletterDiscount": false
   },
   {
     "userId": 10000006,
@@ -51,6 +63,19 @@
     "password": "admin123",
     "isAdmin": true,
     "cart": {},
-    "orders": []
+    "orders": [],
+    "isNewsletterSubscribed": false,
+    "hasUsedNewsletterDiscount": false
+  },
+  {
+    "userId": 10000007,
+    "username": "Kazuha Nakamura",
+    "email": "zuhazana@gmail.com",
+    "password": "12345678",
+    "isAdmin": false,
+    "cart": {},
+    "orders": [],
+    "isNewsletterSubscribed": false,
+    "hasUsedNewsletterDiscount": false
   }
 ]

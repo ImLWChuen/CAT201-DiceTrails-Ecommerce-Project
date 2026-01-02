@@ -16,8 +16,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Optional;
 
-@WebServlet("/api/login")
-public class LoginServlet extends HttpServlet {
+@WebServlet("/api/subscribe-newsletter")
+public class NewsletterServlet extends HttpServlet {
     private final Gson gson = new Gson();
 
     private void addCorsHeaders(HttpServletResponse response) {
@@ -45,29 +45,27 @@ public class LoginServlet extends HttpServlet {
             JsonObject jsonRequest = JsonParser.parseReader(reader).getAsJsonObject();
 
             String email = jsonRequest.get("email").getAsString();
-            String password = jsonRequest.get("password").getAsString();
 
             Optional<User> userOpt = DataManager.getInstance().getUserByEmail(email);
 
-            if (userOpt.isPresent() && userOpt.get().getPassword().equals(password)) {
+            if (userOpt.isPresent()) {
                 User user = userOpt.get();
+
+                if (user.isNewsletterSubscribed()) {
+                    out.println("{\"success\": false, \"message\": \"You are already subscribed to our newsletter\"}");
+                    return;
+                }
+
+                user.setNewsletterSubscribed(true);
+                DataManager.getInstance().updateUser(user);
 
                 JsonObject successResponse = new JsonObject();
                 successResponse.addProperty("success", true);
-                successResponse.addProperty("message", "Login successful");
-
-                JsonObject userJson = new JsonObject();
-                userJson.addProperty("userId", user.getUserId());
-                userJson.addProperty("username", user.getUsername());
-                userJson.addProperty("email", user.getEmail());
-                userJson.addProperty("isAdmin", user.isAdmin());
-                userJson.addProperty("isNewsletterSubscribed", user.isNewsletterSubscribed());
-                userJson.addProperty("hasUsedNewsletterDiscount", user.hasUsedNewsletterDiscount());
-
-                successResponse.add("user", userJson);
+                successResponse.addProperty("message",
+                        "Successfully subscribed to newsletter! You'll get 20% off your first order.");
                 out.println(gson.toJson(successResponse));
             } else {
-                out.println("{\"success\": false, \"message\": \"Invalid email or password\"}");
+                out.println("{\"success\": false, \"message\": \"User not found. Please log in first.\"}");
             }
 
         } catch (Exception e) {

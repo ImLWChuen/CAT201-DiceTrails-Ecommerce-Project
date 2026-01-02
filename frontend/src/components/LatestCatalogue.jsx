@@ -17,7 +17,7 @@ const LatestCatalogue = () => {
             <div className='text-center py-8 text-3xl'>
                 <Title text1={'LATEST'} text2={'CATALOGUE'} />
                 <p className='w-3/4 m-auto text-xs sm:text-sm md:text-base text-gray-600'>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    Discover our newest board game arrivals! From strategic masterpieces to party favorites, explore fresh additions to our collection. Be the first to experience the latest releases and bring home your next gaming adventure today.
                 </p>
             </div>
             {/* Render products here using latestProducts state */}

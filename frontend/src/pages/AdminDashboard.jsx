@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from 'react'
 import { ShopContext } from '../context/ShopContext'
 import ProductManagement from '../components/ProductManagement'
 import ReviewManagement from '../components/ReviewManagement'
+import OrderManagement from '../components/OrderManagement'
 import { useNavigate } from 'react-router-dom'
 
 const AdminDashboard = () => {
@@ -60,17 +61,26 @@ const AdminDashboard = () => {
           <button
             onClick={() => setActiveTab('products')}
             className={`pb-3 px-1 border-b-2 transition-all font-medium ${activeTab === 'products'
-                ? 'border-[#D0A823] text-[#504c41]'
-                : 'border-transparent hover:text-gray-700'
+              ? 'border-[#D0A823] text-[#504c41]'
+              : 'border-transparent hover:text-gray-700'
               }`}
           >
             Products & Inventory
           </button>
           <button
+            onClick={() => setActiveTab('orders')}
+            className={`pb-3 px-1 border-b-2 transition-all font-medium ${activeTab === 'orders'
+              ? 'border-[#D0A823] text-[#504c41]'
+              : 'border-transparent hover:text-gray-700'
+              }`}
+          >
+            Order Management
+          </button>
+          <button
             onClick={() => setActiveTab('reviews')}
             className={`pb-3 px-1 border-b-2 transition-all font-medium ${activeTab === 'reviews'
-                ? 'border-[#D0A823] text-[#504c41]'
-                : 'border-transparent hover:text-gray-700'
+              ? 'border-[#D0A823] text-[#504c41]'
+              : 'border-transparent hover:text-gray-700'
               }`}
           >
             Reviews Management
@@ -81,6 +91,9 @@ const AdminDashboard = () => {
         <div className='mb-16'>
           {activeTab === 'products' && (
             <ProductManagement products={products} setProducts={setProducts} />
+          )}
+          {activeTab === 'orders' && (
+            <OrderManagement />
           )}
           {activeTab === 'reviews' && (
             <ReviewManagement reviews={reviews} setReviews={setReviews} />

@@ -57,6 +57,8 @@ import about_icon from './about_icon.png'
 import mastercard_logo from './Mastercard-logo.png'
 import visa_logo from './visa-logo.png'
 import tng_logo from './touch-n-go-logo.png'
+import apple_pay_logo from './apple_pay_logo.png'
+import google_pay_logo from './google_pay_logo.png'
 import privacy_icon from './privacy_icon.png'
 import thumbs_up_icon from './thumb_up.png'
 import thumbs_up_full_icon from './thumb_up_full.png'
@@ -80,6 +82,8 @@ export const assets = {
     mastercard_logo,
     visa_logo,
     tng_logo,
+    apple_pay_logo,
+    google_pay_logo,
     privacy_icon,
     star_full,
     star_half: star_dull_icon, // Alias for backward compatibility if needed, or use explicit export

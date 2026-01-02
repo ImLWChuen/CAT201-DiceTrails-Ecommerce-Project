@@ -5,25 +5,28 @@ import java.util.Map;
 
 public class Order {
     private String orderId;
-    
-    private String userId; 
-    
-    private Map<String, String> deliveryAddress; 
-    
-    private String paymentMethod; 
-    
-    private double totalAmount; 
-    
-    private long date; 
-    
-    private String status; 
-    
-    private List<Map<String, Object>> items; 
 
-    public Order() {}
+    private String userId;
 
-    public Order(String userId, Map<String, String> deliveryAddress, String paymentMethod, 
-                 double totalAmount, List<Map<String, Object>> items) {
+    private Map<String, String> deliveryAddress;
+
+    private String paymentMethod;
+
+    private double totalAmount;
+
+    private long date;
+
+    private String status;
+
+    private String trackingNumber; // New field for tracking number
+
+    private List<Map<String, Object>> items;
+
+    public Order() {
+    }
+
+    public Order(String userId, Map<String, String> deliveryAddress, String paymentMethod,
+            double totalAmount, List<Map<String, Object>> items) {
         this.userId = userId;
         this.deliveryAddress = deliveryAddress;
         this.paymentMethod = paymentMethod;
@@ -32,7 +35,7 @@ public class Order {
         this.date = System.currentTimeMillis();
         this.status = "Order Placed";
     }
-    
+
     public String getOrderId() {
         return orderId;
     }
@@ -87,6 +90,14 @@ public class Order {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getTrackingNumber() {
+        return trackingNumber;
+    }
+
+    public void setTrackingNumber(String trackingNumber) {
+        this.trackingNumber = trackingNumber;
     }
 
     public List<Map<String, Object>> getItems() {

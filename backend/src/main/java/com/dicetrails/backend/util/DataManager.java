@@ -2,6 +2,7 @@ package com.dicetrails.backend.util;
 
 import com.dicetrails.backend.model.Order;
 import com.dicetrails.backend.model.User;
+import com.dicetrails.backend.model.Product;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -22,6 +23,9 @@ public class DataManager {
     private List<Order> orders;
     private final String ORDER_FILE = "orders.json";
 
+    private List<Product> products;
+    private final String PRODUCT_FILE = "products.json";
+
     private final Gson gson;
 
     private DataManager() {
@@ -29,6 +33,8 @@ public class DataManager {
         users = loadData(USER_FILE, new TypeToken<ArrayList<User>>() {
         }.getType());
         orders = loadData(ORDER_FILE, new TypeToken<ArrayList<Order>>() {
+        }.getType());
+        products = loadData(PRODUCT_FILE, new TypeToken<ArrayList<Product>>() {
         }.getType());
     }
 
@@ -40,13 +46,12 @@ public class DataManager {
     }
 
     private <T> List<T> loadData(String filename, Type type) {
-        File file = new File(filename);
-        if (!file.exists()) {
-            return new ArrayList<>();
-        }
-        try (Reader reader = new FileReader(file)) {
+        try (Reader reader = new FileReader(filename)) {
             List<T> data = gson.fromJson(reader, type);
             return data != null ? data : new ArrayList<>();
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found: " + filename + ". Creating new file.");
+            return new ArrayList<>();
         } catch (IOException e) {
             e.printStackTrace();
             return new ArrayList<>();
@@ -61,67 +66,52 @@ public class DataManager {
         }
     }
 
-    public Optional<User> getUserByEmail(String email) {
-        return users.stream()
-                .filter(u -> u.getEmail().equalsIgnoreCase(email))
-                .findFirst();
-    }
-
+    // User-related methods
     public synchronized void addUser(User user) {
-        // Auto-generate userId if not set (8-digit format starting at 10000000)
-        if (user.getUserId() == 0) {
-            int maxId = users.stream()
-                    .mapToInt(User::getUserId)
-                    .max()
-                    .orElse(10000000);
-
-            // If max is below 10000000, start at 10000001
-            if (maxId < 10000000) {
-                user.setUserId(10000001);
-            } else {
-                user.setUserId(maxId + 1);
-            }
-        }
         users.add(user);
         saveData(USER_FILE, users);
     }
 
+    public Optional<User> getUserByEmail(String email) {
+        return users.stream().filter(u -> u.getEmail().equals(email)).findFirst();
+    }
+
     public synchronized void updateUser(User updatedUser) {
         for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getEmail().equalsIgnoreCase(updatedUser.getEmail())) {
+            if (users.get(i).getEmail().equals(updatedUser.getEmail())) {
                 users.set(i, updatedUser);
                 saveData(USER_FILE, users);
-                return;
+                break;
             }
         }
     }
 
+    public synchronized int getNextUserId() {
+        return users.stream()
+                .mapToInt(User::getUserId)
+                .max()
+                .orElse(10000000) + 1;
+    }
+
+    // Order-related methods
     public synchronized void saveOrder(Order order) {
-        if (order.getOrderId() == null || order.getOrderId().isEmpty()) {
-            // Generate 8-digit order ID starting at 30000001
-            int maxId = orders.stream()
-                    .map(Order::getOrderId)
-                    .filter(id -> id.matches("\\d+")) // Only numeric IDs
-                    .mapToInt(Integer::parseInt)
-                    .max()
-                    .orElse(30000000);
-
-            // If max is below 30000000, start at 30000001
-            if (maxId < 30000000) {
-                order.setOrderId("30000001");
-            } else {
-                order.setOrderId(String.valueOf(maxId + 1));
-            }
-        }
-
+        int nextOrderId = getNextOrderId();
+        order.setOrderId(String.valueOf(nextOrderId));
         orders.add(order);
         saveData(ORDER_FILE, orders);
-        System.out.println("Order saved: " + order.getOrderId());
     }
 
-    public List<Order> getOrders(String userEmail) {
+    private int getNextOrderId() {
         return orders.stream()
-                .filter(o -> o.getUserId().equalsIgnoreCase(userEmail))
+                .map(Order::getOrderId)
+                .mapToInt(Integer::parseInt)
+                .max()
+                .orElse(30000000) + 1;
+    }
+
+    public List<Order> getOrders(String userId) {
+        return orders.stream()
+                .filter(order -> order.getUserId().equals(userId))
                 .collect(Collectors.toList());
     }
 
@@ -132,5 +122,63 @@ public class DataManager {
     public synchronized void saveOrders(List<Order> updatedOrders) {
         this.orders = updatedOrders;
         saveData(ORDER_FILE, orders);
+    }
+
+    public synchronized boolean updateOrderStatus(String orderId, String newStatus) {
+        for (Order order : orders) {
+            if (order.getOrderId().equals(orderId)) {
+                order.setStatus(newStatus);
+
+                // Generate tracking number when marked as Shipped
+                if ("Shipped".equals(newStatus)
+                        && (order.getTrackingNumber() == null || order.getTrackingNumber().isEmpty())) {
+                    order.setTrackingNumber(generateTrackingNumber());
+                }
+
+                saveData(ORDER_FILE, orders);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String generateTrackingNumber() {
+        // Generate random 8-digit tracking number with TR prefix
+        int randomNumber = 10000000 + (int) (Math.random() * 90000000);
+        return "TR" + randomNumber;
+    }
+
+    // Product management methods
+    public List<Product> getAllProducts() {
+        return new ArrayList<>(products);
+    }
+
+    public Optional<Product> getProductById(int productId) {
+        return products.stream()
+                .filter(p -> p.get_id() == productId)
+                .findFirst();
+    }
+
+    public synchronized boolean updateProduct(Product updatedProduct) {
+        for (int i = 0; i < products.size(); i++) {
+            if (products.get(i).get_id() == updatedProduct.get_id()) {
+                products.set(i, updatedProduct);
+                saveData(PRODUCT_FILE, products);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public synchronized boolean reduceStock(int productId, int quantity) {
+        Optional<Product> productOpt = getProductById(productId);
+        if (productOpt.isPresent()) {
+            Product product = productOpt.get();
+            if (product.getQuantity() >= quantity) {
+                product.setQuantity(product.getQuantity() - quantity);
+                return updateProduct(product);
+            }
+        }
+        return false;
     }
 }

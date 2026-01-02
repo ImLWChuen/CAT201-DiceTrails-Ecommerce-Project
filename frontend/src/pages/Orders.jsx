@@ -11,7 +11,7 @@ const Orders = () => {
     const [filter, setFilter] = useState('All');
 
     const userId = localStorage.getItem('userEmail');
-    const filterOptions = ['All', 'Ready to ship', 'To Receive', 'Completed', 'Cancelled'];
+    const filterOptions = ['All', 'Ready to ship', 'Shipped', 'Completed', 'Cancelled'];
 
     useEffect(() => {
         if (!userId) {
@@ -32,35 +32,35 @@ const Orders = () => {
 
             const data = await response.json();
 
-            let allOrdersItem = [];
-
             if (data && data.length > 0) {
-                data.forEach((order) => {
-                    order.items.forEach((item) => {
-                        let itemCopy = { ...item };
-
-                        itemCopy['orderId'] = order.orderId;
-                        itemCopy['status'] = order.status;
-                        itemCopy['payment'] = order.paymentMethod;
-                        itemCopy['date'] = new Date(order.date).toDateString();
-
+                // Process orders to add product details
+                const processedOrders = data.map(order => {
+                    const processedItems = order.items?.map(item => {
                         const productFromAssets = products.find(p => p._id === item._id);
 
                         if (productFromAssets) {
-                            itemCopy['image'] = productFromAssets.image[0];
-                            itemCopy['name'] = productFromAssets.name;
+                            return {
+                                ...item,
+                                image: productFromAssets.image[0],
+                                name: productFromAssets.name
+                            };
                         } else {
-                            if (Array.isArray(item.image)) itemCopy['image'] = item.image[0];
-                            if (itemCopy['image'] && itemCopy['image'].startsWith('/src')) {
-                                itemCopy['image'] = itemCopy['image'].replace('/src', '');
+                            let image = Array.isArray(item.image) ? item.image[0] : item.image;
+                            if (image && image.startsWith('/src')) {
+                                image = image.replace('/src', '');
                             }
+                            return { ...item, image };
                         }
-                        // ----------------------------------------------
+                    }) || [];
 
-                        allOrdersItem.push(itemCopy);
-                    })
-                })
-                setOrderData(allOrdersItem.reverse());
+                    return {
+                        ...order,
+                        items: processedItems,
+                        isEmpty: !order.items || order.items.length === 0
+                    };
+                });
+
+                setOrderData(processedOrders.reverse());
             }
 
         } catch (error) {
@@ -74,17 +74,17 @@ const Orders = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:8080/api/cancel-order', {
+            const response = await fetch('http://localhost:8080/api/update-order-status', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ orderId, userId })
+                body: JSON.stringify({ orderId, status: 'Cancelled' })
             });
 
             const result = await response.json();
 
             if (result.success) {
                 toast.success('Order cancelled successfully');
-                loadOrderData(); // Refresh order list
+                loadOrderData();
             } else {
                 toast.error(result.message || 'Failed to cancel order');
             }
@@ -94,9 +94,35 @@ const Orders = () => {
         }
     }
 
+    const handleMarkAsReceived = async (orderId) => {
+        if (!window.confirm('Confirm that you have received this order?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:8080/api/update-order-status', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderId, status: 'Completed' })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                toast.success('Order marked as completed!');
+                loadOrderData();
+            } else {
+                toast.error(result.message || 'Failed to update order');
+            }
+        } catch (error) {
+            console.error('Error updating order:', error);
+            toast.error('Error connecting to server');
+        }
+    }
+
     const getFilteredOrders = () => {
         if (filter === 'All') return orderData;
-        return orderData.filter(item => item.status === filter);
+        return orderData.filter(order => order.status === filter);
     }
 
     return (
@@ -120,50 +146,92 @@ const Orders = () => {
                 </div>
             </div>
 
-            <div className='flex flex-col gap-4 mt-8'>
+            <div className='flex flex-col gap-6 mt-8'>
                 {getFilteredOrders().length === 0 ? (
                     <div className="text-gray-500 mt-4 text-center w-full">
                         <p>No orders found for <span className="font-semibold">{userId}</span>.</p>
                     </div>
                 ) : (
-                    getFilteredOrders().map((item, index) => (
-                        <div key={index} className='py-4 border-t border-b text-[#504c41] flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
-
-                            <div className='flex items-start gap-6 text-sm'>
-                                {/* Image Display */}
-                                <img
-                                    className='w-16 sm:w-20 object-cover border border-gray-200'
-                                    src={item.image}
-                                    alt={item.name}
-                                />
-
+                    getFilteredOrders().map((order, index) => (
+                        <div key={index} className={`border rounded-lg p-6 ${order.isEmpty ? 'bg-red-50 border-red-200' : 'bg-white'}`}>
+                            {/* Order Header */}
+                            <div className='flex justify-between items-start mb-4 pb-4 border-b'>
                                 <div>
-                                    <p className='sm:text-base font-medium'>{item.name}</p>
-                                    <div className='flex items-center gap-3 mt-2 text-base text-[#504c41]'>
-                                        <p className='text-[#D0A823]'>{formatPrice(item.price)}</p>
-                                        <p>Qty: {item.quantity}</p>
-                                        <p className='uppercase text-xs border px-2 rounded'>{item.payment}</p>
-                                    </div>
-                                    <p className='mt-2 text-xs text-gray-400'>Ordered on: {item.date}</p>
+                                    <h3 className='font-bold text-lg text-[#504C41]'>Order #{order.orderId}</h3>
+                                    <p className='text-sm text-gray-500 mt-1'>
+                                        Placed on {new Date(order.date).toLocaleDateString()} • Payment: {order.paymentMethod.toUpperCase()}
+                                    </p>
+                                    {order.trackingNumber && (
+                                        <p className='text-sm text-purple-600 font-medium mt-1'>
+                                            Tracking Number: {order.trackingNumber}
+                                        </p>
+                                    )}
+                                </div>
+                                <div className='flex items-center gap-2'>
+                                    <p className={`min-w-2 h-2 rounded-full ${order.status === 'Ready to ship' ? 'bg-green-500' : order.status === 'Shipped' ? 'bg-purple-500' : order.status === 'Completed' ? 'bg-blue-500' : order.status === 'Cancelled' ? 'bg-red-500' : 'bg-gray-400'}`}></p>
+                                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${order.status === 'Ready to ship' ? 'bg-green-100 text-green-700' : order.status === 'Shipped' ? 'bg-purple-100 text-purple-700' : order.status === 'Completed' ? 'bg-blue-100 text-blue-700' : order.status === 'Cancelled' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'}`}>
+                                        {order.status}
+                                    </span>
                                 </div>
                             </div>
 
-                            <div className='md:w-1/2 flex justify-between items-center'>
-                                <div className='flex items-center gap-2'>
-                                    <p className={`min-w-2 h-2 rounded-full ${item.status === 'Ready to ship' ? 'bg-green-500' : item.status === 'Cancelled' ? 'bg-red-500' : 'bg-gray-400'}`}></p>
-                                    <p className='text-sm md:text-base'>{item.status}</p>
+                            {/* Order Items */}
+                            {order.isEmpty ? (
+                                <div className='text-center py-4'>
+                                    <p className='text-red-600 font-medium'>Error: No items in order</p>
+                                    <p className='text-sm text-red-500 mt-1'>This order was created with an error. Please place a new order.</p>
+                                </div>
+                            ) : (
+                                <div className='space-y-3 mb-4'>
+                                    {order.items.map((item, itemIdx) => (
+                                        <div key={itemIdx} className='flex items-center gap-4 py-2'>
+                                            {item.image ? (
+                                                <img className='w-16 h-16 object-cover border border-gray-200 rounded' src={item.image} alt={item.name} />
+                                            ) : (
+                                                <div className='w-16 h-16 bg-gray-200 flex items-center justify-center border border-gray-300 rounded'>
+                                                    <span className='text-xs text-gray-500'>No Image</span>
+                                                </div>
+                                            )}
+                                            <div className='flex-1'>
+                                                <p className='font-medium text-[#504c41]'>{item.name}</p>
+                                                <div className='flex items-center gap-3 mt-1 text-sm text-gray-600'>
+                                                    <span className='text-[#D0A823] font-medium'>{formatPrice(item.price)}</span>
+                                                    <span>×</span>
+                                                    <span>Qty: {item.quantity}</span>
+                                                </div>
+                                            </div>
+                                            <div className='text-right'>
+                                                <p className='font-semibold text-[#504c41]'>{formatPrice(item.price * item.quantity)}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* Order Total and Actions */}
+                            <div className='flex justify-between items-center pt-4 border-t'>
+                                <div className='text-lg font-bold text-[#504C41]'>
+                                    Total: {formatPrice(order.totalAmount)}
                                 </div>
                                 <div className='flex gap-2'>
-                                    {item.status === 'Ready to ship' && (
+                                    {order.status === 'Ready to ship' && !order.isEmpty && (
                                         <button
-                                            onClick={() => handleCancelOrder(item.orderId)}
-                                            className='border border-red-500 text-red-500 px-4 py-2 text-sm font-medium rounded-sm hover:bg-red-50 transition-all duration-300'
+                                            onClick={() => handleCancelOrder(order.orderId)}
+                                            className='border border-red-500 text-red-500 px-4 py-2 text-sm font-medium rounded hover:bg-red-50 transition-all'
                                         >
                                             Cancel Order
                                         </button>
                                     )}
-                                    <button onClick={loadOrderData} className='border border-gray-200 px-4 py-2 text-sm font-medium rounded-sm hover:bg-[#504c41] hover:text-white transition-all duration-300'>
-                                        Refresh Status
+                                    {order.status === 'Shipped' && !order.isEmpty && (
+                                        <button
+                                            onClick={() => handleMarkAsReceived(order.orderId)}
+                                            className='bg-green-600 hover:bg-green-700 text-white px-4 py-2 text-sm font-medium rounded transition-all'
+                                        >
+                                            Mark as Received
+                                        </button>
+                                    )}
+                                    <button onClick={loadOrderData} className='border border-gray-200 px-4 py-2 text-sm font-medium rounded hover:bg-[#504c41] hover:text-white transition-all'>
+                                        Refresh
                                     </button>
                                 </div>
                             </div>

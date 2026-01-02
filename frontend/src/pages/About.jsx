@@ -9,7 +9,7 @@ const About = () => {
       </div>
 
       <h1 className='text-4xl font-bold mb-6 text-[#504C41]'>Charting New Paths, One Dice Roll at a Time</h1>
-      
+
       <p className='text-lg text-gray-700 mb-8 leading-relaxed'>
         Welcome to DiceTrails. We believe that the best stories aren't found on screens, but on tabletops, shared between friends and family.
       </p>
@@ -31,10 +31,35 @@ const About = () => {
         </p>
       </div>
 
+      {/* Policies Section */}
+      <div id='policies' className='mb-12 pt-8 border-t'>
+        <h2 className='text-2xl font-bold mb-6 text-[#504C41]'>Our Policies</h2>
+
+        <div className='mb-6'>
+          <h3 className='text-lg font-semibold mb-3 text-[#504C41]'>Easy Exchange Policy</h3>
+          <p className='text-gray-700 leading-relaxed'>We offer a hassle-free exchange policy. If you receive a damaged or defective product, we will gladly exchange it for you. Simply contact our customer support team within 7 days of receiving your order, and we'll arrange for a replacement at no extra cost.</p>
+        </div>
+
+        <div className='mb-6'>
+          <h3 className='text-lg font-semibold mb-3 text-[#504C41]'>7 Days Return Policy</h3>
+          <p className='text-gray-700 leading-relaxed'>We provide a 7-day free return policy on all our products. If you're not completely satisfied with your purchase, you can return it within 7 days for a full refund. The product must be in its original condition and packaging. Return shipping costs will be covered by us if the product is defective or damaged.</p>
+        </div>
+
+        <div className='mb-6'>
+          <h3 className='text-lg font-semibold mb-3 text-[#504C41]'>24/7 Customer Support</h3>
+          <p className='text-gray-700 leading-relaxed'>We provide 24/7 customer support to ensure your gaming experience is smooth and enjoyable. Whether you have questions about our products, need help with an order, or want game recommendations, our dedicated support team is always here to help. Reach us via email at support@dicetrails.com or through our contact form.</p>
+        </div>
+
+        <div>
+          <h3 className='text-lg font-semibold mb-3 text-[#504C41]'>Newsletter Subscriber Benefits</h3>
+          <p className='text-gray-700 leading-relaxed'>Subscribe to our newsletter and enjoy 20% off on your first order! Plus, get exclusive access to new game releases, special promotions, and gaming tips delivered straight to your inbox.</p>
+        </div>
+      </div>
+
       {/* Delivery Section */}
       <div id='delivery' className='mb-12 pt-8 border-t'>
         <h2 className='text-2xl font-bold mb-6 text-[#504C41]'>Delivery & Shipping</h2>
-        
+
         <div className='mb-6'>
           <h3 className='text-lg font-semibold mb-3 text-[#504C41]'>How long does delivery take?</h3>
           <p className='text-gray-700 leading-relaxed'>We offer standard delivery within 3-5 business days and express delivery within 1-2 business days. All orders are processed within 24 hours during business days.</p>
@@ -59,7 +84,7 @@ const About = () => {
       {/* Privacy Policy Section */}
       <div id='privacy' className='mb-12 pt-8 border-t'>
         <h2 className='text-2xl font-bold mb-6 text-[#504C41]'>Privacy Policy</h2>
-        
+
         <div className='mb-6'>
           <h3 className='text-lg font-semibold mb-3 text-[#504C41]'>What data do we collect?</h3>
           <p className='text-gray-700 leading-relaxed'>We collect information necessary to process your orders, including name, email, shipping address, and payment details. We also track browsing behavior to improve your shopping experience.</p>

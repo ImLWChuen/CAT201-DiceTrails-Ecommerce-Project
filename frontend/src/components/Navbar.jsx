@@ -1,14 +1,18 @@
 import React, { useContext, useState } from 'react'
 import { assets } from '../assets/assets'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import { ShopContext } from '../context/ShopContext';
 import SearchBar from './SearchBar';
 
 const Navbar = () => {
 
     const [visible, setVisible] = useState(false);
+    const location = useLocation();
 
     const { getCartCount, setShowSearch, logout, user } = useContext(ShopContext);
+
+    // Hide search on login page
+    const isLoginPage = location.pathname === '/login';
 
     return (
 
@@ -53,14 +57,20 @@ const Navbar = () => {
                 </NavLink>
             </ul>
             <div className='flex items-center gap-6'>
-                <div className='relative flex items-center gap-2'>
-                    <SearchBar />
-                    <img onClick={() => setShowSearch(prev => !prev)} src={assets.search_icon} className='w-5 h-5 cursor-pointer' alt="Search" />
-                </div>
+                {!isLoginPage && (
+                    <div className='relative flex items-center gap-2'>
+                        <SearchBar />
+                        <img onClick={() => setShowSearch(prev => !prev)} src={assets.search_icon} className='w-5 h-5 cursor-pointer' alt="Search" />
+                    </div>
+                )}
 
                 <div className='group relative'>
                     {user
-                        ? <img src={assets.profile_icon} className='w-5 h-5 cursor-pointer' alt="Profile" />
+                        ? (
+                            <div className='w-6 h-6 bg-[#FEED9F] rounded-full flex items-center justify-center text-[#D0A823] text-sm font-bold border-2 border-[#D0A823] cursor-pointer capitalize'>
+                                {user.username ? user.username[0] : (user.email ? user.email[0] : 'U')}
+                            </div>
+                        )
                         : <Link to={'/login'}><img src={assets.profile_icon} className='w-5 h-5 cursor-pointer' alt="Profile" /></Link>
                     }
 

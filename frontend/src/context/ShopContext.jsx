@@ -1,5 +1,4 @@
 import { createContext, useEffect, useState } from "react";
-import { products } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -13,6 +12,7 @@ const ShopContextProvider = (props) => {
     const [search, setSearch] = useState('');
     const [showSearch, setShowSearch] = useState(false);
     const [cartItems, setCartItems] = useState({});
+    const [products, setProducts] = useState([]);
 
     // Initialize user from localStorage if available
     const [user, setUser] = useState(() => {
@@ -20,19 +20,35 @@ const ShopContextProvider = (props) => {
         const username = localStorage.getItem('username');
         const userId = localStorage.getItem('userId');
         const isAdmin = localStorage.getItem('isAdmin') === 'true';
+        const isNewsletterSubscribed = localStorage.getItem('isNewsletterSubscribed') === 'true';
+        const hasUsedNewsletterDiscount = localStorage.getItem('hasUsedNewsletterDiscount') === 'true';
 
         if (email) {
             return {
                 email,
                 username,
                 userId: userId ? Number(userId) : null,
-                isAdmin
+                isAdmin,
+                isNewsletterSubscribed,
+                hasUsedNewsletterDiscount
             };
         }
         return null;
     });
 
     const backendUrl = "http://localhost:8080";
+
+    const loadProductsData = async () => {
+        try {
+            const response = await fetch(backendUrl + '/api/products');
+            const data = await response.json();
+            if (data && Array.isArray(data)) {
+                setProducts(data);
+            }
+        } catch (error) {
+            console.error('Error loading products:', error);
+        }
+    }
 
     const loadCartData = async (userId) => {
         try {
@@ -124,7 +140,7 @@ const ShopContextProvider = (props) => {
     const getCartAmount = () => {
         let totalAmount = 0;
         for (const items in cartItems) {
-            let itemInfo = products.find((product) => product._id === items);
+            let itemInfo = products.find((product) => product._id === Number(items)); // Convert string to number
             if (cartItems[items] > 0 && itemInfo) {
                 totalAmount += itemInfo.price * cartItems[items];
             }
@@ -148,6 +164,8 @@ const ShopContextProvider = (props) => {
                 localStorage.setItem('username', data.user.username); // Store username
                 localStorage.setItem('userId', data.user.userId); // Store userId
                 localStorage.setItem('isAdmin', data.user.isAdmin);
+                localStorage.setItem('isNewsletterSubscribed', data.user.isNewsletterSubscribed || false);
+                localStorage.setItem('hasUsedNewsletterDiscount', data.user.hasUsedNewsletterDiscount || false);
 
                 toast.success("Login Successful");
                 loadCartData(data.user.email);
@@ -201,10 +219,41 @@ const ShopContextProvider = (props) => {
         localStorage.removeItem('username');
         localStorage.removeItem('userId');
         localStorage.removeItem('isAdmin');
+        localStorage.removeItem('isNewsletterSubscribed');
+        localStorage.removeItem('hasUsedNewsletterDiscount');
         // -------------------------------------
 
         navigate('/login');
         toast.info("Logged out");
+    }
+
+    const subscribeNewsletter = async (email) => {
+        try {
+            const response = await fetch(backendUrl + '/api/subscribe-newsletter', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                // Update user state and localStorage
+                if (user) {
+                    const updatedUser = { ...user, isNewsletterSubscribed: true };
+                    setUser(updatedUser);
+                    localStorage.setItem('isNewsletterSubscribed', 'true');
+                }
+                toast.success(data.message);
+                return true;
+            } else {
+                toast.error(data.message);
+                return false;
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to subscribe to newsletter");
+            return false;
+        }
     }
     const checkBackendConnection = async () => {
         try {
@@ -217,6 +266,9 @@ const ShopContextProvider = (props) => {
     }
 
     useEffect(() => {
+        // Load products from backend
+        loadProductsData();
+
         const storedEmail = localStorage.getItem('userEmail');
         if (storedEmail && Object.keys(cartItems).length === 0) {
             loadCartData(storedEmail);
@@ -230,7 +282,7 @@ const ShopContextProvider = (props) => {
         search, setSearch, showSearch, setShowSearch,
         cartItems, setCartItems, addToCart, getCartCount, updateQuantity,
         getCartAmount, navigate,
-        user, login, signup, logout
+        user, login, signup, logout, subscribeNewsletter
     }
 
     return (

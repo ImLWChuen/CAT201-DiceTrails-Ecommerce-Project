@@ -106,11 +106,23 @@ const Product = () => {
           <p className='mt-5 text-3xl font-medium text-[#D0A823]'>{formatPrice(productData.price)}</p>
           <p className='mt-5 text-gray-500 md:w-4/5'>{productData.description}</p>
 
+          {/* Stock Quantity Display */}
+          <div className='mt-4 flex items-center gap-2'>
+            <span className='text-sm font-semibold text-gray-700'>Availability:</span>
+            {productData.quantity > 0 ? (
+              <span className='text-sm text-green-600 font-medium'>
+                {productData.quantity} {productData.quantity === 1 ? 'item' : 'items'} in stock
+              </span>
+            ) : (
+              <span className='text-sm text-red-600 font-medium'>Out of Stock</span>
+            )}
+          </div>
+
           {/* ADD TO CART BUTTON */}
           <button
             onClick={() => {
               if (productData.quantity === 0) {
-                alert('This product is currently out of stock');
+                toast.warning('This product is currently out of stock');
                 return;
               }
               addToCart(productData._id);
