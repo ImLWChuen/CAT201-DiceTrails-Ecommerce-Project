@@ -4,6 +4,8 @@ import ProductManagement from '../components/ProductManagement'
 import ReviewManagement from '../components/ReviewManagement'
 import OrderManagement from '../components/OrderManagement'
 import ContactManagement from '../components/ContactManagement'
+import VoucherManagement from '../components/VoucherManagement'
+import UserManagement from '../components/UserManagement'
 import { useNavigate } from 'react-router-dom'
 
 const AdminDashboard = () => {
@@ -73,7 +75,13 @@ const AdminDashboard = () => {
               type='text'
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={`Search ${activeTab === 'products' ? 'products...' : activeTab === 'orders' ? 'orders...' : 'reviews...'}`}
+              placeholder={`Search ${activeTab === 'products' ? 'products...' :
+                  activeTab === 'orders' ? 'orders...' :
+                    activeTab === 'reviews' ? 'reviews...' :
+                      activeTab === 'vouchers' ? 'vouchers...' :
+                        activeTab === 'users' ? 'users...' :
+                          'messages...'
+                }`}
               className='w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:border-[#D0A823] focus:ring-1 focus:ring-[#D0A823]'
             />
             <svg
@@ -135,6 +143,24 @@ const AdminDashboard = () => {
           >
             Messages
           </button>
+          <button
+            onClick={() => setActiveTab('vouchers')}
+            className={`pb-3 px-1 border-b-2 transition-all font-medium ${activeTab === 'vouchers'
+              ? 'border-[#D0A823] text-[#504c41]'
+              : 'border-transparent hover:text-gray-700'
+              }`}
+          >
+            Vouchers
+          </button>
+          <button
+            onClick={() => setActiveTab('users')}
+            className={`pb-3 px-1 border-b-2 transition-all font-medium ${activeTab === 'users'
+              ? 'border-[#D0A823] text-[#504c41]'
+              : 'border-transparent hover:text-gray-700'
+              }`}
+          >
+            Users
+          </button>
         </div>
 
         {/* Content Area */}
@@ -150,6 +176,12 @@ const AdminDashboard = () => {
           )}
           {activeTab === 'messages' && (
             <ContactManagement searchQuery={searchQuery} />
+          )}
+          {activeTab === 'vouchers' && (
+            <VoucherManagement searchQuery={searchQuery} />
+          )}
+          {activeTab === 'users' && (
+            <UserManagement searchQuery={searchQuery} />
           )}
         </div>
       </div>

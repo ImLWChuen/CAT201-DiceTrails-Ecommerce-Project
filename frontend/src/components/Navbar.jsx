@@ -80,6 +80,7 @@ const Navbar = () => {
                             <div className='flex flex-col gap-2 w-48 py-3 px-5 bg-slate-100 text-gray-500 rounded'>
                                 <Link to='/profile'><p className='cursor-pointer hover:text-black'>My Profile</p></Link>
                                 <Link to='/orders'><p className='cursor-pointer hover:text-black'>Orders</p></Link>
+                                <Link to='/my-vouchers'><p className='cursor-pointer hover:text-black'>My Vouchers</p></Link>
                                 {user.isAdmin && (
                                     <Link to='/admin'><p className='cursor-pointer hover:text-black font-semibold text-[#D0A823]'>Admin Dashboard</p></Link>
                                 )}

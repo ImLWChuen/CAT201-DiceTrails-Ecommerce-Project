@@ -355,9 +355,12 @@ const ProductManagement = ({ products, setProducts, searchQuery = '' }) => {
                 onChange={handleInputChange}
                 className='w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-[#D0A823]'
               >
-                <option value='strategy'>Strategy</option>
-                <option value='family'>Family</option>
-                <option value='party'>Party</option>
+                <option value='strategy'>Strategy Games</option>
+                <option value='family'>Family Games</option>
+                <option value='party'>Party Games</option>
+                <option value='abstract'>Abstract Games</option>
+                <option value='word'>Word Games</option>
+                <option value='mystery'>Mystery Games</option>
               </select>
             </div>
 

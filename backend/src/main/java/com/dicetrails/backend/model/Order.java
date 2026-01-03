@@ -23,6 +23,7 @@ public class Order {
     private double shippingFee; // Shipping fee for the order
     private boolean newsletterDiscountApplied; // Whether newsletter discount was applied
     private String region; // Delivery region (west, east, international)
+    private String voucherCode; // Voucher code applied to this order
 
     private List<Map<String, Object>> items;
 
@@ -134,5 +135,13 @@ public class Order {
 
     public void setRegion(String region) {
         this.region = region;
+    }
+
+    public String getVoucherCode() {
+        return voucherCode;
+    }
+
+    public void setVoucherCode(String voucherCode) {
+        this.voucherCode = voucherCode;
     }
 }

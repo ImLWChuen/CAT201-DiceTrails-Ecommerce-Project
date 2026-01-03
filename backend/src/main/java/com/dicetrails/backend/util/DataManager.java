@@ -2,6 +2,7 @@ package com.dicetrails.backend.util;
 
 import com.dicetrails.backend.model.ContactMessage;
 import com.dicetrails.backend.model.Review;
+import com.dicetrails.backend.model.Voucher;
 
 // ... (existing imports, but since I can't modify top of file easily with multi-chunk in this tool, I'll assum imports are managed or I use full names if possible, but actually replace_file_content replaces contiguous blocks. I need to be careful with imports.
 
@@ -44,6 +45,9 @@ public class DataManager {
     private List<Review> reviews;
     private final String REVIEW_FILE = "reviews.json";
 
+    private List<Voucher> vouchers;
+    private final String VOUCHER_FILE = "vouchers.json";
+
     private final Gson gson;
 
     private DataManager() {
@@ -57,6 +61,8 @@ public class DataManager {
         contacts = loadData(CONTACT_FILE, new TypeToken<ArrayList<ContactMessage>>() {
         }.getType());
         reviews = loadData(REVIEW_FILE, new TypeToken<ArrayList<Review>>() {
+        }.getType());
+        vouchers = loadData(VOUCHER_FILE, new TypeToken<ArrayList<Voucher>>() {
         }.getType());
     }
 
@@ -90,6 +96,10 @@ public class DataManager {
 
     // User-related methods
     public synchronized void addUser(User user) {
+        // Assign next userId if not already set
+        if (user.getUserId() == 0) {
+            user.setUserId(getNextUserId());
+        }
         users.add(user);
         saveData(USER_FILE, users);
     }
@@ -297,5 +307,107 @@ public class DataManager {
                 break;
             }
         }
+    }
+
+    // Voucher management methods
+    public List<Voucher> getAllVouchers() {
+        return new ArrayList<>(vouchers);
+    }
+
+    public List<Voucher> getActiveVouchers() {
+        return vouchers.stream()
+                .filter(Voucher::isActive)
+                .collect(Collectors.toList());
+    }
+
+    public Optional<Voucher> getVoucherByCode(String code) {
+        return vouchers.stream()
+                .filter(v -> v.getCode().equalsIgnoreCase(code))
+                .findFirst();
+    }
+
+    public synchronized void addVoucher(Voucher voucher) {
+        vouchers.add(voucher);
+        saveData(VOUCHER_FILE, vouchers);
+    }
+
+    public synchronized boolean updateVoucher(Voucher updatedVoucher) {
+        for (int i = 0; i < vouchers.size(); i++) {
+            if (vouchers.get(i).getCode().equalsIgnoreCase(updatedVoucher.getCode())) {
+                vouchers.set(i, updatedVoucher);
+                saveData(VOUCHER_FILE, vouchers);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public synchronized boolean deleteVoucher(String code) {
+        boolean removed = vouchers.removeIf(v -> v.getCode().equalsIgnoreCase(code));
+        if (removed) {
+            saveData(VOUCHER_FILE, vouchers);
+        }
+        return removed;
+    }
+
+    public Optional<Voucher> validateVoucher(String code, String userId) {
+        Optional<Voucher> voucherOpt = getVoucherByCode(code);
+        if (voucherOpt.isPresent()) {
+            Voucher voucher = voucherOpt.get();
+            if (voucher.isActive()) {
+                // Check if this user has already used this voucher
+                boolean alreadyUsed = orders.stream()
+                        .anyMatch(order -> order.getUserId().equals(userId) &&
+                                code.equals(order.getVoucherCode()));
+
+                if (alreadyUsed) {
+                    return Optional.empty(); // Voucher already used by this user
+                }
+
+                return Optional.of(voucher);
+            }
+        }
+        return Optional.empty();
+    }
+
+    // User management methods
+    public List<User> getAllUsers() {
+        return new ArrayList<>(users);
+    }
+
+    /**
+     * Completely delete a user and all associated data
+     * 
+     * @param userEmail Email of the user to delete
+     * @return true if user was found and deleted, false otherwise
+     */
+    public synchronized boolean deleteUserCompletely(String userEmail) {
+        // Find and remove user
+        boolean userRemoved = users.removeIf(u -> u.getEmail().equals(userEmail));
+
+        if (!userRemoved) {
+            return false; // User not found
+        }
+
+        // Delete all orders by this user
+        boolean ordersRemoved = orders.removeIf(order -> order.getUserId().equals(userEmail));
+
+        // Delete all reviews by this user
+        boolean reviewsRemoved = reviews.removeIf(review -> review.getUser().equals(userEmail));
+
+        // Save all modifications
+        saveData(USER_FILE, users);
+        if (ordersRemoved) {
+            saveData(ORDER_FILE, orders);
+        }
+        if (reviewsRemoved) {
+            saveData(REVIEW_FILE, reviews);
+        }
+
+        System.out.println("User deleted: " + userEmail);
+        System.out.println("Orders removed: " + ordersRemoved);
+        System.out.println("Reviews removed: " + reviewsRemoved);
+
+        return true;
     }
 }

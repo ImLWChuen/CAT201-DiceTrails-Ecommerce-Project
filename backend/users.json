@@ -1,38 +1,5 @@
 [
   {
-    "userId": 10000001,
-    "username": "diceMaster",
-    "email": "user@example.com",
-    "password": "hashed_password_here",
-    "isAdmin": false,
-    "cart": {},
-    "orders": [],
-    "isNewsletterSubscribed": false,
-    "hasUsedNewsletterDiscount": false
-  },
-  {
-    "userId": 10000002,
-    "username": "trailBlazer",
-    "email": "trailblazer@example.com",
-    "password": "hashed_password_here",
-    "isAdmin": false,
-    "cart": {},
-    "orders": [],
-    "isNewsletterSubscribed": false,
-    "hasUsedNewsletterDiscount": false
-  },
-  {
-    "userId": 10000003,
-    "username": "JJ",
-    "email": "test@email.com",
-    "password": "1234",
-    "isAdmin": false,
-    "cart": {},
-    "orders": [],
-    "isNewsletterSubscribed": false,
-    "hasUsedNewsletterDiscount": false
-  },
-  {
     "userId": 10000004,
     "username": "Yun Han",
     "email": "pikyunhan@gmail.com",
@@ -49,18 +16,23 @@
     "email": "alanlwc837@gmail.com",
     "password": "12345678",
     "isAdmin": false,
-    "cart": {},
+    "cart": {
+      "20000013": 1
+    },
     "orders": [],
-    "isNewsletterSubscribed": false,
-    "hasUsedNewsletterDiscount": false
+    "isNewsletterSubscribed": true,
+    "hasUsedNewsletterDiscount": true
   },
   {
-    "userId": 10000006,
+    "userId": 10000000,
     "username": "Admin",
     "email": "admin@dicetrails.com",
     "password": "admin123",
     "isAdmin": true,
-    "cart": {},
+    "cart": {
+      "20000009": 0,
+      "20000015": 0
+    },
     "orders": [],
     "isNewsletterSubscribed": false,
     "hasUsedNewsletterDiscount": false
@@ -75,27 +47,5 @@
     "orders": [],
     "isNewsletterSubscribed": true,
     "hasUsedNewsletterDiscount": true
-  },
-  {
-    "userId": 0,
-    "username": "Test User Validation",
-    "email": "testvalidation@example.com",
-    "password": "Password123",
-    "isAdmin": false,
-    "cart": {},
-    "orders": [],
-    "isNewsletterSubscribed": false,
-    "hasUsedNewsletterDiscount": false
-  },
-  {
-    "userId": 0,
-    "username": "TestUser123",
-    "email": "testuser@example.com",
-    "password": "Test1234",
-    "isAdmin": false,
-    "cart": {},
-    "orders": [],
-    "isNewsletterSubscribed": false,
-    "hasUsedNewsletterDiscount": false
   }
 ]

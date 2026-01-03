@@ -237,13 +237,32 @@ const Orders = () => {
                                 <div className='space-y-2 text-sm'>
                                     {/* Calculate subtotal from items */}
                                     {(() => {
-                                        const subtotal = order.items?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || 0;
-                                        const discountAmount = order.newsletterDiscountApplied ? subtotal * 0.2 : 0;
+                                        // Calculate subtotal using discounted prices
+                                        const subtotal = order.items?.reduce((sum, item) => {
+                                            const discountedPrice = calculateDiscountedPrice(item);
+                                            return sum + (discountedPrice * item.quantity);
+                                        }, 0) || 0;
+
+                                        // Get the actual shipping fee from order or calculate expected
+                                        const actualShippingFee = order.shippingFee !== undefined ? order.shippingFee : 10; // Default to 10 if not set
+
+                                        // Calculate what the total SHOULD be without any discount
+                                        const expectedTotalWithoutDiscount = subtotal + actualShippingFee;
+
+                                        // Detect if a discount was applied by comparing expected vs actual total
+                                        const hasDiscountApplied = order.newsletterDiscountApplied ||
+                                            (order.totalAmount < expectedTotalWithoutDiscount - 0.01); // 0.01 threshold for floating point
+
+                                        // Calculate newsletter discount amount
+                                        const newsletterDiscountAmount = order.newsletterDiscountApplied ? subtotal * 0.2 : 0;
 
                                         // Check if order has breakdown fields (new orders after update)
-                                        const hasBreakdown = order.hasOwnProperty('shippingFee') || order.hasOwnProperty('newsletterDiscountApplied');
+                                        const hasBreakdown = order.hasOwnProperty('shippingFee') ||
+                                            order.hasOwnProperty('newsletterDiscountApplied') ||
+                                            order.hasOwnProperty('region') ||
+                                            hasDiscountApplied;
 
-                                        // For old orders, just show total
+                                        // For old orders without any breakdown data, just show total
                                         if (!hasBreakdown) {
                                             return (
                                                 <div className='flex justify-between text-lg font-bold text-[#504C41]'>
@@ -253,22 +272,28 @@ const Orders = () => {
                                             );
                                         }
 
-                                        // For new orders, show full breakdown
+                                        // For orders with breakdown, show full details
                                         return (
                                             <>
                                                 <div className='flex justify-between text-gray-600'>
                                                     <span>Subtotal:</span>
                                                     <span>{formatPrice(subtotal)}</span>
                                                 </div>
+                                                {order.voucherCode && (
+                                                    <div className='flex justify-between text-green-600 font-medium'>
+                                                        <span>Voucher Discount ({order.voucherCode}):</span>
+                                                        <span>-{formatPrice((subtotal + actualShippingFee) - order.totalAmount)}</span>
+                                                    </div>
+                                                )}
                                                 {order.newsletterDiscountApplied && (
                                                     <div className='flex justify-between text-green-600 font-medium'>
                                                         <span>Newsletter Discount (20%):</span>
-                                                        <span>-{formatPrice(discountAmount)}</span>
+                                                        <span>-{formatPrice(newsletterDiscountAmount)}</span>
                                                     </div>
                                                 )}
                                                 <div className='flex justify-between text-gray-600'>
                                                     <span>Shipping Fee{order.region ? ` (${order.region})` : ''}:</span>
-                                                    <span>{order.shippingFee > 0 ? formatPrice(order.shippingFee) : 'FREE'}</span>
+                                                    <span>{actualShippingFee > 0 ? formatPrice(actualShippingFee) : 'FREE'}</span>
                                                 </div>
                                                 <div className='flex justify-between text-lg font-bold text-[#504C41] pt-2 border-t'>
                                                     <span>Total:</span>

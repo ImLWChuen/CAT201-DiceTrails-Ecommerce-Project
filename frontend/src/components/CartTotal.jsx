@@ -2,14 +2,16 @@
 import React, { useContext } from 'react'
 import { ShopContext } from '../context/ShopContext'
 
-const CartTotal = ({ shippingFee = null, newsletterDiscount = 0, region = null }) => {
+const CartTotal = ({ shippingFee = null, newsletterDiscount = 0, region = null, voucherDiscount = 0, appliedVoucher = null }) => {
 
     const { currency, delivery_fee, getCartAmount } = useContext(ShopContext);
 
     // Use provided shipping fee or default delivery fee
     const finalShippingFee = shippingFee !== null ? shippingFee : delivery_fee;
     const subtotal = getCartAmount();
-    const discountAmount = newsletterDiscount > 0 ? subtotal * newsletterDiscount : 0;
+
+    // Calculate discount amount (voucher takes priority)
+    const discountAmount = voucherDiscount > 0 ? voucherDiscount : (newsletterDiscount > 0 ? subtotal * newsletterDiscount : 0);
     const subtotalAfterDiscount = subtotal - discountAmount;
     const total = subtotalAfterDiscount + finalShippingFee;
 
@@ -28,7 +30,19 @@ const CartTotal = ({ shippingFee = null, newsletterDiscount = 0, region = null }
                     <p>{currency} {subtotal.toFixed(2)}</p>
                 </div>
 
-                {newsletterDiscount > 0 && (
+                {voucherDiscount > 0 && (
+                    <div className='flex justify-between py-2 border-b text-green-600'>
+                        <p>
+                            Voucher Discount ({appliedVoucher?.code})
+                            {appliedVoucher?.discountType === 'percentage' && (
+                                <span className='text-xs ml-1'>({appliedVoucher.discountValue}% off)</span>
+                            )}
+                        </p>
+                        <p>-{currency} {voucherDiscount.toFixed(2)}</p>
+                    </div>
+                )}
+
+                {newsletterDiscount > 0 && voucherDiscount === 0 && (
                     <div className='flex justify-between py-2 border-b text-green-600'>
                         <p>Newsletter Discount (20% off)</p>
                         <p>-{currency} {discountAmount.toFixed(2)}</p>

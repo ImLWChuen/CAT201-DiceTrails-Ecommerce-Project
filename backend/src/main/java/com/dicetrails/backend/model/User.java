@@ -16,6 +16,7 @@ public class User implements Serializable {
     private List<Map<String, Object>> orders;
     private boolean isNewsletterSubscribed;
     private boolean hasUsedNewsletterDiscount;
+    private List<String> usedVouchers;
 
     public User(String username, String email, String password) {
         this.username = username;
@@ -26,6 +27,7 @@ public class User implements Serializable {
         this.orders = new ArrayList<>();
         this.isNewsletterSubscribed = false;
         this.hasUsedNewsletterDiscount = false;
+        this.usedVouchers = new ArrayList<>();
     }
 
     // Getters and Setters
@@ -99,5 +101,16 @@ public class User implements Serializable {
 
     public void setHasUsedNewsletterDiscount(boolean hasUsedNewsletterDiscount) {
         this.hasUsedNewsletterDiscount = hasUsedNewsletterDiscount;
+    }
+
+    public List<String> getUsedVouchers() {
+        if (usedVouchers == null) {
+            usedVouchers = new ArrayList<>();
+        }
+        return usedVouchers;
+    }
+
+    public void setUsedVouchers(List<String> usedVouchers) {
+        this.usedVouchers = usedVouchers;
     }
 }

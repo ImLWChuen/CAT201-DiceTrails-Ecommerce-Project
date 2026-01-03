@@ -238,7 +238,7 @@ const OrderManagement = ({ searchQuery = '' }) => {
                                         Mark as Shipped
                                     </button>
                                 )}
-                                {order.status !== 'Cancelled' && order.status !== 'Completed' && (
+                                {order.status !== 'Cancelled' && order.status !== 'Completed' && order.status !== 'Shipped' && (
                                     <button
                                         onClick={() => {
                                             if (window.confirm('Are you sure you want to cancel this order?')) {
