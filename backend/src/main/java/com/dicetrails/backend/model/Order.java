@@ -5,25 +5,33 @@ import java.util.Map;
 
 public class Order {
     private String orderId;
-    
-    private String userId; 
-    
-    private Map<String, String> deliveryAddress; 
-    
-    private String paymentMethod; 
-    
-    private double totalAmount; 
-    
-    private long date; 
-    
-    private String status; 
-    
-    private List<Map<String, Object>> items; 
 
-    public Order() {}
+    private String userId;
 
-    public Order(String userId, Map<String, String> deliveryAddress, String paymentMethod, 
-                 double totalAmount, List<Map<String, Object>> items) {
+    private Map<String, String> deliveryAddress;
+
+    private String paymentMethod;
+
+    private double totalAmount;
+
+    private long date;
+
+    private String status;
+
+    private String trackingNumber; // New field for tracking number
+
+    private double shippingFee; // Shipping fee for the order
+    private boolean newsletterDiscountApplied; // Whether newsletter discount was applied
+    private String region; // Delivery region (west, east, international)
+    private String voucherCode; // Voucher code applied to this order
+
+    private List<Map<String, Object>> items;
+
+    public Order() {
+    }
+
+    public Order(String userId, Map<String, String> deliveryAddress, String paymentMethod,
+            double totalAmount, List<Map<String, Object>> items) {
         this.userId = userId;
         this.deliveryAddress = deliveryAddress;
         this.paymentMethod = paymentMethod;
@@ -32,7 +40,7 @@ public class Order {
         this.date = System.currentTimeMillis();
         this.status = "Order Placed";
     }
-    
+
     public String getOrderId() {
         return orderId;
     }
@@ -89,11 +97,51 @@ public class Order {
         this.status = status;
     }
 
+    public String getTrackingNumber() {
+        return trackingNumber;
+    }
+
+    public void setTrackingNumber(String trackingNumber) {
+        this.trackingNumber = trackingNumber;
+    }
+
     public List<Map<String, Object>> getItems() {
         return items;
     }
 
     public void setItems(List<Map<String, Object>> items) {
         this.items = items;
+    }
+
+    public double getShippingFee() {
+        return shippingFee;
+    }
+
+    public void setShippingFee(double shippingFee) {
+        this.shippingFee = shippingFee;
+    }
+
+    public boolean isNewsletterDiscountApplied() {
+        return newsletterDiscountApplied;
+    }
+
+    public void setNewsletterDiscountApplied(boolean newsletterDiscountApplied) {
+        this.newsletterDiscountApplied = newsletterDiscountApplied;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public String getVoucherCode() {
+        return voucherCode;
+    }
+
+    public void setVoucherCode(String voucherCode) {
+        this.voucherCode = voucherCode;
     }
 }

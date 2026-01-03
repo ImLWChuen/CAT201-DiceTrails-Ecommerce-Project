@@ -1,49 +1,51 @@
 [
   {
-    "username": "diceMaster",
-    "email": "user@example.com",
-    "password": "hashed_password_here",
-    "cart": {
-      "aaaaa": 1,
-      "aaaab": 2,
-      "aaaad": 1
-    }
-  },
-  {
-    "username": "trailBlazer",
-    "email": "trailblazer@example.com",
-    "password": "hashed_password_here",
-    "cart": {
-      "aaaah": 1
-    }
-  },
-  {
-    "username": "JJ",
-    "email": "test@email.com",
-    "password": "1234",
-    "cart": {
-      "aaaac": 0,
-      "aaaai": 1
-    },
-    "orders": []
-  },
-  {
+    "userId": 10000004,
     "username": "Yun Han",
     "email": "pikyunhan@gmail.com",
     "password": "yunhan18",
-    "cart": {
-      "aaaab": 1,
-      "aaaaj": 1
-    },
-    "orders": []
+    "isAdmin": false,
+    "cart": {},
+    "orders": [],
+    "isNewsletterSubscribed": false,
+    "hasUsedNewsletterDiscount": false
   },
   {
-    "username": "Kathy",
-    "email": "kathylum0921@gmail.com",
-    "password": "kathy0116",
+    "userId": 10000005,
+    "username": "Loh Wei Chuen",
+    "email": "alanlwc837@gmail.com",
+    "password": "12345678",
+    "isAdmin": false,
     "cart": {
-      "aaaaa": 0
+      "20000013": 1
     },
-    "orders": []
+    "orders": [],
+    "isNewsletterSubscribed": true,
+    "hasUsedNewsletterDiscount": true
+  },
+  {
+    "userId": 10000000,
+    "username": "Admin",
+    "email": "admin@dicetrails.com",
+    "password": "admin123",
+    "isAdmin": true,
+    "cart": {
+      "20000009": 0,
+      "20000015": 0
+    },
+    "orders": [],
+    "isNewsletterSubscribed": false,
+    "hasUsedNewsletterDiscount": false
+  },
+  {
+    "userId": 10000007,
+    "username": "Kazuha Nakamura",
+    "email": "zuhazana@gmail.com",
+    "password": "12345678",
+    "isAdmin": false,
+    "cart": {},
+    "orders": [],
+    "isNewsletterSubscribed": true,
+    "hasUsedNewsletterDiscount": true
   }
 ]

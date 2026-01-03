@@ -1,0 +1,16 @@
+[
+  {
+    "code": "DICETRAILSGIFT",
+    "discountType": "percentage",
+    "discountValue": 10.0,
+    "isActive": true,
+    "description": "Initial voucher"
+  },
+  {
+    "code": "WELCOME10",
+    "discountType": "fixed",
+    "discountValue": 10.0,
+    "isActive": true,
+    "description": "welcome gift always available"
+  }
+]

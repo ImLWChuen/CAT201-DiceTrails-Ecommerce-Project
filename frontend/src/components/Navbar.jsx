@@ -1,14 +1,18 @@
 import React, { useContext, useState } from 'react'
 import { assets } from '../assets/assets'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import { ShopContext } from '../context/ShopContext';
 import SearchBar from './SearchBar';
 
 const Navbar = () => {
 
     const [visible, setVisible] = useState(false);
+    const location = useLocation();
 
     const { getCartCount, setShowSearch, logout, user } = useContext(ShopContext);
+
+    // Hide search on login page
+    const isLoginPage = location.pathname === '/login';
 
     return (
 
@@ -19,41 +23,67 @@ const Navbar = () => {
             </Link>
 
             <ul className='hidden sm:flex gap-5 text-sm text-[504C41]'>
-                <NavLink to='/' className='flex flex-col items-center gap-1 cursor-pointer'>
-                    <p>Home</p>
-                    <hr className='w-2/4 border-none h-[1.5px] bg-[#D0A823] hidden' />
+                <NavLink to='/' className={({ isActive }) => `flex flex-col items-center gap-1 cursor-pointer ${isActive ? 'font-bold' : ''}`}>
+                    {({ isActive }) => (
+                        <>
+                            <p>Home</p>
+                            <hr className={`w-2/4 border-none h-[1.5px] bg-[#D0A823] ${isActive ? '' : 'hidden'}`} />
+                        </>
+                    )}
                 </NavLink>
-                <NavLink to='/collection' className='flex flex-col items-center gap-1 cursor-pointer'>
-                    <p>Collection</p>
-                    <hr className='w-2/4 border-none h-[1.5px] bg-[#D0A823] hidden' />
+                <NavLink to='/catalogue' className={({ isActive }) => `flex flex-col items-center gap-1 cursor-pointer ${isActive ? 'font-bold' : ''}`}>
+                    {({ isActive }) => (
+                        <>
+                            <p>Catalogue</p>
+                            <hr className={`w-2/4 border-none h-[1.5px] bg-[#D0A823] ${isActive ? '' : 'hidden'}`} />
+                        </>
+                    )}
                 </NavLink>
-                <NavLink to='/about' className='flex flex-col items-center gap-1 cursor-pointer'>
-                    <p>About</p>
-                    <hr className='w-2/4 border-none h-[1.5px] bg-[#D0A823] hidden' />
+                <NavLink to='/about' className={({ isActive }) => `flex flex-col items-center gap-1 cursor-pointer ${isActive ? 'font-bold' : ''}`}>
+                    {({ isActive }) => (
+                        <>
+                            <p>About</p>
+                            <hr className={`w-2/4 border-none h-[1.5px] bg-[#D0A823] ${isActive ? '' : 'hidden'}`} />
+                        </>
+                    )}
                 </NavLink>
-                <NavLink to='/contact' className='flex flex-col items-center gap-1 cursor-pointer'>
-                    <p>Contact</p>
-                    <hr className='w-2/4 border-none h-[1.5px] bg-[#D0A823] hidden' />
+                <NavLink to='/contact' className={({ isActive }) => `flex flex-col items-center gap-1 cursor-pointer ${isActive ? 'font-bold' : ''}`}>
+                    {({ isActive }) => (
+                        <>
+                            <p>Contact</p>
+                            <hr className={`w-2/4 border-none h-[1.5px] bg-[#D0A823] ${isActive ? '' : 'hidden'}`} />
+                        </>
+                    )}
                 </NavLink>
             </ul>
             <div className='flex items-center gap-6'>
-                <div className='relative flex items-center gap-2'>
-                    <SearchBar />
-                    <img onClick={() => setShowSearch(prev => !prev)} src={assets.search_icon} className='w-5 h-5 cursor-pointer' alt="Search" />
-                </div>
+                {!isLoginPage && (
+                    <div className='relative flex items-center gap-2'>
+                        <SearchBar />
+                        <img onClick={() => setShowSearch(prev => !prev)} src={assets.search_icon} className='w-5 h-5 cursor-pointer' alt="Search" />
+                    </div>
+                )}
 
                 <div className='group relative'>
                     {user
-                        ? <img src={assets.profile_icon} className='w-5 h-5 cursor-pointer' alt="Profile" />
+                        ? (
+                            <div className='w-6 h-6 bg-[#FEED9F] rounded-full flex items-center justify-center text-[#D0A823] text-sm font-bold border-2 border-[#D0A823] cursor-pointer capitalize'>
+                                {user.username ? user.username[0] : (user.email ? user.email[0] : 'U')}
+                            </div>
+                        )
                         : <Link to={'/login'}><img src={assets.profile_icon} className='w-5 h-5 cursor-pointer' alt="Profile" /></Link>
                     }
 
                     {/* Dropdown only if user is logged in */}
                     {user &&
-                        <div className='group-hover:block hidden absolute dropdown-menu right-0 pt-4'>
-                            <div className='flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 text-gray-500 rounded'>
+                        <div className='group-hover:block hidden absolute dropdown-menu right-0 pt-4 z-50'>
+                            <div className='flex flex-col gap-2 w-48 py-3 px-5 bg-slate-100 text-gray-500 rounded'>
                                 <Link to='/profile'><p className='cursor-pointer hover:text-black'>My Profile</p></Link>
                                 <Link to='/orders'><p className='cursor-pointer hover:text-black'>Orders</p></Link>
+                                <Link to='/my-vouchers'><p className='cursor-pointer hover:text-black'>My Vouchers</p></Link>
+                                {user.isAdmin && (
+                                    <Link to='/admin'><p className='cursor-pointer hover:text-black font-semibold text-[#D0A823]'>Admin Dashboard</p></Link>
+                                )}
                                 <p onClick={logout} className='cursor-pointer hover:text-black'>Logout</p>
                             </div>
                         </div>
@@ -73,10 +103,10 @@ const Navbar = () => {
                         <img className='h-5 rotate-180' src={assets.close_icon} alt="close" />
                         <p>Back</p>
                     </div>
-                    <NavLink onClick={() => setVisible} className='py-2 pl-6 border border-[#D0A823]' to='/'>Home</NavLink>
-                    <NavLink onClick={() => setVisible} className='py-2 pl-6 border border-[#D0A823]' to='/collection'>Collection</NavLink>
-                    <NavLink onClick={() => setVisible} className='py-2 pl-6 border border-[#D0A823]' to='/about'>About</NavLink>
-                    <NavLink onClick={() => setVisible} className='py-2 pl-6 border border-[#D0A823]' to='/contact'>Contact</NavLink>
+                    <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-[#D0A823]' to='/'>Home</NavLink>
+                    <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-[#D0A823]' to='/catalogue'>Catalogue</NavLink>
+                    <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-[#D0A823]' to='/about'>About</NavLink>
+                    <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-[#D0A823]' to='/contact'>Contact</NavLink>
                 </div>
             </div>
         </div>

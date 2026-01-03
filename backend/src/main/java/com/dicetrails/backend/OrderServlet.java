@@ -17,7 +17,7 @@ import java.util.List;
 
 @WebServlet(urlPatterns = { "/api/place-order", "/api/user-orders" })
 public class OrderServlet extends HttpServlet {
-    
+
     private final Gson gson = new Gson();
 
     @Override
@@ -26,12 +26,12 @@ public class OrderServlet extends HttpServlet {
         PrintWriter out = resp.getWriter();
 
         String userId = req.getParameter("userId");
-        if(userId == null) {
+        if (userId == null) {
             out.println("[]");
             return;
         }
 
-        List<Order> orders = DataManager.getInstance().getOrders(userId); 
+        List<Order> orders = DataManager.getInstance().getOrders(userId);
         out.println(gson.toJson(orders));
     }
 
@@ -45,12 +45,42 @@ public class OrderServlet extends HttpServlet {
             JsonObject jsonRequest = JsonParser.parseReader(reader).getAsJsonObject();
 
             Order newOrder = gson.fromJson(jsonRequest, Order.class);
-            
+
             // Set default values
             newOrder.setStatus("Ready to ship");
             newOrder.setDate(System.currentTimeMillis());
 
             DataManager.getInstance().saveOrder(newOrder);
+
+            // Reduce stock for each item in the order
+            if (newOrder.getItems() != null) {
+                for (java.util.Map<String, Object> item : newOrder.getItems()) {
+                    try {
+                        int productId = ((Number) item.get("_id")).intValue();
+                        int quantity = ((Number) item.get("quantity")).intValue();
+                        boolean stockReduced = DataManager.getInstance().reduceStock(productId, quantity);
+                        if (stockReduced) {
+                            System.out.println("Reduced stock for product " + productId + " by " + quantity);
+                        } else {
+                            System.err.println("Failed to reduce stock for product ID: " + productId);
+                        }
+                    } catch (Exception e) {
+                        System.err.println("Error reducing stock for item: " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            // If newsletter discount was applied, mark it as used for this user
+            if (jsonRequest.has("newsletterDiscountApplied")
+                    && jsonRequest.get("newsletterDiscountApplied").getAsBoolean()) {
+
+                String userEmail = newOrder.getUserId();
+                DataManager.getInstance().getUserByEmail(userEmail).ifPresent(user -> {
+                    user.setHasUsedNewsletterDiscount(true);
+                    DataManager.getInstance().updateUser(user);
+                });
+            }
 
             out.println("{\"success\": true, \"message\": \"Order Placed\"}");
 

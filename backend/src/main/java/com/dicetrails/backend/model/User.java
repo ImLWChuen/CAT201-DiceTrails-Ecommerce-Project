@@ -7,21 +7,38 @@ import java.util.Map;
 import java.io.Serializable;
 
 public class User implements Serializable {
+    private int userId;
     private String username;
     private String email;
     private String password;
+    private boolean isAdmin;
     private Map<String, Integer> cart;
     private List<Map<String, Object>> orders;
+    private boolean isNewsletterSubscribed;
+    private boolean hasUsedNewsletterDiscount;
+    private List<String> usedVouchers;
 
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.isAdmin = false;
         this.cart = new HashMap<>();
         this.orders = new ArrayList<>();
+        this.isNewsletterSubscribed = false;
+        this.hasUsedNewsletterDiscount = false;
+        this.usedVouchers = new ArrayList<>();
     }
 
     // Getters and Setters
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -46,6 +63,14 @@ public class User implements Serializable {
         this.password = password;
     }
 
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
+
     public Map<String, Integer> getCart() {
         return cart;
     }
@@ -60,5 +85,32 @@ public class User implements Serializable {
 
     public void setOrders(List<Map<String, Object>> orders) {
         this.orders = orders;
+    }
+
+    public boolean isNewsletterSubscribed() {
+        return isNewsletterSubscribed;
+    }
+
+    public void setNewsletterSubscribed(boolean newsletterSubscribed) {
+        isNewsletterSubscribed = newsletterSubscribed;
+    }
+
+    public boolean hasUsedNewsletterDiscount() {
+        return hasUsedNewsletterDiscount;
+    }
+
+    public void setHasUsedNewsletterDiscount(boolean hasUsedNewsletterDiscount) {
+        this.hasUsedNewsletterDiscount = hasUsedNewsletterDiscount;
+    }
+
+    public List<String> getUsedVouchers() {
+        if (usedVouchers == null) {
+            usedVouchers = new ArrayList<>();
+        }
+        return usedVouchers;
+    }
+
+    public void setUsedVouchers(List<String> usedVouchers) {
+        this.usedVouchers = usedVouchers;
     }
 }

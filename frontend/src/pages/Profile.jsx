@@ -32,9 +32,9 @@ const Profile = () => {
                 {/* Left Section: User Info Card */}
                 <div className='md:col-span-1 flex flex-col items-center p-6 border-r border-gray-100'>
                     <div className='w-32 h-32 bg-[#FEED9F] rounded-full flex items-center justify-center text-[#D0A823] text-5xl font-bold mb-4 border-2 border-[#D0A823] capitalize'>
-                        {user.username ? user.username[0] : 'U'}
+                        {user.username ? user.username[0] : (user.email ? user.email[0] : 'U')}
                     </div>
-                    <h2 className='text-2xl font-bold text-[#504C41] capitalize'>{user.username}</h2>
+                    <h2 className='text-2xl font-bold text-[#504C41] capitalize'>{user.username || 'User'}</h2>
                     <p className='text-gray-500 mb-6'>{user.email}</p>
                     <button
                         onClick={logout}
@@ -54,7 +54,7 @@ const Profile = () => {
                         <div className='grid grid-cols-1 sm:grid-cols-2 gap-6'>
                             <div className='flex flex-col gap-1'>
                                 <span className='text-xs text-gray-400 font-bold uppercase'>User ID</span>
-                                <span className='text-[#504C41] font-mono'>{user.userId}</span>
+                                <span className='text-[#504C41] font-mono'>{user.userId || 'N/A'}</span>
                             </div>
                             <div className='flex flex-col gap-1'>
                                 <span className='text-xs text-gray-400 font-bold uppercase'>Account Status</span>
@@ -67,7 +67,7 @@ const Profile = () => {
                                 <span className='text-[#504C41]'>{user.email}</span>
                             </div>
                             <div className='flex flex-col gap-1'>
-                                <span className='text-xs text-gray-400 font-bold uppercase'>Username</span>
+                                <span className='text-xs text-gray-400 font-bold uppercase'>Name</span>
                                 <span className='text-[#504C41]'>{user.username}</span>
                             </div>
                         </div>

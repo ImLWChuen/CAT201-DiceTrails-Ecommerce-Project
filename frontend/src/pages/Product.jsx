@@ -4,6 +4,8 @@ import { ShopContext } from '../context/ShopContext';
 import { assets } from '../assets/assets';
 
 import ReviewSection from '../components/ReviewSection';
+import { formatPrice } from '../utils/formatPrice';
+import Breadcrumbs from '../components/Breadcrumbs';
 
 const Product = () => {
 
@@ -12,18 +14,42 @@ const Product = () => {
   const [productData, setProductData] = useState(false);
   const [image, setImage] = useState('');
   const [activeTab, setActiveTab] = useState('description');
-  const [reviews, setReviews] = useState([]);
+  const [reviewCount, setReviewCount] = useState(0);
   const [averageRating, setAverageRating] = useState(0);
-  const [totalReviews, setTotalReviews] = useState(0);
 
   // Fetch product data and reviews
   useEffect(() => {
     const fetchProductData = async () => {
-      products.map((item) => {
-        if (item._id === productId) {
+      // Convert productId from URL (string) to number for comparison
+      const numericProductId = Number(productId);
+
+      products.forEach((item) => {
+        if (item._id === numericProductId) {  // match numeric IDs
           setProductData(item);
-          setImage(item.image[0]);
-          return null;
+
+          // Load review count and calculate average rating
+          const storedReviews = localStorage.getItem(`reviews_${productId}`);
+          if (storedReviews) {
+            try {
+              const parsed = JSON.parse(storedReviews);
+              setReviewCount(parsed.length);
+
+              // Calculate average rating
+              if (parsed.length > 0) {
+                const totalRating = parsed.reduce((sum, review) => sum + review.rating, 0);
+                const avg = totalRating / parsed.length;
+                setAverageRating(avg);
+              } else {
+                setAverageRating(0);
+              }
+            } catch (error) {
+              setReviewCount(0);
+              setAverageRating(0);
+            }
+          } else {
+            setReviewCount(0);
+            setAverageRating(0);
+          }
         }
       })
     }
@@ -51,28 +77,22 @@ const Product = () => {
     fetchReviews();
   }, [productId, products])
 
-  const renderStars = (rating) => {
-    let tempRating = rating;
-    return (
-      <div className="flex gap-1">
-        {[...Array(5)].map((_, i) => {
-          if (tempRating >= 1) {
-            tempRating--;
-            return <img key={i} src={assets.star_full} alt="full star" className="w-3 5" />;
-          } else if (tempRating >= 0.5) {
-            tempRating = 0;
-            return <img key={i} src={assets.star_half} alt="half star" className="w-3 5" />;
-          } else {
-            return <img key={i} src={assets.star_empty} alt="empty star" className="w-3 5" />;
-          }
-        })}
-      </div>
-    );
-  };
+  // Set initial image only when productData changes
+  useEffect(() => {
+    if (productData && productData.image && productData.image.length > 0) {
+      setImage(productData.image[0]);
+    }
+  }, [productData?._id])
 
   // If productData exists, show. Otherwise, show opacity-0 (invisible)
   return productData ? (
     <div className='border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100'>
+      <Breadcrumbs items={[
+        { label: 'Home', path: '/' },
+        { label: 'Catalogue', path: '/catalogue' },
+        { label: productData.category, path: null },
+        { label: productData.name, path: null }
+      ]} />
 
       {/* ----------- Product Data Visualization ----------- */}
       <div className='flex gap-12 sm:gap-12 flex-col sm:flex-row'>
@@ -82,12 +102,23 @@ const Product = () => {
           <div className='flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full'>
             {
               productData.image.map((item, index) => (
-                <img onClick={() => setImage(item)} src={item} key={index} className='w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer' alt="" />
+                <img
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setImage(item);
+                  }}
+                  src={item}
+                  key={index}
+                  className={`w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer border-2 ${image === item ? 'border-[#D0A823]' : 'border-gray-300'} hover:border-[#D0A823] transition-all`}
+                  alt={`Product view ${index + 1}`}
+                  role="button"
+                  tabIndex={0}
+                />
               ))
             }
           </div>
           <div className='w-full sm:w-[80%]'>
-            <img className='w-full h-auto' src={image} alt="" />
+            <img className='w-full h-auto' src={image} alt={productData.name} />
           </div>
         </div>
 
@@ -96,19 +127,64 @@ const Product = () => {
           <h1 className='font-medium text-2xl mt-2'>{productData.name}</h1>
 
           <div className='flex items-center gap-1 mt-2'>
-            {renderStars(averageRating)}
-            <p className='pl-2'>({totalReviews})</p>
+            {[1, 2, 3, 4, 5].map((star) => {
+              if (averageRating >= star) {
+                return <img key={star} src={assets.star_full} alt="" className="w-3 5" />;
+              } else if (averageRating >= star - 0.5) {
+                return <img key={star} src={assets.star_half} alt="" className="w-3 5" />;
+              } else {
+                return <img key={star} src={assets.star_empty} alt="" className="w-3 5" />;
+              }
+            })}
+            <p className='pl-2'>({reviewCount})</p>
           </div>
 
-          <p className='mt-5 text-3xl font-medium text-[#D0A823]'>{currency}{productData.price}</p>
+          {/* Price Section with Discount */}
+          {productData.discount > 0 ? (
+            <div className='mt-5'>
+              <div className='flex items-center gap-3'>
+                <p className='text-2xl font-medium text-gray-400 line-through'>{formatPrice(productData.price)}</p>
+                <span className='bg-red-600 text-white px-3 py-1 text-sm font-bold rounded'>
+                  -{productData.discount}% OFF
+                </span>
+              </div>
+              <p className='mt-2 text-3xl font-bold text-red-600'>
+                {formatPrice(productData.price * (1 - productData.discount / 100))}
+              </p>
+            </div>
+          ) : (
+            <p className='mt-5 text-3xl font-medium text-[#D0A823]'>{formatPrice(productData.price)}</p>
+          )}
           <p className='mt-5 text-gray-500 md:w-4/5'>{productData.description}</p>
+
+          {/* Stock Quantity Display */}
+          <div className='mt-4 flex items-center gap-2'>
+            <span className='text-sm font-semibold text-gray-700'>Availability:</span>
+            {productData.quantity > 0 ? (
+              <span className='text-sm text-green-600 font-medium'>
+                {productData.quantity} {productData.quantity === 1 ? 'item' : 'items'} in stock
+              </span>
+            ) : (
+              <span className='text-sm text-red-600 font-medium'>Out of Stock</span>
+            )}
+          </div>
 
           {/* ADD TO CART BUTTON */}
           <button
-            onClick={() => addToCart(productData._id)}
-            className='bg-[#504c41] text-white px-8 py-3 text-sm active:bg-[#D0A823] hover:bg-[#D0A823] transition-colors duration-300 mt-10'
+            onClick={() => {
+              if (productData.quantity === 0) {
+                toast.warning('This product is currently out of stock');
+                return;
+              }
+              addToCart(productData._id);
+            }}
+            disabled={productData.quantity === 0}
+            className={`px-8 py-3 text-sm transition-colors duration-300 mt-10 ${productData.quantity === 0
+              ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
+              : 'bg-[#504c41] text-white active:bg-[#D0A823] hover:bg-[#D0A823]'
+              }`}
           >
-            ADD TO CART
+            {productData.quantity === 0 ? 'OUT OF STOCK' : 'ADD TO CART'}
           </button>
 
           <hr className='mt-8 sm:w-4/5' />
@@ -133,7 +209,7 @@ const Product = () => {
             onClick={() => setActiveTab('reviews')}
             className={`border px-5 py-3 text-sm ${activeTab === 'reviews' ? 'font-bold border-b-0' : 'border-gray-200'}`}
           >
-            Reviews
+            Reviews ({reviewCount})
           </button>
         </div>
 

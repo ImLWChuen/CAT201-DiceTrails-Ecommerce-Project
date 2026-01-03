@@ -57,9 +57,12 @@ public class LoginServlet extends HttpServlet {
                 successResponse.addProperty("message", "Login successful");
 
                 JsonObject userJson = new JsonObject();
-                userJson.addProperty("userId", user.getEmail()); // Using email as userId
+                userJson.addProperty("userId", user.getUserId());
                 userJson.addProperty("username", user.getUsername());
                 userJson.addProperty("email", user.getEmail());
+                userJson.addProperty("isAdmin", user.isAdmin());
+                userJson.addProperty("isNewsletterSubscribed", user.isNewsletterSubscribed());
+                userJson.addProperty("hasUsedNewsletterDiscount", user.hasUsedNewsletterDiscount());
 
                 successResponse.add("user", userJson);
                 out.println(gson.toJson(successResponse));
