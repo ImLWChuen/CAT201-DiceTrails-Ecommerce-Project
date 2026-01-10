@@ -62,17 +62,17 @@ const About = () => {
 
         <div className='mb-6'>
           <h3 className='text-lg font-semibold mb-3 text-[#504C41]'>How long does delivery take?</h3>
-          <p className='text-gray-700 leading-relaxed'>We offer standard delivery within 3-5 business days and express delivery within 1-2 business days. All orders are processed within 24 hours during business days.</p>
+          <p className='text-gray-700 leading-relaxed'>We offer standard delivery within 3-5 business days and international delivery within 5-7 business days. All orders are processed within 24 hours during business days.</p>
         </div>
 
         <div className='mb-6'>
           <h3 className='text-lg font-semibold mb-3 text-[#504C41]'>What are the shipping fees?</h3>
-          <p className='text-gray-700 leading-relaxed'>Shipping costs are calculated based on your location and delivery speed. Free shipping is available for orders over RM100.</p>
+          <p className='text-gray-700 leading-relaxed'>Shipping costs are calculated based on your location and total order value. Free shipping is available for orders over RM100 for customers in West Malaysia. For customers in East Malaysia, free shipping for orders over RM150. For international customers, International shipping is free for orders over RM200.</p>
         </div>
 
         <div className='mb-6'>
           <h3 className='text-lg font-semibold mb-3 text-[#504C41]'>Do you deliver internationally?</h3>
-          <p className='text-gray-700 leading-relaxed'>Currently, we deliver within Malaysia. International shipping may be available upon request. Please contact us at support@dicetrails.com for inquiries.</p>
+          <p className='text-gray-700 leading-relaxed'>Currently, we deliver within Malaysia and offer International Shipping. Please contact us at support@dicetrails.com for inquiries.</p>
         </div>
 
         <div>
