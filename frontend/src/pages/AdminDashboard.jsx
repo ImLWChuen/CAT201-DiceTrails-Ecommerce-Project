@@ -28,6 +28,32 @@ const AdminDashboard = () => {
   }, [navigate])
 
   useEffect(() => {
+    const fetchFreshData = async () => {
+        try {
+            // The timestamp (?t=...) forces the browser to get the REAL file
+            const response = await fetch('http://localhost:8080/api/products?t=' + Date.now());
+            const data = await response.json();
+            
+            if (data) {
+                // Format the data exactly like you did before
+                const formattedData = data.map(product => ({
+                    ...product,
+                    isVisible: product.isVisible !== false,
+                    discount: product.discount || 0,
+                    isNew: product.isNew || false
+                }));
+                setProducts(formattedData);
+                console.log("Admin loaded fresh data:", formattedData.length);
+            }
+        } catch (error) {
+            console.error("Failed to load admin products:", error);
+        }
+    }
+
+    fetchFreshData(); // Run immediately when Admin Dashboard opens
+  }, [])
+
+  /**useEffect(() => {
     if (contextProducts) {
       setProducts(contextProducts.map(product => ({
         ...product,
@@ -36,7 +62,7 @@ const AdminDashboard = () => {
         isNew: product.isNew || false
       })))
     }
-  }, [contextProducts])
+  }, [contextProducts]) **/
 
   const handleLogout = () => {
     logout()

@@ -6,7 +6,7 @@ import ProductItem from '../components/ProductItem';
 
 const Catalogue = () => {
 
-  const { products, search, showSearch } = useContext(ShopContext);
+  const { products, search, showSearch, loadProductsData } = useContext(ShopContext);
   const [showFilter, setShowFilter] = useState(false);
   const [filterProducts, setFilterProducts] = useState([]);
   const [category, setCategory] = useState([]);
@@ -78,6 +78,13 @@ const Catalogue = () => {
   useEffect(() => {
     applyFilterAndSort();
   }, [category, SubCategory, search, showSearch, products, sortType])
+
+  useEffect(() => {
+     // This forces a refresh every time you visit this page
+     if (loadProductsData) {
+        loadProductsData(); 
+     }
+  }, [])
 
   return (
     <div className='flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t'>
