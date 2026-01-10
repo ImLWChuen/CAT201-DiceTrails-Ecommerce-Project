@@ -41,7 +41,8 @@ const ShopContextProvider = (props) => {
 
     const loadProductsData = async () => {
         try {
-            const response = await fetch(backendUrl + '/api/products');
+            //const response = await fetch(backendUrl + '/api/products');
+            const response = await fetch(backendUrl + '/api/products?t=' + Date.now());
             const data = await response.json();
             if (data && Array.isArray(data)) {
                 setProducts(data);
@@ -306,7 +307,7 @@ const ShopContextProvider = (props) => {
         search, setSearch, showSearch, setShowSearch,
         cartItems, setCartItems, addToCart, getCartCount, updateQuantity,
         getCartAmount, navigate,
-        user, setUser, login, signup, logout, subscribeNewsletter
+        user, setUser, login, signup, logout, subscribeNewsletter, loadProductsData
     }
 
     return (
