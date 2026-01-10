@@ -42,7 +42,7 @@ public class ProductUpdateServlet extends HttpServlet {
 
         try {
             BufferedReader reader = req.getReader();
-            JsonObject jsonRequest = JsonParser.parseReader(reader).getAsJsonObject();
+            JsonObject jsonRequest = new JsonParser().parse(reader).getAsJsonObject();
 
             if (pathInfo.equals("/api/update-product")) {
                 handleUpdateProduct(jsonRequest, out);

@@ -12,55 +12,34 @@ const Product = () => {
   const { productId } = useParams();
   const { products, currency, addToCart } = useContext(ShopContext);
   const [productData, setProductData] = useState(false);
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState(null);
   const [activeTab, setActiveTab] = useState('description');
   const [reviewCount, setReviewCount] = useState(0);
   const [averageRating, setAverageRating] = useState(0);
+  const [reviews, setReviews] = useState([]);
 
-  // Fetch product data and reviews
+  // Fetch product data
   useEffect(() => {
     const fetchProductData = async () => {
-      // Convert productId from URL (string) to number for comparison
       const numericProductId = Number(productId);
-
       products.forEach((item) => {
-        if (item._id === numericProductId) {  // match numeric IDs
+        if (item._id === numericProductId) {
           setProductData(item);
-
-          // Load review count and calculate average rating
-          const storedReviews = localStorage.getItem(`reviews_${productId}`);
-          if (storedReviews) {
-            try {
-              const parsed = JSON.parse(storedReviews);
-              setReviewCount(parsed.length);
-
-              // Calculate average rating
-              if (parsed.length > 0) {
-                const totalRating = parsed.reduce((sum, review) => sum + review.rating, 0);
-                const avg = totalRating / parsed.length;
-                setAverageRating(avg);
-              } else {
-                setAverageRating(0);
-              }
-            } catch (error) {
-              setReviewCount(0);
-              setAverageRating(0);
-            }
-          } else {
-            setReviewCount(0);
-            setAverageRating(0);
-          }
         }
       })
     }
+    fetchProductData();
+  }, [productId, products]);
 
+  // Fetch reviews from backend
+  useEffect(() => {
     const fetchReviews = async () => {
       try {
         const response = await fetch(`http://localhost:8080/api/reviews?productId=${productId}`);
         const data = await response.json();
         if (Array.isArray(data)) {
           setReviews(data);
-          setTotalReviews(data.length);
+          setReviewCount(data.length);
           if (data.length > 0) {
             const total = data.reduce((acc, review) => acc + review.rating, 0);
             setAverageRating(total / data.length);
@@ -72,10 +51,8 @@ const Product = () => {
         console.error("Failed to fetch reviews:", error);
       }
     }
-
-    fetchProductData();
     fetchReviews();
-  }, [productId, products])
+  }, [productId]);
 
   // Set initial image only when productData changes
   useEffect(() => {
@@ -220,7 +197,7 @@ const Product = () => {
               <p>An engaging board game for the whole family, perfect for game nights and gatherings.</p>
             </div>
           ) : (
-            <ReviewSection reviews={reviews} />
+            <ReviewSection reviews={reviews} productId={productId} />
           )}
         </div>
       </div>

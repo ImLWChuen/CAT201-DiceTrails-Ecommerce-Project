@@ -28,32 +28,40 @@ const AddReviewForm = ({ productId, onReviewAdded, user }) => {
                 // Add timestamp to prevent caching issues
                 const response = await fetch(`http://localhost:8080/api/user-orders?userId=${encodeURIComponent(user.email)}&t=${Date.now()}`);
 
-                console.log('[ReviewSection] Checking purchase for productId:', productId);
-                console.log('[ReviewSection] User email:', user.email);
+
 
                 if (response.ok) {
                     const orders = await response.json();
-                    console.log('[ReviewSection] Orders received:', orders);
+
 
                     // Check if any completed order contains this product
                     const purchased = orders.some(order => {
                         const isCompleted = order.status === 'Completed' || order.status === 'Shipped';
                         const hasProduct = order.items.some(item => {
-                            // Convert both to numbers to handle type mismatch
-                            const matches = Number(item._id) === Number(productId);
-                            console.log(`[ReviewSection] Checking item ${item._id} (type: ${typeof item._id}) against ${productId} (type: ${typeof productId}): ${matches}`);
+                            // Robust comparison: handle strings, numbers, and scientific notation
+                            // Parse both to integers to avoid floating point precision issues with equality
+                            const itemId = parseInt(Number(item._id));
+                            const targetId = parseInt(Number(productId));
+
+                            const matches = itemId === targetId;
+                            // Log comparison details
+
+
+                            if (matches) {
+
+                            }
                             return matches;
                         });
 
-                        console.log(`[ReviewSection] Order ${order.orderId}: status=${order.status}, isCompleted=${isCompleted}, hasProduct=${hasProduct}`);
                         return isCompleted && hasProduct;
                     });
 
-                    console.log('[ReviewSection] Purchase verified:', purchased);
+
                     setHasPurchased(purchased);
                 } else {
                     console.error('[ReviewSection] API response not OK:', response.status);
                     setHasPurchased(false);
+
                 }
             } catch (error) {
                 console.error('[ReviewSection] Error checking purchase history:', error);
@@ -122,7 +130,8 @@ const AddReviewForm = ({ productId, onReviewAdded, user }) => {
             content: reviewText,
             helpful: 0,
             media: mediaFiles, // Include uploaded media
-            hasMedia: mediaFiles.length > 0 // Flag for filtering
+            hasMedia: mediaFiles.length > 0, // Flag for filtering
+            productId: productId // Required for backend
         };
 
         onReviewAdded(newReview);
@@ -296,7 +305,7 @@ const AddReviewForm = ({ productId, onReviewAdded, user }) => {
 };
 
 
-const ReviewSection = ({ productId }) => {
+const ReviewSection = ({ productId, reviews: propReviews }) => {
     const [reviews, setReviews] = useState([]);
     const [filter, setFilter] = useState('all'); // 'all', 'media', '5star', '4star', etc.
     const [sortBy, setSortBy] = useState('default'); // 'default', 'recent', 'high', 'low'
@@ -309,25 +318,10 @@ const ReviewSection = ({ productId }) => {
     const { user } = useContext(ShopContext);
 
     useEffect(() => {
-        // Load product-specific reviews from localStorage
-        const loadProductReviews = () => {
-            const storedReviews = localStorage.getItem(`reviews_${productId}`);
-            if (storedReviews) {
-                try {
-                    const parsed = JSON.parse(storedReviews);
-                    setReviews(parsed);
-                } catch (error) {
-                    console.error('Error parsing reviews:', error);
-                    setReviews([]);
-                }
-            } else {
-                // Initialize with empty array for new products
-                setReviews([]);
-            }
-        };
-
-        loadProductReviews();
-    }, [productId]);
+        if (propReviews) {
+            setReviews(propReviews);
+        }
+    }, [propReviews]);
 
     // Close report dropdown when clicking outside
     useEffect(() => {
@@ -469,10 +463,28 @@ const ReviewSection = ({ productId }) => {
             </div>
 
             {/* Review Submission Form */}
-            <AddReviewForm productId={productId} user={user} onReviewAdded={(newReview) => {
-                const updatedReviews = [newReview, ...reviews];
-                setReviews(updatedReviews);
-                localStorage.setItem(`reviews_${productId}`, JSON.stringify(updatedReviews));
+            <AddReviewForm productId={productId} user={user} onReviewAdded={async (newReview) => {
+                try {
+                    const response = await fetch('http://localhost:8080/api/reviews', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(newReview),
+                    });
+
+                    if (response.ok) {
+                        const updatedReviews = [newReview, ...reviews];
+                        setReviews(updatedReviews);
+                        // Optionally refresh from server to ensure sync
+                    } else {
+                        console.error('Failed to submit review:', response.statusText);
+                        alert('Failed to submit review. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error submitting review:', error);
+                    alert('Error submitting review.');
+                }
             }} />
 
             {/* Reviews List */}

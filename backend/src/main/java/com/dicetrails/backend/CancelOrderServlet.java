@@ -25,7 +25,7 @@ public class CancelOrderServlet extends HttpServlet {
 
         try {
             BufferedReader reader = req.getReader();
-            JsonObject jsonRequest = JsonParser.parseReader(reader).getAsJsonObject();
+            JsonObject jsonRequest = new JsonParser().parse(reader).getAsJsonObject();
 
             String orderId = jsonRequest.get("orderId").getAsString();
             String userId = jsonRequest.get("userId").getAsString();

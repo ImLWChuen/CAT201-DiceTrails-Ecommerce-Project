@@ -48,7 +48,7 @@ public class CartServlet extends HttpServlet {
 
         try {
             BufferedReader reader = request.getReader();
-            JsonObject jsonRequest = JsonParser.parseReader(reader).getAsJsonObject();
+            JsonObject jsonRequest = new JsonParser().parse(reader).getAsJsonObject();
 
             if (!jsonRequest.has("userId")) {
                 System.out.println("Error: Missing userId in request");

@@ -47,5 +47,17 @@
     "orders": [],
     "isNewsletterSubscribed": true,
     "hasUsedNewsletterDiscount": true
+  },
+  {
+    "userId": 10000008,
+    "username": "JJ",
+    "email": "jj@gmail.com",
+    "password": "jj123456",
+    "isAdmin": false,
+    "cart": {},
+    "orders": [],
+    "isNewsletterSubscribed": false,
+    "hasUsedNewsletterDiscount": false,
+    "usedVouchers": []
   }
 ]

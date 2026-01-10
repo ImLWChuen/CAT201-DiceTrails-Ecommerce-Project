@@ -1,19 +1,26 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import loginBg from '../assets/Login_SignUp Page BG.jpg'
 import { ShopContext } from '../context/ShopContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const Login = () => {
 
   const [currentState, setCurrentState] = useState('Sign Up');
-  const { login, signup } = useContext(ShopContext);
+  const { login, signup, user } = useContext(ShopContext);
+  const navigate = useNavigate();
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      navigate('/');
+    }
+  }, [user, navigate]);
 
   const onSubmitHandler = async (event) => {
     event.preventDefault();

@@ -38,7 +38,7 @@ public class AdminOrderServlet extends HttpServlet {
 
         try {
             BufferedReader reader = req.getReader();
-            JsonObject jsonRequest = JsonParser.parseReader(reader).getAsJsonObject();
+            JsonObject jsonRequest = new JsonParser().parse(reader).getAsJsonObject();
 
             if ("/api/delete-order".equals(path)) {
                 String orderId = jsonRequest.get("orderId").getAsString();

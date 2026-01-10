@@ -42,7 +42,7 @@ public class SignupServlet extends HttpServlet {
 
         try {
             BufferedReader reader = request.getReader();
-            JsonObject jsonRequest = JsonParser.parseReader(reader).getAsJsonObject();
+            JsonObject jsonRequest = new JsonParser().parse(reader).getAsJsonObject();
 
             String username = jsonRequest.get("username").getAsString();
             String email = jsonRequest.get("email").getAsString();
