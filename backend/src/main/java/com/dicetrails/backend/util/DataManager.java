@@ -279,6 +279,10 @@ public class DataManager {
                 .collect(Collectors.toList());
     }
 
+    public List<Review> getAllReviews() {
+        return new ArrayList<>(reviews);
+    }
+
     public synchronized void addReview(Review review) {
         reviews.add(review);
         saveData(REVIEW_FILE, reviews);

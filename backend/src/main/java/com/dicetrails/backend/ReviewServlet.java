@@ -29,7 +29,13 @@ public class ReviewServlet extends HttpServlet {
         String productId = req.getParameter("productId");
         System.out.println("ReviewServlet GET: productId=" + productId);
 
-        List<Review> reviews = DataManager.getInstance().getReviews(productId);
+        List<Review> reviews;
+        if (productId == null || productId.trim().isEmpty()) {
+            reviews = DataManager.getInstance().getAllReviews();
+        } else {
+            reviews = DataManager.getInstance().getReviews(productId);
+        }
+
         System.out.println("ReviewServlet GET: returning " + reviews.size() + " reviews");
         out.println(gson.toJson(reviews));
     }

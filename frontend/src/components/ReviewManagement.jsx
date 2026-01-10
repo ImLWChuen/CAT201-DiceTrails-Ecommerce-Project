@@ -15,35 +15,44 @@ const ReviewManagement = ({ reviews, setReviews, searchQuery = '', products = []
     { value: 'lowest', label: 'Lowest Rating' }
   ]
 
-  // Load reviews from localStorage (simulating sync with ReviewSection data)
+  // Fetch reviews from backend API
   useEffect(() => {
-    const loadReviews = () => {
-      let allProductReviews = []
+    const fetchReviews = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/reviews')
+        if (response.ok) {
+          const data = await response.json()
+          console.log('[ReviewManagement] Loaded reviews from API:', data.length)
 
-      console.log('[ReviewManagement] Loading reviews for', products.length, 'products')
+          // Map backend reviews to frontend format if needed
+          // The backend returns the list of reviews directly
+          // We might need to ensure productName is attached. 
+          // The backend Review model might not have productName if it just stores productId.
+          // We need to map productId to productName using the 'products' prop.
 
-      products.forEach(product => {
-        const key = `reviews_${product._id}`
-        const productReviews = JSON.parse(localStorage.getItem(key)) || []
-        console.log(`[ReviewManagement] Product ${product._id} (${product.name}): ${productReviews.length} reviews from key "${key}"`)
-
-        productReviews.forEach(review => {
-          allProductReviews.push({
-            ...review,
-            productId: product._id,
-            productName: product.name
+          const enrichedReviews = data.map(review => {
+            const product = products.find(p => String(p._id) === String(review.productId))
+            return {
+              ...review,
+              productName: product ? product.name : 'Unknown Product'
+            }
           })
-        })
-      })
 
-      console.log('[ReviewManagement] Total reviews loaded:', allProductReviews.length)
-      setAllReviews(allProductReviews)
+          setAllReviews(enrichedReviews)
+        } else {
+          console.error('Failed to fetch reviews:', response.status)
+        }
+      } catch (error) {
+        console.error('Error fetching reviews:', error)
+      }
     }
 
-    loadReviews()
+    if (products.length > 0) {
+      fetchReviews()
+    }
 
-    // Refresh every 2 seconds to catch new reviews
-    const interval = setInterval(loadReviews, 2000)
+    // Refresh occasionally
+    const interval = setInterval(fetchReviews, 5000)
     return () => clearInterval(interval)
   }, [products])
 
