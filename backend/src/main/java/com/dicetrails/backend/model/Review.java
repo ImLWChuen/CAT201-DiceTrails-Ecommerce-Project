@@ -12,7 +12,7 @@ public class Review {
     private String content;
     private int helpful;
     private boolean hasMedia;
-    private List<String> media;
+    private List<Object> media;
     private String orderId;
 
     public Review() {
@@ -20,7 +20,7 @@ public class Review {
     }
 
     public Review(String id, String productId, String user, int rating, String date, String content, int helpful,
-            boolean hasMedia, List<String> media, String orderId) {
+            boolean hasMedia, List<Object> media, String orderId) {
         this.id = id;
         this.productId = productId;
         this.user = user;
@@ -97,11 +97,11 @@ public class Review {
         this.hasMedia = hasMedia;
     }
 
-    public List<String> getMedia() {
+    public List<Object> getMedia() {
         return media;
     }
 
-    public void setMedia(List<String> media) {
+    public void setMedia(List<Object> media) {
         this.media = media;
         this.hasMedia = media != null && !media.isEmpty();
     }

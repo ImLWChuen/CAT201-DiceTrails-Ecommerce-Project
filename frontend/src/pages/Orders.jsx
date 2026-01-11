@@ -206,24 +206,46 @@ const Orders = () => {
                                                 )}
                                                 <div className='flex-1'>
                                                     <p className='font-medium text-[#504c41]'>{item.name}</p>
-                                                    <div className='flex items-center gap-3 mt-1 text-sm text-gray-600'>
-                                                        {hasDiscount ? (
-                                                            <>
-                                                                <span className='text-[#D0A823] font-medium'>{formatPrice(discountedPrice)}</span>
-                                                                <span className='text-gray-400 line-through text-xs'>{formatPrice(item.price)}</span>
-                                                                <span className='bg-red-100 text-red-600 text-xs px-1.5 py-0.5 rounded font-semibold'>
-                                                                    -{item.discount}%
-                                                                </span>
-                                                            </>
-                                                        ) : (
-                                                            <span className='text-[#D0A823] font-medium'>{formatPrice(item.price)}</span>
-                                                        )}
-                                                        <span>×</span>
-                                                        <span>Qty: {item.quantity}</span>
+                                                    <div className='flex flex-col items-start gap-1 mt-1'>
+                                                        <div className='flex items-center gap-3 text-sm text-gray-600'>
+                                                            {hasDiscount ? (
+                                                                <>
+                                                                    <span className='text-[#D0A823] font-medium'>{formatPrice(discountedPrice)}</span>
+                                                                    <span className='text-gray-400 line-through text-xs'>{formatPrice(item.price)}</span>
+                                                                    <span className='bg-red-100 text-red-600 text-xs px-1.5 py-0.5 rounded font-semibold'>
+                                                                        -{item.discount}%
+                                                                    </span>
+                                                                </>
+                                                            ) : (
+                                                                <span className='text-[#D0A823] font-medium'>{formatPrice(item.price)}</span>
+                                                            )}
+                                                            <span>×</span>
+                                                            <span>Qty: {item.quantity}</span>
+                                                        </div>
+
+
                                                     </div>
                                                 </div>
                                                 <div className='text-right'>
                                                     <p className='font-semibold text-[#504c41]'>{formatPrice(discountedPrice * item.quantity)}</p>
+
+                                                    {order.status === 'Completed' && (
+                                                        item.isReviewed ? (
+                                                            <button
+                                                                disabled
+                                                                className='mt-1 border border-gray-300 text-gray-400 px-3 py-1 text-xs font-medium rounded cursor-not-allowed'
+                                                            >
+                                                                Reviewed
+                                                            </button>
+                                                        ) : (
+                                                            <button
+                                                                onClick={() => navigate(`/add-review/${order.orderId}/${item._id}`)}
+                                                                className='mt-1 border border-[#D0A823] text-[#D0A823] px-3 py-1 text-xs font-medium rounded hover:bg-[#D0A823] hover:text-white transition-all'
+                                                            >
+                                                                Add Review
+                                                            </button>
+                                                        )
+                                                    )}
                                                 </div>
                                             </div>
                                         );

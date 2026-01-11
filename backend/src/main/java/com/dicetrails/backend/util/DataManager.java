@@ -288,6 +288,14 @@ public class DataManager {
         saveData(REVIEW_FILE, reviews);
     }
 
+    public synchronized boolean deleteReview(String id) {
+        boolean removed = reviews.removeIf(r -> r.getId().equals(id));
+        if (removed) {
+            saveData(REVIEW_FILE, reviews);
+        }
+        return removed;
+    }
+
     public synchronized void markOrderItemAsReviewed(String orderId, String productId) {
         for (Order order : orders) {
             if (order.getOrderId().equals(orderId)) {
@@ -297,8 +305,13 @@ public class DataManager {
                     // Items are stored as maps, usually with "id" or "productId" key
                     // Based on typical structure, let's assume "id" holds the product ID
                     // We need to cast carefully
-                    Object idObj = item.get("id");
-                    String itemId = idObj != null ? String.valueOf(idObj) : "";
+                    Object idObj = item.get("_id");
+                    String itemId = "";
+                    if (idObj instanceof Number) {
+                        itemId = String.valueOf(((Number) idObj).intValue());
+                    } else if (idObj != null) {
+                        itemId = String.valueOf(idObj);
+                    }
 
                     if (itemId.equals(productId)) {
                         item.put("isReviewed", true);

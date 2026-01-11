@@ -59,5 +59,17 @@
     "isNewsletterSubscribed": false,
     "hasUsedNewsletterDiscount": false,
     "usedVouchers": []
+  },
+  {
+    "userId": 10000009,
+    "username": "Kathy",
+    "email": "kathylum0921@gmail.com",
+    "password": "kathy0116",
+    "isAdmin": false,
+    "cart": {},
+    "orders": [],
+    "isNewsletterSubscribed": false,
+    "hasUsedNewsletterDiscount": false,
+    "usedVouchers": []
   }
 ]

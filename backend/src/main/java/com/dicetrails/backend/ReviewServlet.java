@@ -54,8 +54,8 @@ public class ReviewServlet extends HttpServlet {
             if (newReview.getId() == null || newReview.getId().isEmpty()) {
                 newReview.setId(UUID.randomUUID().toString());
             }
-            if (newReview.getDate() == null) {
-                newReview.setDate(new java.util.Date().toString());
+            if (newReview.getDate() == null || newReview.getDate().isEmpty()) {
+                newReview.setDate(java.time.Instant.now().toString());
             }
 
             // Ensure hasMedia matches media list presence
@@ -76,6 +76,37 @@ public class ReviewServlet extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
+            out.println("{\"success\": false, \"message\": \"Server Error: " + e.getMessage() + "\"}");
+        }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.setContentType("application/json");
+        PrintWriter out = resp.getWriter();
+
+        try {
+            String reviewId = req.getParameter("id");
+            System.out.println("ReviewServlet DELETE: id=" + reviewId);
+
+            if (reviewId == null || reviewId.trim().isEmpty()) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                out.println("{\"success\": false, \"message\": \"Review ID is required\"}");
+                return;
+            }
+
+            boolean success = DataManager.getInstance().deleteReview(reviewId);
+
+            if (success) {
+                out.println("{\"success\": true, \"message\": \"Review Deleted\"}");
+            } else {
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                out.println("{\"success\": false, \"message\": \"Review not found\"}");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.println("{\"success\": false, \"message\": \"Server Error: " + e.getMessage() + "\"}");
         }
     }

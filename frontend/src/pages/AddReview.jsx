@@ -9,9 +9,9 @@ const AddReview = () => {
     const { products, user, navigate } = useContext(ShopContext);
     const [rating, setRating] = useState(5);
     const [content, setContent] = useState('');
-    const [image, setImage] = useState(null);
+    const [uploadedMedia, setUploadedMedia] = useState([]); // Array of {type: 'image'|'video', data: base64}
 
-    const product = products.find(p => p._id === productId);
+    const product = products.find(p => p._id === Number(productId));
 
     if (!product) {
         return <div className="text-center py-10">Product not found</div>;
@@ -23,12 +23,13 @@ const AddReview = () => {
         const reviewData = {
             productId: productId,
             orderId: orderId,
-            user: user ? (user.name || user.email.split('@')[0]) : "Anonymous", // Simple fallback for name
+            user: user ? (user.name || user.email.split('@')[0]) : "Anonymous",
             rating: rating,
             content: content,
             helpful: 0,
-            hasMedia: !!image,
-            media: image ? [image] : []
+            hasMedia: uploadedMedia.length > 0,
+            media: uploadedMedia,
+            date: new Date().toISOString()
         };
 
         try {
@@ -51,16 +52,20 @@ const AddReview = () => {
         }
     };
 
-    // Simulate image upload by reading file as Data URL (base64)
-    const handleImageUpload = (e) => {
+    const handleFileUpload = (e) => {
         const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImage(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const type = file.type.startsWith('video/') ? 'video' : 'image';
+            setUploadedMedia([...uploadedMedia, { type, data: reader.result }]);
+        };
+        reader.readAsDataURL(file);
+    };
+
+    const removeMedia = (index) => {
+        setUploadedMedia(uploadedMedia.filter((_, i) => i !== index));
     };
 
     return (
@@ -117,26 +122,30 @@ const AddReview = () => {
                             />
                         </div>
 
-                        {/* Image Upload */}
+                        {/* Media Upload */}
                         <div>
-                            <label className="block text-gray-700 font-medium mb-2">Add Photo</label>
-                            <div className="flex items-center gap-4">
+                            <label className="block text-gray-700 font-medium mb-2">Add Photo or Video</label>
+                            <div className="flex flex-wrap items-center gap-4">
                                 <label className="cursor-pointer bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-2 rounded border border-dashed border-gray-400">
                                     <span>Choose File</span>
-                                    <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+                                    <input type="file" accept="image/*,video/mp4" onChange={handleFileUpload} className="hidden" />
                                 </label>
-                                {image && (
-                                    <div className="relative w-16 h-16">
-                                        <img src={image} alt="Preview" className="w-full h-full object-cover rounded" />
+                                {uploadedMedia.map((m, index) => (
+                                    <div key={index} className="relative w-16 h-16">
+                                        {m.type === 'image' ? (
+                                            <img src={m.data} alt="Preview" className="w-full h-full object-cover rounded" />
+                                        ) : (
+                                            <video src={m.data} className="w-full h-full object-cover rounded" />
+                                        )}
                                         <button
                                             type="button"
-                                            onClick={() => setImage(null)}
+                                            onClick={() => removeMedia(index)}
                                             className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
                                         >
                                             X
                                         </button>
                                     </div>
-                                )}
+                                ))}
                             </div>
                         </div>
 

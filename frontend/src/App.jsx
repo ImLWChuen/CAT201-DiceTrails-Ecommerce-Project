@@ -13,6 +13,7 @@ import Orders from './pages/Orders'
 import Profile from './pages/Profile'
 import AdminDashboard from './pages/AdminDashboard'
 import MyVouchers from './pages/MyVouchers'
+import AddReview from './pages/AddReview'
 import Hero from './components/Hero'
 import Footer from './components/footer'
 import { ToastContainer, toast } from 'react-toastify';
@@ -41,6 +42,7 @@ const App = () => {
               <Route path='/orders' element={<Orders />} />
               <Route path='/profile' element={<Profile />} />
               <Route path='/my-vouchers' element={<MyVouchers />} />
+              <Route path='/add-review/:orderId/:productId' element={<AddReview />} />
             </Routes>
             <Footer />
           </div>
