@@ -17,7 +17,8 @@
     "password": "12345678",
     "isAdmin": false,
     "cart": {
-      "20000013": 1
+      "20000013": 1,
+      "20000036": 9
     },
     "orders": [],
     "isNewsletterSubscribed": true,
@@ -31,7 +32,8 @@
     "isAdmin": true,
     "cart": {
       "20000009": 0,
-      "20000015": 0
+      "20000015": 0,
+      "20000036": 9
     },
     "orders": [],
     "isNewsletterSubscribed": false,

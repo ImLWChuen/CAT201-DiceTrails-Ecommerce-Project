@@ -70,6 +70,23 @@ const ShopContextProvider = (props) => {
     }
 
     const addToCart = async (itemId) => {
+        // Find the product to check stock availability
+        const product = products.find((p) => p._id === itemId);
+
+        if (!product) {
+            toast.error("Product not found");
+            return;
+        }
+
+        // Check current cart quantity for this item
+        const currentCartQty = cartItems[itemId] || 0;
+
+        // Validate stock limit
+        if (currentCartQty >= product.quantity) {
+            toast.warning(`Only ${product.quantity} ${product.quantity === 1 ? 'item' : 'items'} available in stock`);
+            return;
+        }
+
         let cartData = structuredClone(cartItems);
 
         if (cartData[itemId]) {
@@ -306,7 +323,7 @@ const ShopContextProvider = (props) => {
         products, currency, delivery_fee,
         search, setSearch, showSearch, setShowSearch,
         cartItems, setCartItems, addToCart, getCartCount, updateQuantity,
-        getCartAmount, navigate,
+        getCartAmount, navigate, clearCart,
         user, setUser, login, signup, logout, subscribeNewsletter, loadProductsData
     }
 
