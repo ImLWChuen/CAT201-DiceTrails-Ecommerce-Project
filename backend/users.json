@@ -71,5 +71,20 @@
     "isNewsletterSubscribed": false,
     "hasUsedNewsletterDiscount": false,
     "usedVouchers": []
+  },
+  {
+    "userId": 10000010,
+    "username": "ph",
+    "email": "ph@yahoo.com",
+    "password": "ph123456",
+    "isAdmin": false,
+    "cart": {
+      "20000031": 0,
+      "20000036": 0
+    },
+    "orders": [],
+    "isNewsletterSubscribed": false,
+    "hasUsedNewsletterDiscount": false,
+    "usedVouchers": []
   }
 ]

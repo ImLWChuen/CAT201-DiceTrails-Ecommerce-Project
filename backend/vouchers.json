@@ -4,13 +4,13 @@
     "discountType": "percentage",
     "discountValue": 10.0,
     "isActive": true,
-    "description": "Initial voucher"
+    "description": "Soft Opening Voucher"
   },
   {
     "code": "WELCOME10",
     "discountType": "fixed",
     "discountValue": 10.0,
     "isActive": true,
-    "description": "welcome gift always available"
+    "description": "Welcome gift always available"
   }
 ]
