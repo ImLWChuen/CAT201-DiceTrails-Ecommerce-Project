@@ -2,6 +2,7 @@ package com.dicetrails.backend.util;
 
 import com.dicetrails.backend.model.ContactMessage;
 import com.dicetrails.backend.model.Review;
+import com.dicetrails.backend.model.ReviewReport;
 import com.dicetrails.backend.model.Voucher;
 
 // ... (existing imports, but since I can't modify top of file easily with multi-chunk in this tool, I'll assum imports are managed or I use full names if possible, but actually replace_file_content replaces contiguous blocks. I need to be careful with imports.
@@ -288,12 +289,38 @@ public class DataManager {
         saveData(REVIEW_FILE, reviews);
     }
 
+    public synchronized void saveReviews(List<Review> updatedReviews) {
+        this.reviews = updatedReviews;
+        saveData(REVIEW_FILE, updatedReviews);
+    }
+
     public synchronized boolean deleteReview(String id) {
         boolean removed = reviews.removeIf(r -> r.getId().equals(id));
         if (removed) {
             saveData(REVIEW_FILE, reviews);
         }
         return removed;
+    }
+
+    public synchronized void addReportToReview(String reviewId, ReviewReport report) {
+        for (Review r : reviews) {
+            if (r.getId().equals(reviewId)) {
+                r.addReport(report);
+                saveData(REVIEW_FILE, reviews);
+                break;
+            }
+        }
+    }
+
+    public synchronized boolean toggleHelpfulReview(String reviewId, String userEmail) {
+        for (Review r : reviews) {
+            if (r.getId().equals(reviewId)) {
+                boolean result = r.toggleHelpful(userEmail);
+                saveData(REVIEW_FILE, reviews);
+                return result;
+            }
+        }
+        return false;
     }
 
     public synchronized void markOrderItemAsReviewed(String orderId, String productId) {

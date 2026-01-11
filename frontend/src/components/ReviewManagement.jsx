@@ -281,17 +281,31 @@ const ReviewManagement = ({ reviews, setReviews, searchQuery = '', products = []
               <div className='flex justify-end gap-2'>
                 {review.isFlagged && (
                   <button
-                    onClick={() => {
+                    onClick={async () => {
                       if (window.confirm('Remove flag from this review?')) {
-                        const productReviews = JSON.parse(localStorage.getItem(`reviews_${review.productId}`)) || [];
-                        const updatedProductReviews = productReviews.map(r =>
-                          r.id === review.id ? { ...r, isFlagged: false, reports: [] } : r
-                        );
-                        localStorage.setItem(`reviews_${review.productId}`, JSON.stringify(updatedProductReviews));
+                        try {
+                          const response = await fetch('http://localhost:8080/api/reviews', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              action: 'unflag',
+                              reviewId: review.id
+                            })
+                          });
 
-                        setAllReviews(allReviews.map(r =>
-                          r.id === review.id ? { ...r, isFlagged: false, reports: [] } : r
-                        ));
+                          const result = await response.json();
+                          if (result.success) {
+                            setAllReviews(allReviews.map(r =>
+                              r.id === review.id ? { ...r, isFlagged: false, reports: [] } : r
+                            ));
+                            console.log('Review unflagged successfully:', review.id);
+                          } else {
+                            alert('Failed to unflag review: ' + result.message);
+                          }
+                        } catch (error) {
+                          console.error('Error unflagging review:', error);
+                          alert('Error connecting to server');
+                        }
                       }
                     }}
                     className='bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded transition-colors flex items-center gap-2'

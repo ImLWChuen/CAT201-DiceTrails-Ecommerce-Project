@@ -209,33 +209,59 @@ const ReviewSection = ({ productId, reviews: propReviews }) => {
 
                             <div className="flex items-center gap-4 mt-3">
                                 <button
-                                    onClick={() => {
-                                        const updatedReviews = reviews.map(r => {
-                                            if (r.id === review.id) {
-                                                // Track if user has already liked this review
-                                                const likedReviewsKey = `liked_reviews_${productId}`;
-                                                const likedReviews = JSON.parse(localStorage.getItem(likedReviewsKey) || '[]');
+                                    onClick={async () => {
+                                        if (!user) {
+                                            alert("Please login to mark reviews as helpful");
+                                            return;
+                                        }
 
-                                                if (likedReviews.includes(review.id)) {
-                                                    // Unlike
-                                                    const newLikedReviews = likedReviews.filter(id => id !== review.id);
-                                                    localStorage.setItem(likedReviewsKey, JSON.stringify(newLikedReviews));
-                                                    return { ...r, helpful: (r.helpful || 0) - 1 };
-                                                } else {
-                                                    // Like
-                                                    likedReviews.push(review.id);
-                                                    localStorage.setItem(likedReviewsKey, JSON.stringify(likedReviews));
-                                                    return { ...r, helpful: (r.helpful || 0) + 1 };
-                                                }
+                                        const userEmail = user.email;
+                                        try {
+                                            const response = await fetch('http://localhost:8080/api/reviews', {
+                                                method: 'PUT',
+                                                headers: { 'Content-Type': 'application/json' },
+                                                body: JSON.stringify({
+                                                    action: 'helpful',
+                                                    reviewId: review.id,
+                                                    userEmail: userEmail
+                                                })
+                                            });
+
+                                            const result = await response.json();
+                                            if (result.success) {
+                                                const updatedReviews = reviews.map(r => {
+                                                    if (r.id === review.id) {
+                                                        const emails = r.helpfulUserEmails || [];
+                                                        let newEmails;
+                                                        if (result.isHelpful) {
+                                                            newEmails = [...emails, userEmail];
+                                                        } else {
+                                                            newEmails = emails.filter(e => e !== userEmail);
+                                                        }
+                                                        return {
+                                                            ...r,
+                                                            helpfulUserEmails: newEmails,
+                                                            helpful: newEmails.length
+                                                        };
+                                                    }
+                                                    return r;
+                                                });
+                                                setReviews(updatedReviews);
+                                            } else {
+                                                alert('Failed to update helpful status');
                                             }
-                                            return r;
-                                        });
-                                        setReviews(updatedReviews);
-                                        localStorage.setItem(`reviews_${productId}`, JSON.stringify(updatedReviews));
+                                        } catch (error) {
+                                            console.error('Error updating helpful status:', error);
+                                            alert('Error connecting to server');
+                                        }
                                     }}
-                                    className="flex items-center gap-1 text-xs text-gray-500 hover:text-[#D0A823] transition-colors"
+                                    className={`flex items-center gap-1 text-xs transition-colors ${user && review.helpfulUserEmails?.includes(user.email) ? 'text-[#D0A823] font-bold' : 'text-gray-500 hover:text-[#D0A823]'}`}
                                 >
-                                    <img src={assets.thumbs_up_icon} alt="thumbs up" className="w-4 h-4 opacity-50" />
+                                    <img
+                                        src={assets.thumbs_up_icon}
+                                        alt="thumbs up"
+                                        className={`w-4 h-4 ${user && review.helpfulUserEmails?.includes(user.email) ? 'opacity-100' : 'opacity-50'}`}
+                                    />
                                     <span>Helpful?</span>
                                     <span>({review.helpful || 0})</span>
                                 </button>
@@ -258,22 +284,42 @@ const ReviewSection = ({ productId, reviews: propReviews }) => {
                                             {['Not Relevant', 'Inappropriate', 'Spam', 'Other'].map((reason) => (
                                                 <button
                                                     key={reason}
-                                                    onClick={() => {
-                                                        const updatedReviews = reviews.map(r => {
-                                                            if (r.id === review.id) {
-                                                                const reports = r.reports || [];
-                                                                return {
-                                                                    ...r,
-                                                                    reports: [...reports, { reason, date: new Date().toISOString() }],
-                                                                    isFlagged: true
-                                                                };
+                                                    onClick={async () => {
+                                                        const report = { reason, date: new Date().toISOString() };
+                                                        try {
+                                                            const response = await fetch('http://localhost:8080/api/reviews', {
+                                                                method: 'PUT',
+                                                                headers: { 'Content-Type': 'application/json' },
+                                                                body: JSON.stringify({
+                                                                    action: 'report',
+                                                                    reviewId: review.id,
+                                                                    report: report
+                                                                })
+                                                            });
+
+                                                            const result = await response.json();
+                                                            if (result.success) {
+                                                                const updatedReviews = reviews.map(r => {
+                                                                    if (r.id === review.id) {
+                                                                        const reports = r.reports || [];
+                                                                        return {
+                                                                            ...r,
+                                                                            reports: [...reports, report],
+                                                                            isFlagged: true
+                                                                        };
+                                                                    }
+                                                                    return r;
+                                                                });
+                                                                setReviews(updatedReviews);
+                                                                setOpenReportDropdown(null);
+                                                                alert(`Review reported as: ${reason}`);
+                                                            } else {
+                                                                alert('Failed to report review');
                                                             }
-                                                            return r;
-                                                        });
-                                                        setReviews(updatedReviews);
-                                                        localStorage.setItem(`reviews_${productId}`, JSON.stringify(updatedReviews));
-                                                        setOpenReportDropdown(null); // Close dropdown after reporting
-                                                        alert(`Review reported as: ${reason}`);
+                                                        } catch (error) {
+                                                            console.error('Error reporting review:', error);
+                                                            alert('Error connecting to server');
+                                                        }
                                                     }}
                                                     className="w-full text-left px-4 py-2 text-xs text-gray-700 hover:bg-gray-100 transition-colors"
                                                 >

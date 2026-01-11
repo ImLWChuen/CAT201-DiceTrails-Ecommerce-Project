@@ -194,7 +194,6 @@ const Product = () => {
           {activeTab === 'description' ? (
             <div className="flex flex-col gap-4">
               <p>{productData.description}</p>
-              <p>An engaging board game for the whole family, perfect for game nights and gatherings.</p>
             </div>
           ) : (
             <ReviewSection reviews={reviews} productId={productId} />

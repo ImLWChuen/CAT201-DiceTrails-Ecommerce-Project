@@ -14,9 +14,14 @@ public class Review {
     private boolean hasMedia;
     private List<Object> media;
     private String orderId;
+    private boolean isFlagged;
+    private List<ReviewReport> reports;
+    private List<String> helpfulUserEmails;
 
     public Review() {
         this.media = new ArrayList<>();
+        this.reports = new ArrayList<>();
+        this.helpfulUserEmails = new ArrayList<>();
     }
 
     public Review(String id, String productId, String user, int rating, String date, String content, int helpful,
@@ -31,6 +36,58 @@ public class Review {
         this.hasMedia = hasMedia;
         this.media = media != null ? media : new ArrayList<>();
         this.orderId = orderId;
+        this.reports = new ArrayList<>();
+        this.helpfulUserEmails = new ArrayList<>();
+    }
+
+    public List<String> getHelpfulUserEmails() {
+        return helpfulUserEmails;
+    }
+
+    public void setHelpfulUserEmails(List<String> helpfulUserEmails) {
+        this.helpfulUserEmails = helpfulUserEmails != null ? helpfulUserEmails : new ArrayList<>();
+        this.helpful = this.helpfulUserEmails.size();
+    }
+
+    public boolean toggleHelpful(String userEmail) {
+        if (this.helpfulUserEmails == null) {
+            this.helpfulUserEmails = new ArrayList<>();
+        }
+
+        if (this.helpfulUserEmails.contains(userEmail)) {
+            this.helpfulUserEmails.remove(userEmail);
+            this.helpful = Math.max(0, this.helpful - 1);
+            return false; // Unmarked
+        } else {
+            this.helpfulUserEmails.add(userEmail);
+            this.helpful++;
+            return true; // Marked
+        }
+    }
+
+    public boolean isFlagged() {
+        return isFlagged;
+    }
+
+    public void setFlagged(boolean isFlagged) {
+        this.isFlagged = isFlagged;
+    }
+
+    public List<ReviewReport> getReports() {
+        return reports;
+    }
+
+    public void setReports(List<ReviewReport> reports) {
+        this.reports = reports;
+        this.isFlagged = reports != null && !reports.isEmpty();
+    }
+
+    public void addReport(ReviewReport report) {
+        if (this.reports == null) {
+            this.reports = new ArrayList<>();
+        }
+        this.reports.add(report);
+        this.isFlagged = true;
     }
 
     public String getId() {
