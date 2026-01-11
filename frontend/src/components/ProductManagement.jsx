@@ -151,6 +151,7 @@ const ProductManagement = ({ products, setProducts, searchQuery = '' }) => {
     setFormData(product)
     setEditingId(product._id)
     setShowAddForm(true)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const handleDelete = async (id) => {
@@ -361,6 +362,8 @@ const ProductManagement = ({ products, setProducts, searchQuery = '' }) => {
                 <option value='abstract'>Abstract Games</option>
                 <option value='word'>Word Games</option>
                 <option value='mystery'>Mystery Games</option>
+                <option value='sleeves'>Sleeves</option>
+                <option value='player mat & game board'>Player Mat & Game Board</option>
               </select>
             </div>
 

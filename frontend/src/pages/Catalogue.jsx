@@ -80,10 +80,10 @@ const Catalogue = () => {
   }, [category, SubCategory, search, showSearch, products, sortType])
 
   useEffect(() => {
-     // This forces a refresh every time you visit this page
-     if (loadProductsData) {
-        loadProductsData(); 
-     }
+    // This forces a refresh every time you visit this page
+    if (loadProductsData) {
+      loadProductsData();
+    }
   }, [])
 
   return (
@@ -130,6 +130,12 @@ const Catalogue = () => {
             </p>
             <p className='flex gap-2 font-medium'>
               <input className='w-3' type="checkbox" value={'mystery'} onChange={toggleSubCategory} /> Mystery Games
+            </p>
+            <p className='flex gap-2 font-medium'>
+              <input className='w-3' type="checkbox" value={'sleeves'} onChange={toggleSubCategory} /> Sleeves
+            </p>
+            <p className='flex gap-2 font-medium'>
+              <input className='w-3' type="checkbox" value={'player mat & game board'} onChange={toggleSubCategory} /> Player Mat & Game Board
             </p>
 
           </div>
