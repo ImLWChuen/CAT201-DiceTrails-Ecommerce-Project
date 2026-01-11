@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { ShopContext } from '../context/ShopContext'
+import { assets } from '../assets/assets'
 import { toast } from 'react-toastify'
 
 const MyVouchers = () => {
@@ -69,9 +70,7 @@ const MyVouchers = () => {
                             {!user?.hasUsedNewsletterDiscount ? (
                                 <div>
                                     <div className='flex items-center gap-2 mb-2'>
-                                        <svg className='w-6 h-6 text-green-600' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                                            <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' />
-                                        </svg>
+                                        <img src={assets.check_icon} className='w-6 h-6' alt="available" />
                                         <p className='text-lg font-semibold text-green-700'>20% Newsletter Discount Available!</p>
                                     </div>
                                     <p className='text-green-600 text-sm'>Get 20% off your next order. This one-time discount will be automatically applied at checkout.</p>
@@ -85,9 +84,7 @@ const MyVouchers = () => {
                             ) : (
                                 <div>
                                     <div className='flex items-center gap-2 mb-2'>
-                                        <svg className='w-6 h-6 text-gray-500' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                                            <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M5 13l4 4L19 7' />
-                                        </svg>
+                                        <img src={assets.check_icon} className='w-6 h-6 grayscale opacity-50' alt="used" />
                                         <p className='text-lg font-semibold text-gray-700'>Newsletter Discount Used</p>
                                     </div>
                                     <p className='text-gray-600 text-sm'>You've already redeemed your one-time newsletter discount. Thank you for being a subscriber!</p>
@@ -142,9 +139,7 @@ const MyVouchers = () => {
                                         onClick={() => copyVoucherCode(voucher.code)}
                                         className='w-full bg-[#D0A823] hover:bg-[#b8951f] text-[#504C41] font-semibold py-2 rounded transition-colors flex items-center justify-center gap-2'
                                     >
-                                        <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                                            <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z' />
-                                        </svg>
+                                        <img src={assets.copy_icon} className='w-4 h-4' alt="copy" />
                                         Copy Code
                                     </button>
                                 </div>
@@ -152,10 +147,9 @@ const MyVouchers = () => {
                         </div>
                     ) : (
                         <div className='border border-gray-300 rounded-lg p-8 text-center bg-gray-50'>
-                            <svg className='w-16 h-16 mx-auto text-gray-400 mb-3' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7' />
-                            </svg>
+                            <img src={assets.close_new} className='w-16 h-16 mx-auto opacity-20 mb-3' alt="no vouchers" />
                             <p className='text-gray-600 font-semibold'>No Active Vouchers Available</p>
+
                             <p className='text-gray-500 text-sm mt-2'>Check back later for new discount codes!</p>
                         </div>
                     )}

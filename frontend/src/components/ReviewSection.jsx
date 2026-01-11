@@ -105,7 +105,7 @@ const ReviewSection = ({ productId, reviews: propReviews }) => {
                 <div className="flex items-center gap-4">
                     <div className="flex flex-col items-center">
                         <span className="text-4xl font-bold text-gray-800">{averageRating}<span className="text-lg text-gray-400">/5</span></span>
-                        {renderStars(Math.round(averageRating))}
+                        {renderStars(parseFloat(averageRating))}
                         <span className="text-sm text-gray-500 mt-1">{reviews.length} {reviews.length === 1 ? 'Rating' : 'Ratings'}</span>
                     </div>
                 </div>
@@ -258,9 +258,9 @@ const ReviewSection = ({ productId, reviews: propReviews }) => {
                                     className={`flex items-center gap-1 text-xs transition-colors ${user && review.helpfulUserEmails?.includes(user.email) ? 'text-[#D0A823] font-bold' : 'text-gray-500 hover:text-[#D0A823]'}`}
                                 >
                                     <img
-                                        src={assets.thumbs_up_icon}
+                                        src={user && review.helpfulUserEmails?.includes(user.email) ? assets.thumbs_up_full_icon : assets.thumbs_up_new}
                                         alt="thumbs up"
-                                        className={`w-4 h-4 ${user && review.helpfulUserEmails?.includes(user.email) ? 'opacity-100' : 'opacity-50'}`}
+                                        className="w-4 h-4"
                                     />
                                     <span>Helpful?</span>
                                     <span>({review.helpful || 0})</span>
@@ -272,9 +272,7 @@ const ReviewSection = ({ productId, reviews: propReviews }) => {
                                         onClick={() => setOpenReportDropdown(openReportDropdown === review.id ? null : review.id)}
                                         className="flex items-center gap-1 text-xs text-gray-500 hover:text-red-600 transition-colors"
                                     >
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
-                                        </svg>
+                                        <img src={assets.flag_icon} className='w-4 h-4' alt="report" />
                                         <span>Report</span>
                                     </button>
 
@@ -404,9 +402,7 @@ const ReviewSection = ({ productId, reviews: propReviews }) => {
                             }}
                             className="absolute top-4 right-4 bg-white hover:bg-gray-200 text-gray-800 rounded-full p-2 z-10 transition-colors"
                         >
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                            <img src={assets.close_new} className='w-6 h-6' alt="close" />
                         </button>
 
                         {/* Media content */}

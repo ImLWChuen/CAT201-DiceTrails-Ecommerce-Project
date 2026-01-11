@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { ShopContext } from '../context/ShopContext'
+import { assets } from '../assets/assets'
 import ProductManagement from '../components/ProductManagement'
 import ReviewManagement from '../components/ReviewManagement'
 import OrderManagement from '../components/OrderManagement'
@@ -29,25 +30,25 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     const fetchFreshData = async () => {
-        try {
-            // The timestamp (?t=...) forces the browser to get the REAL file
-            const response = await fetch('http://localhost:8080/api/products?t=' + Date.now());
-            const data = await response.json();
-            
-            if (data) {
-                // Format the data exactly like you did before
-                const formattedData = data.map(product => ({
-                    ...product,
-                    isVisible: product.isVisible !== false,
-                    discount: product.discount || 0,
-                    isNew: product.isNew || false
-                }));
-                setProducts(formattedData);
-                console.log("Admin loaded fresh data:", formattedData.length);
-            }
-        } catch (error) {
-            console.error("Failed to load admin products:", error);
+      try {
+        // The timestamp (?t=...) forces the browser to get the REAL file
+        const response = await fetch('http://localhost:8080/api/products?t=' + Date.now());
+        const data = await response.json();
+
+        if (data) {
+          // Format the data exactly like you did before
+          const formattedData = data.map(product => ({
+            ...product,
+            isVisible: product.isVisible !== false,
+            discount: product.discount || 0,
+            isNew: product.isNew || false
+          }));
+          setProducts(formattedData);
+          console.log("Admin loaded fresh data:", formattedData.length);
         }
+      } catch (error) {
+        console.error("Failed to load admin products:", error);
+      }
     }
 
     fetchFreshData(); // Run immediately when Admin Dashboard opens
@@ -102,30 +103,25 @@ const AdminDashboard = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={`Search ${activeTab === 'products' ? 'products...' :
-                  activeTab === 'orders' ? 'orders...' :
-                    activeTab === 'reviews' ? 'reviews...' :
-                      activeTab === 'vouchers' ? 'vouchers...' :
-                        activeTab === 'users' ? 'users...' :
-                          'messages...'
+                activeTab === 'orders' ? 'orders...' :
+                  activeTab === 'reviews' ? 'reviews...' :
+                    activeTab === 'vouchers' ? 'vouchers...' :
+                      activeTab === 'users' ? 'users...' :
+                        'messages...'
                 }`}
               className='w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:border-[#D0A823] focus:ring-1 focus:ring-[#D0A823]'
             />
-            <svg
-              className='absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400'
-              fill='none'
-              stroke='currentColor'
-              viewBox='0 0 24 24'
-            >
-              <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' />
-            </svg>
+            <img
+              src={assets.search_new}
+              className='absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 opacity-50'
+              alt="search"
+            />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
                 className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600'
               >
-                <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                  <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M6 18L18 6M6 6l12 12' />
-                </svg>
+                <img src={assets.close_new} className='w-5 h-5 opacity-50 hover:opacity-100' alt="clear" />
               </button>
             )}
           </div>

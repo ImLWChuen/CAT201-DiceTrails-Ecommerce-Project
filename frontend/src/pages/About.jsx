@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Title from '../components/Title'
+import { assets } from '../assets/assets'
 
 const About = () => {
   const [activeTab, setActiveTab] = useState('policies')
@@ -17,12 +18,11 @@ const About = () => {
           <span className={`text-lg font-semibold text-[#504C41] group-hover:text-[#D0A823] transition-colors ${isOpen ? 'text-[#D0A823]' : ''}`}>
             {question}
           </span>
-          <svg
-            className={`w-5 h-5 text-[#504C41] transform transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
-            fill="none" viewBox="0 0 24 24" stroke="currentColor"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
+          <img
+            src={assets.dropdown_icon}
+            className={`w-5 h-5 opacity-70 transform transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+            alt="toggle"
+          />
         </button>
         <div
           className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? 'max-h-96 opacity-100 mb-4' : 'max-h-0 opacity-0'}`}

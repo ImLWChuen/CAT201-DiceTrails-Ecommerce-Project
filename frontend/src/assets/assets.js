@@ -62,6 +62,16 @@ import google_pay_logo from './google_pay_logo.png'
 import privacy_icon from './privacy_icon.png'
 import thumbs_up_icon from './thumb_up.png'
 import thumbs_up_full_icon from './thumb_up_full.png'
+import search2 from './search.png'
+import close2 from './close_icon.png'
+import edit from './edit.png'
+import add from './add.png'
+import check from './check.png'
+import copy from './copy.png'
+import flag from './flag.png'
+import visible from './visible.png'
+import visible_off from './visible_off.png'
+import thumbs_up from './thumbs_up.png'
 
 export const assets = {
     logo,
@@ -89,7 +99,19 @@ export const assets = {
     star_half: star_dull_icon, // Alias for backward compatibility if needed, or use explicit export
     star_empty: star_icon, // Alias
     thumbs_up_icon,
-    thumbs_up_full_icon
+    thumbs_up_full_icon,
+    search_png: search_icon, // Alias keeping existing naming convention if needed, but user asked for "search.png"
+    // New Icons
+    search_new: search2,
+    close_new: close2,
+    edit_icon: edit,
+    add_icon: add,
+    check_icon: check,
+    copy_icon: copy,
+    flag_icon: flag,
+    visible_icon: visible,
+    visible_off_icon: visible_off,
+    thumbs_up_new: thumbs_up
 }
 
 export const products = [

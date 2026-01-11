@@ -5,9 +5,7 @@
     "email": "pikyunhan@gmail.com",
     "password": "yunhan18",
     "isAdmin": false,
-    "cart": {
-      "20000036": 4
-    },
+    "cart": {},
     "orders": [],
     "isNewsletterSubscribed": false,
     "hasUsedNewsletterDiscount": false

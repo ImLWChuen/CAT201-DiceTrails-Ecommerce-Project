@@ -5,14 +5,6 @@ import com.dicetrails.backend.model.Review;
 import com.dicetrails.backend.model.ReviewReport;
 import com.dicetrails.backend.model.Voucher;
 
-// ... (existing imports, but since I can't modify top of file easily with multi-chunk in this tool, I'll assum imports are managed or I use full names if possible, but actually replace_file_content replaces contiguous blocks. I need to be careful with imports.
-
-// I will use multi_replace_file_content instead because I need to edit imports AND the class body.
-// Wait, I am restricted to replace_file_content for single block.
-// I will use multi_replace_file_content.
-// Actually, I'll just use multi_replace_file_content in the next step.
-// For now, I'll switch to multi_replace_file_content tool.
-
 import com.dicetrails.backend.model.Order;
 import com.dicetrails.backend.model.User;
 import com.dicetrails.backend.model.Product;
