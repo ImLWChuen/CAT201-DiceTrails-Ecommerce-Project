@@ -22,6 +22,12 @@ const PlaceOrder = () => {
     const onChangeHandler = (event) => {
         const name = event.target.name;
         const value = event.target.value;
+
+        // Zipcode and Phone validation: Only allow numbers
+        if ((name === 'zipcode' || name === 'phone') && !/^\d*$/.test(value)) {
+            return;
+        }
+
         setFormData(data => ({ ...data, [name]: value }));
     }
 
@@ -132,9 +138,18 @@ const PlaceOrder = () => {
             return false;
         }
 
+        // Validate zipcode (digits only)
+        if (!/^\d+$/.test(formData.zipcode)) {
+            toast.error("Zipcode must contain only numbers");
+            return false;
+        }
+
         // Validate phone (digits only, reasonable length)
-        const phoneDigits = formData.phone.replace(/\D/g, '');
-        if (phoneDigits.length < 10 || phoneDigits.length > 15) {
+        if (!/^\d+$/.test(formData.phone)) {
+            toast.error("Phone number must contain only numbers");
+            return false;
+        }
+        if (formData.phone.length < 10 || formData.phone.length > 15) {
             toast.error("Phone number should be 10-15 digits");
             return false;
         }

@@ -5,7 +5,9 @@
     "email": "pikyunhan@gmail.com",
     "password": "yunhan18",
     "isAdmin": false,
-    "cart": {},
+    "cart": {
+      "20000036": 4
+    },
     "orders": [],
     "isNewsletterSubscribed": false,
     "hasUsedNewsletterDiscount": false
@@ -17,8 +19,7 @@
     "password": "12345678",
     "isAdmin": false,
     "cart": {
-      "20000013": 1,
-      "20000036": 9
+      "20000013": 1
     },
     "orders": [],
     "isNewsletterSubscribed": true,
@@ -30,11 +31,7 @@
     "email": "admin@dicetrails.com",
     "password": "admin123",
     "isAdmin": true,
-    "cart": {
-      "20000009": 0,
-      "20000015": 0,
-      "20000036": 9
-    },
+    "cart": {},
     "orders": [],
     "isNewsletterSubscribed": false,
     "hasUsedNewsletterDiscount": false
@@ -76,17 +73,14 @@
   },
   {
     "userId": 10000010,
-    "username": "ph",
-    "email": "ph@yahoo.com",
-    "password": "ph123456",
+    "username": "jkhg,ghjk000",
+    "email": "123@y.my",
+    "password": "abcd11234",
     "isAdmin": false,
-    "cart": {
-      "20000031": 0,
-      "20000036": 0
-    },
+    "cart": {},
     "orders": [],
-    "isNewsletterSubscribed": false,
-    "hasUsedNewsletterDiscount": false,
+    "isNewsletterSubscribed": true,
+    "hasUsedNewsletterDiscount": true,
     "usedVouchers": []
   }
 ]
