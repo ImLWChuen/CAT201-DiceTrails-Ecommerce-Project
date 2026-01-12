@@ -19,6 +19,13 @@ const PlaceOrder = () => {
         city: '', state: '', zipcode: '', country: '', phone: ''
     });
 
+    const westStates = [
+    'Johor', 'Kedah', 'Kelantan', 'Melaka', 'Negeri Sembilan', 
+    'Pahang', 'Penang', 'Perak', 'Perlis', 'Selangor', 
+    'Terengganu', 'Kuala Lumpur', 'Putrajaya'
+    ];
+    const eastStates = ['Sabah', 'Sarawak', 'Labuan'];
+
     const onChangeHandler = (event) => {
         const name = event.target.name;
         const value = event.target.value;
@@ -30,6 +37,34 @@ const PlaceOrder = () => {
 
         setFormData(data => ({ ...data, [name]: value }));
     }
+
+    const handleCountryChange = (e) => {
+        const selectedCountry = e.target.value;
+        setFormData(prev => ({ ...prev, country: selectedCountry, state: '' })); // Reset state when country changes
+        
+        if (selectedCountry === 'Malaysia') {
+            setRegion('west'); // Default to west initially
+        } else {
+            setRegion('international');
+            if (method === 'tng' || method === 'cod') {
+                setMethod('card');
+                toast.info("Payment method reset to Card (TNG not available for International)");
+            }
+        }
+    };
+
+    const handleStateChange = (e) => {
+        const selectedState = e.target.value;
+        setFormData(prev => ({ ...prev, state: selectedState }));
+
+        if (formData.country === 'Malaysia') {
+            if (eastStates.includes(selectedState)) {
+                setRegion('east');
+            } else {
+                setRegion('west');
+            }
+        }
+    };
 
     // Calculate shipping fee based on region and cart total
     const calculateShippingFee = () => {
@@ -272,26 +307,62 @@ const PlaceOrder = () => {
                 <input name='street' onChange={onChangeHandler} value={formData.street} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="text" placeholder='Street' required minLength="5" maxLength="200" />
                 <div className='flex gap-3'>
                     <input name='city' onChange={onChangeHandler} value={formData.city} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="text" placeholder='City' required minLength="2" maxLength="50" />
-                    <input name='state' onChange={onChangeHandler} value={formData.state} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="text" placeholder='State' required minLength="2" maxLength="50" />
+                    <input name='zipcode' onChange={onChangeHandler} value={formData.zipcode} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="text" placeholder='Zipcode' required pattern="[0-9]{4,10}" title="Enter valid postal code (4-10 digits)" />
                 </div>
                 <div className='flex gap-3'>
-                    <input name='zipcode' onChange={onChangeHandler} value={formData.zipcode} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="text" placeholder='Zipcode' required pattern="[0-9]{4,10}" title="Enter valid postal code (4-10 digits)" />
-                    <input name='country' onChange={onChangeHandler} value={formData.country} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="text" placeholder='Country' required minLength="2" maxLength="50" />
-                </div>
+                  {/* Country Dropdown */}
+                  <select 
+                   name='country' 
+                   onChange={handleCountryChange} // Uses your specific handler
+                   value={formData.country} 
+                   className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823] bg-white'
+                   required
+                  >
+                   <option value="" disabled>Select Country</option>
+                   <option value="Malaysia">Malaysia</option>
+                   <option value="Singapore">Singapore</option>
+                   <option value="Indonesia">Indonesia</option>
+                   <option value="Other">Other (International)</option>
+                  </select>
+
+                 {/* State Selection Logic */}
+                {formData.country === 'Malaysia' ? (
+                 <select 
+                  name='state' 
+                  onChange={handleStateChange} // Uses your specific handler
+                  value={formData.state} 
+                  className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823] bg-white'
+                  required
+                 >
+                     <option value="" disabled>Select State</option>
+                    <optgroup label="West Malaysia">
+                        {westStates.map(state => <option key={state} value={state}>{state}</option>)}
+                     </optgroup>
+                     <optgroup label="East Malaysia">
+                        {eastStates.map(state => <option key={state} value={state}>{state}</option>)}
+                     </optgroup>
+                </select>
+            ) : (
+        /* Text input for International/Other States */
+            <input 
+            name='state' 
+            onChange={onChangeHandler} 
+            value={formData.state} 
+            className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' 
+            type="text" 
+            placeholder='State/Province' 
+            required 
+            />
+            )}
+        </div>
                 <input name='phone' onChange={onChangeHandler} value={formData.phone} className='border border-gray-300 rounded py-1.5 px-3.5 w-full outline-[#D0A823]' type="tel" placeholder='Phone' required pattern="[0-9]{10,15}" title="Enter valid phone number (10-15 digits)" />
 
                 {/* Region Selection */}
                 <div className='mt-4'>
-                    <label className='block text-[#504c41] font-medium mb-2'>Select Region</label>
+                    <label className='block text-[#504c41] font-medium mb-2'>Shipping Region</label>
                     <select
                         value={region}
-                        onChange={(e) => {
-                            setRegion(e.target.value);
-                            // Reset payment method for International if COD/TNG was selected
-                            if (e.target.value === 'international' && (method === 'cod' || method === 'tng')) {
-                                setMethod('card');
-                            }
-                        }}
+                        disabled={true}
                         className='border border-gray-300 rounded py-2 px-3.5 w-full outline-[#D0A823] bg-white'
                     >
                         <option value='west'>West Malaysia (Free shipping ≥ RM 100)</option>
